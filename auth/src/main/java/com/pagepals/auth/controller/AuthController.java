@@ -3,6 +3,8 @@ package com.pagepals.auth.controller;
 import com.pagepals.auth.dto.AuthResponseDTO;
 import com.pagepals.auth.dto.LoginDTO;
 import com.pagepals.auth.dto.RegisterDTO;
+import com.pagepals.auth.dto.UpdateMailDTO;
+import com.pagepals.auth.dto.UpdatePasswordDTO;
 import com.pagepals.auth.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,5 +28,17 @@ public class AuthController {
     public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody LoginDTO dto) {
         AuthResponseDTO response = authService.login(dto);
         return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/update-email")
+    public ResponseEntity<Void> updateEmail(@RequestBody @Valid UpdateMailDTO dto) {
+        authService.updateMail(dto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/update-password")
+    public ResponseEntity<Void> updatePassword(@RequestBody @Valid UpdatePasswordDTO dto) {
+        authService.updatePassword(dto);
+        return ResponseEntity.noContent().build();
     }
 }

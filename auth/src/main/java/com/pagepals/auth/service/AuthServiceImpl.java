@@ -1,17 +1,20 @@
 package com.pagepals.auth.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
+import java.time.LocalDate;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.pagepals.auth.client.UserProfileClient;
 import com.pagepals.auth.dto.AuthResponseDTO;
 import com.pagepals.auth.dto.LoginDTO;
 import com.pagepals.auth.dto.RegisterDTO;
-import com.pagepals.auth.exception.CustomExceptionHandler;
+import com.pagepals.auth.dto.UpdateMailDTO;
+import com.pagepals.auth.dto.UpdatePasswordDTO;
+import com.pagepals.auth.dto.UserProfileCreateRequest;
 import com.pagepals.auth.exception.EmailAlreadyUsedException;
 import com.pagepals.auth.exception.InvalidCredentialException;
-import com.pagepals.auth.exception.PseudoAlreadyUsedException;
+import com.pagepals.auth.exception.UserNotFoundException;
 import com.pagepals.auth.jwt.JWTGenerator;
 import com.pagepals.auth.repository.UserRepository;
 
@@ -20,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 import com.pagepals.auth.model.Role;
 import com.pagepals.auth.model.UserEntity;
 
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -32,28 +34,34 @@ public class AuthServiceImpl implements AuthService {
 
     private final JWTGenerator jwtGenerator;
 
+    private final UserProfileClient userProfileClient;
+
     @Override
-    public AuthResponseDTO register(RegisterDTO dto) {
-        if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new EmailAlreadyUsedException("Cet email est déjà utilisé !");
-        }
-
-        if (userRepository.existsByPseudo(dto.getPseudo())) {
-            throw new PseudoAlreadyUsedException("Ce pseudo est déjà utilisé !");
-        }
-
-        UserEntity user = new UserEntity();
-        user.setEmail(dto.getEmail());
-        user.setMotDePasse(passwordEncoder.encode(dto.getMotDePasse()));
-        user.setPseudo(dto.getPseudo());
-        user.setRole(Role.MEMBRE);
-
-        userRepository.save(user);
-
-        String token = jwtGenerator.generateToken(user.getEmail());
-
-        return new AuthResponseDTO(token, user.getEmail(), user.getPseudo(), user.getRole().name());
+public AuthResponseDTO register(RegisterDTO dto) {
+    if (userRepository.existsByEmail(dto.getEmail())) {
+        throw new EmailAlreadyUsedException("Cet email est déjà utilisé !");
     }
+
+    UserEntity user = new UserEntity();
+    user.setEmail(dto.getEmail());
+    user.setMotDePasse(passwordEncoder.encode(dto.getMotDePasse()));
+    user.setRole(Role.MEMBRE);
+
+    userRepository.save(user);
+
+    // Appel à user-service pour créer le profil
+    UserProfileCreateRequest profileRequest = new UserProfileCreateRequest();
+    profileRequest.setId(user.getId());
+    profileRequest.setPseudo(dto.getPseudo());
+    profileRequest.setDateInscription(LocalDate.now());
+
+    userProfileClient.createUserProfile(profileRequest);
+
+    String token = jwtGenerator.generateToken(user.getEmail());
+
+    return new AuthResponseDTO(token, user.getEmail(), user.getRole().name());
+}
+
 
     @Override
     public AuthResponseDTO login(LoginDTO dto) {
@@ -66,7 +74,27 @@ public class AuthServiceImpl implements AuthService {
 
         String token = jwtGenerator.generateToken(user.getEmail());
 
-        return new AuthResponseDTO(token, user.getEmail(), user.getPseudo(), user.getRole().name());
+        return new AuthResponseDTO(token, user.getEmail(), user.getRole().name());
+    }
+
+
+    @Override
+    public void updateMail(UpdateMailDTO dto) {
+        UserEntity user = userRepository.findById(dto.getUserId())
+            .orElseThrow(() -> new UserNotFoundException("Utilisateur introuvable"));
+
+        user.setEmail(dto.getNewEmail());
+        userRepository.save(user);
+    }
+
+
+    @Override
+    public void updatePassword(UpdatePasswordDTO dto) {
+        UserEntity user = userRepository.findById(dto.getUserId())
+            .orElseThrow(() -> new UserNotFoundException("Utilisateur introuvable"));
+
+        user.setMotDePasse(passwordEncoder.encode(dto.getNewMotDePasse()));
+        userRepository.save(user);
     }
 
 }

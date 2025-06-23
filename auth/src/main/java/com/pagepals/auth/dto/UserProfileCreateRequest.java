@@ -1,17 +1,15 @@
-package com.pagepals.user.dto;
+package com.pagepals.auth.dto;
 
 import java.time.LocalDate;
 
 import lombok.Data;
 
 @Data
-public class UserProfileDTO {
+public class UserProfileCreateRequest {
+
+    private long id;
 
     private String pseudo;
 
     private LocalDate dateInscription;
-
-    private String bio;
-
-    private String photoProfil;
 }

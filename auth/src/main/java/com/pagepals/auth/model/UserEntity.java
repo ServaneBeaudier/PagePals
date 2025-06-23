@@ -31,9 +31,6 @@ public class UserEntity {
     @Column(nullable = false)
     private String motDePasse;
 
-    @Column(nullable = false, unique = true)
-    private String pseudo;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
