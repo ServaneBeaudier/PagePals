@@ -1,12 +1,13 @@
 package com.pagepals.user.dto;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
 public class UpdateUserProfileDTO {
+
+    private long id;
 
     @NotBlank(message = "Le pseudo est obligatoire")
     @Size(min = 3, max = 30, message = "Le pseudo doit contenir entre 3 et 30 caractères")
