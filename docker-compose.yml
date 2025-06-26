@@ -1,65 +1,66 @@
-version: '3.8'
-
 services:
- mysql-db:
-    image: mysql:8.4
-    container_name: mysql-db
-    restart: unless-stopped
-    environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: yes
-      MYSQL_ROOT_PASSWORD:
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-    networks:
-      - pagepals-net
+  mysql-db:
+      image: mysql:8.4
+      container_name: mysql-db
+      restart: unless-stopped
+      environment:
+        MYSQL_ALLOW_EMPTY_PASSWORD: yes
+        MYSQL_ROOT_PASSWORD:
+      ports:
+        - "3306:3306"
+      volumes:
+        - mysql_data:/var/lib/mysql
+      networks:
+        - pagepals-net
 
-  auth-service:
-    build:
-      context: ./auth-service
-    container_name: auth-service
-    ports:
-      - "8081:8081"
-    networks:
-      - pagepals-net
+  # auth-service:
+  #   build:
+  #     context: ./auth
+  #   container_name: auth-service
+  #   ports:
+  #     - "8081:8081"
+  #   networks:
+  #     - pagepals-net
 
-  user-service:
-    build:
-      context: ./user-service
-    container_name: user-service
-    ports:
-      - "8082:8082"
-    networks:
-      - pagepals-net
+  # user-service:
+  #   build:
+  #     context: ./user
+  #   container_name: user-service
+  #   ports:
+  #     - "8082:8082"
+  #   networks:
+  #     - pagepals-net
 
-  circle-service:
-    build:
-      context: ./circle-service
-    container_name: circle-service
-    ports:
-      - "8083:8083"
-    networks:
-      - pagepals-net
+  # circle-service:
+  #   build:
+  #     context: ./circle
+  #   container_name: circle-service
+  #   ports:
+  #     - "8083:8083"
+  #   networks:
+  #     - pagepals-net
 
-  membership-service:
-    build:
-      context: ./membership-service
-    container_name: membership-service
-    ports:
-      - "8084:8084"
-    networks:
-      - pagepals-net
+  # membership-service:
+  #   build:
+  #     context: ./membership
+  #   container_name: membership-service
+  #   ports:
+  #     - "8084:8084"
+  #   networks:
+  #     - pagepals-net
 
-  search-service:
-    build:
-      context: ./search-service
-    container_name: search-service
-    ports:
-      - "8085:8085"
-    networks:
-      - pagepals-net
+  # search-service:
+  #   build:
+  #     context: ./search
+  #   container_name: search-service
+  #   ports:
+  #     - "8085:8085"
+  #   networks:
+  #     - pagepals-net
 
 networks:
   pagepals-net:
     driver: bridge
+
+volumes:
+  mysql_data:

@@ -52,7 +52,6 @@ public AuthResponseDTO register(RegisterDTO dto) {
     // Appel à user-service pour créer le profil
     UserProfileCreateRequest profileRequest = new UserProfileCreateRequest();
     profileRequest.setId(user.getId());
-    profileRequest.setPseudo(dto.getPseudo());
     profileRequest.setDateInscription(LocalDate.now());
 
     userProfileClient.createUserProfile(profileRequest);

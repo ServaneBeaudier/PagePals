@@ -15,8 +15,4 @@ public class RegisterDTO {
     @NotBlank(message = "Le mot de passe est obligatoire")
     @Size(min = 8, max = 12, message = "Le mot de passe doit contenir entre 8 et 12 caractères")
     private String motDePasse;
-
-    @NotBlank(message = "Le pseudo est obligatoire")
-    @Size(min = 3, max = 30, message = "Le pseudo doit contenir entre 3 et 30 caractères")
-    private String pseudo;
 }
