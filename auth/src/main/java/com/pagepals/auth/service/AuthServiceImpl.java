@@ -23,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 import com.pagepals.auth.model.Role;
 import com.pagepals.auth.model.UserEntity;
 
-
 @RequiredArgsConstructor
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -37,30 +36,35 @@ public class AuthServiceImpl implements AuthService {
     private final UserProfileClient userProfileClient;
 
     @Override
-public AuthResponseDTO register(RegisterDTO dto) {
-    if (userRepository.existsByEmail(dto.getEmail())) {
-        throw new EmailAlreadyUsedException("Cet email est déjà utilisé !");
+    public AuthResponseDTO register(RegisterDTO dto) {
+        if (userRepository.existsByEmail(dto.getEmail())) {
+            throw new EmailAlreadyUsedException("Cet email est déjà utilisé !");
+        }
+
+        if (dto.getPseudo() == null || dto.getPseudo().isBlank()) {
+            throw new IllegalArgumentException("Le pseudo est obligatoire !");
+        }
+
+        // Création et sauvegarde de l'utilisateur
+        UserEntity user = new UserEntity();
+        user.setEmail(dto.getEmail());
+        user.setMotDePasse(passwordEncoder.encode(dto.getMotDePasse()));
+        user.setRole(Role.MEMBRE);
+        userRepository.save(user);
+
+        // Création du profil utilisateur côté user-service
+        UserProfileCreateRequest profileRequest = new UserProfileCreateRequest();
+        profileRequest.setId(user.getId());
+        profileRequest.setPseudo(dto.getPseudo());
+        profileRequest.setDateInscription(LocalDate.now());
+
+        userProfileClient.createUserProfile(profileRequest);
+
+        // Génération du token JWT
+        String token = jwtGenerator.generateToken(user.getId(), user.getRole().name(), user.getEmail());
+
+        return new AuthResponseDTO(token, user.getEmail(), user.getRole().name());
     }
-
-    UserEntity user = new UserEntity();
-    user.setEmail(dto.getEmail());
-    user.setMotDePasse(passwordEncoder.encode(dto.getMotDePasse()));
-    user.setRole(Role.MEMBRE);
-
-    userRepository.save(user);
-
-    // Appel à user-service pour créer le profil
-    UserProfileCreateRequest profileRequest = new UserProfileCreateRequest();
-    profileRequest.setId(user.getId());
-    profileRequest.setDateInscription(LocalDate.now());
-
-    userProfileClient.createUserProfile(profileRequest);
-
-    String token = jwtGenerator.generateToken(user.getEmail());
-
-    return new AuthResponseDTO(token, user.getEmail(), user.getRole().name());
-}
-
 
     @Override
     public AuthResponseDTO login(LoginDTO dto) {
@@ -71,26 +75,24 @@ public AuthResponseDTO register(RegisterDTO dto) {
             throw new InvalidCredentialException("Identifiants incorrects");
         }
 
-        String token = jwtGenerator.generateToken(user.getEmail());
+        String token = jwtGenerator.generateToken(user.getId(), user.getRole().name(), user.getEmail());
 
         return new AuthResponseDTO(token, user.getEmail(), user.getRole().name());
     }
 
-
     @Override
     public void updateMail(UpdateMailDTO dto) {
         UserEntity user = userRepository.findById(dto.getUserId())
-            .orElseThrow(() -> new UserNotFoundException("Utilisateur introuvable"));
+                .orElseThrow(() -> new UserNotFoundException("Utilisateur introuvable"));
 
         user.setEmail(dto.getNewEmail());
         userRepository.save(user);
     }
 
-
     @Override
     public void updatePassword(UpdatePasswordDTO dto) {
         UserEntity user = userRepository.findById(dto.getUserId())
-            .orElseThrow(() -> new UserNotFoundException("Utilisateur introuvable"));
+                .orElseThrow(() -> new UserNotFoundException("Utilisateur introuvable"));
 
         user.setMotDePasse(passwordEncoder.encode(dto.getNewMotDePasse()));
         userRepository.save(user);

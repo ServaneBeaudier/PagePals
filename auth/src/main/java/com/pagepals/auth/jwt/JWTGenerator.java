@@ -30,15 +30,18 @@ public class JWTGenerator {
         key = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String generateToken(String email) {
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + expirationMs);
+    public String generateToken(Long userId, String role, String email) {
+    Date now = new Date();
+    Date expiryDate = new Date(now.getTime() + expirationMs);
 
-        return Jwts.builder()
-                .setSubject(email)
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
-    }
+    return Jwts.builder()
+            .claim("userId", userId)
+            .claim("role", role)
+            .setSubject(email)
+            .setIssuedAt(now)
+            .setExpiration(expiryDate)
+            .signWith(key, SignatureAlgorithm.HS256)
+            .compact();
+}
+
 }

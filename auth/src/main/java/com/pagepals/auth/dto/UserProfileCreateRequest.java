@@ -10,4 +10,6 @@ public class UserProfileCreateRequest {
     private long id;
 
     private LocalDate dateInscription;
+
+    private String pseudo;
 }

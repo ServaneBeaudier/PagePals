@@ -2,29 +2,31 @@ server:
   port: 8080
 
 spring:
+  main:
+    web-application-type: reactive
   application:
     name: gateway
   cloud:
     gateway:
       routes:
-      - id: auth
-          uri: http://localhost:8081
+        - id: auth
+          uri: lb://auth
           predicates:
             - Path=/api/auth/**
         - id: user
-          uri: http://localhost:8082
+          uri: lb://user
           predicates:
-            - Path=/api/user-profiles/**
+            - Path=/api/user/**
         - id: circle
-          uri: http://localhost:8083
+          uri: lb://circle
           predicates:
             - Path=/api/circles/**
         - id: membership
-          uri: http://localhost:8084
+          uri: lb://membership
           predicates:
             - Path=/api/memberships/**
         - id: search
-          uri: http://localhost:8085
+          uri: lb://search
           predicates:
             - Path=/api/search/**
     discovery:
@@ -34,3 +36,6 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
+
+jwt:
+  secret: PagePalsSuperSecretClePourJwt123456

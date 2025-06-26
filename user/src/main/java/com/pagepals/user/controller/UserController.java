@@ -37,18 +37,27 @@ public class UserController {
     private final UserProfileRepository userProfileRepository;
 
     @PostMapping("/create")
-    public ResponseEntity<Void> createUserProfile(@RequestBody UserProfileCreateRequest request) {
+public ResponseEntity<Void> createUserProfile(@RequestBody UserProfileCreateRequest request) {
+    try {
+        System.out.println("==> Requête reçue dans /api/user/create : " + request);
         userProfileService.createProfile(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    } catch (Exception e) {
+        System.out.println("❌ Erreur pendant la création de l'utilisateur :");
+        e.printStackTrace();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
+}
+
 
     @PutMapping("/update")
     public ResponseEntity<Void> updateUserProfile(@RequestBody UpdateUserProfileDTO dto) {
         userProfileService.updateProfile(dto);
+        System.out.println("DTO reçu : " + dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PutMapping("/photo")
+    @PutMapping("/update/photo")
     public ResponseEntity<String> uploadPhoto(@RequestParam("file") MultipartFile file,
             @RequestParam("userId") long userId) {
         // Vérifie que le fichier n'est pas vide

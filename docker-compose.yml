@@ -13,6 +13,18 @@ services:
       networks:
         - pagepals-net
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql-db
+      PMA_PORT: 3306
+    ports:
+      - "8088:80"
+    networks:
+      - pagepals-net
+
   # auth-service:
   #   build:
   #     context: ./auth

@@ -32,6 +32,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     public void updateProfile(UpdateUserProfileDTO dto) {
         UserProfile userExisting = userProfileRepository.findById(dto.getId())
             .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
+        System.out.println("ID reçu pour mise à jour : " + dto.getId());
 
         userExisting.setPseudo(dto.getPseudo());
 
