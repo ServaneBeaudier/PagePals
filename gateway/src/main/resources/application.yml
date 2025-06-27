@@ -21,6 +21,10 @@ spring:
           uri: lb://circle
           predicates:
             - Path=/api/circles/**
+        - id: circle-books
+          uri: lb://circle
+          predicates:
+            - Path=/api/books/**
         - id: membership
           uri: lb://membership
           predicates:

@@ -18,5 +18,5 @@ public class CreateCircleDTO {
     private String lienVisio;
 
     private long createurId;
-    private BookDTO livrepropose;
+    private BookDTO livrePropose;
 }

@@ -7,16 +7,20 @@ import java.util.List;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import com.pagepals.circle.dto.BookDTO;
 import com.pagepals.circle.dto.CircleDTO;
 import com.pagepals.circle.dto.CreateCircleDTO;
 import com.pagepals.circle.dto.UpdateCircleDTO;
 import com.pagepals.circle.exception.CircleAlreadyExistsException;
 import com.pagepals.circle.exception.CircleNotFoundException;
 import com.pagepals.circle.exception.InvalidCircleDataException;
+import com.pagepals.circle.model.Book;
 import com.pagepals.circle.model.Circle;
 import com.pagepals.circle.model.ModeRencontre;
+import com.pagepals.circle.repository.BookRepository;
 import com.pagepals.circle.repository.CircleRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -25,7 +29,10 @@ public class CircleServiceImpl implements CircleService {
 
     private final CircleRepository circleRepository;
 
+    private final BookRepository bookRepository;
+
     @Override
+    @Transactional
     public void createCircle(CreateCircleDTO dto, long createurId) {
         Circle circle = new Circle();
         circle.setNom(dto.getNom());
@@ -49,6 +56,14 @@ public class CircleServiceImpl implements CircleService {
         if (exists) {
             throw new CircleAlreadyExistsException(
                     "Un cercle a déjà été créé à cette date et heure par cet utilisateur.");
+        }
+        System.out.println("Livre reçu dans le DTO : " + dto.getLivrePropose());
+        if (dto.getLivrePropose() != null) {
+            Book book = convertToEntity(dto.getLivrePropose());
+            System.out.println("Livre à sauvegarder : " + book);
+            Book savedBook = bookRepository.save(book);
+            bookRepository.flush();
+            circle.setLivrePropose(savedBook);
         }
 
         circleRepository.save(circle);
@@ -83,6 +98,12 @@ public class CircleServiceImpl implements CircleService {
         if (exists) {
             throw new CircleAlreadyExistsException(
                     "Un cercle a déjà été créé à cette date et heure par cet utilisateur.");
+        }
+
+        if (dto.getLivrePropose() != null) {
+            Book book = convertToEntity(dto.getLivrePropose());
+            bookRepository.save(book);
+            circleExisting.setLivrePropose(book);
         }
 
         circleRepository.save(circleExisting);
@@ -136,6 +157,16 @@ public class CircleServiceImpl implements CircleService {
 
             return dto;
         }).toList();
+    }
+
+    private Book convertToEntity(BookDTO dto) {
+        Book book = new Book();
+        book.setTitre(dto.getTitre());
+        book.setAuteurs(dto.getAuteurs());
+        book.setGenre(dto.getGenre());
+        book.setIsbn(dto.getIsbn());
+        book.setCouvertureUrl(dto.getCouvertureUrl());
+        return book;
     }
 
 }

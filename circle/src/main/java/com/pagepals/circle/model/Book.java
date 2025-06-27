@@ -1,5 +1,8 @@
 package com.pagepals.circle.model;
 
+import java.util.List;
+
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,12 +27,13 @@ public class Book {
 
     private String titre;
 
-    private String auteur;
+    @ElementCollection
+    private List<String> auteurs;
 
     private String isbn;
 
     private String genre;
 
-    private String couverture;
+    private String couvertureUrl;
 
 }

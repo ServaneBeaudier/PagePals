@@ -3,6 +3,7 @@ package com.pagepals.circle.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -53,7 +54,7 @@ public class Circle {
     @Column(nullable = false)
     private long createurId;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name ="livre_propose_id")
     private Book livrePropose;
 

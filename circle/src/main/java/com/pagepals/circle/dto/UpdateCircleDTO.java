@@ -19,5 +19,5 @@ public class UpdateCircleDTO {
     private String lieuRencontre;
     private String lienVisio;
 
-    private BookDTO livrepropose;
+    private BookDTO livrePropose;
 }
