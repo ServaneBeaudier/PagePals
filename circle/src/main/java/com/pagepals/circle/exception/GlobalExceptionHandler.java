@@ -38,6 +38,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
+    @ExceptionHandler(CircleAlreadyExistsException.class)
+    public ResponseEntity<String> handleAlreadyExists(CircleAlreadyExistsException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage()); // 409
+    }
+
     // Fallback
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleAll(Exception ex) {

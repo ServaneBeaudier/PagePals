@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.pagepals.circle.dto.CircleDTO;
 import com.pagepals.circle.dto.CreateCircleDTO;
 import com.pagepals.circle.dto.UpdateCircleDTO;
+import com.pagepals.circle.exception.CircleAlreadyExistsException;
 import com.pagepals.circle.exception.CircleNotFoundException;
 import com.pagepals.circle.exception.InvalidCircleDataException;
 import com.pagepals.circle.model.Circle;
@@ -43,6 +44,13 @@ public class CircleServiceImpl implements CircleService {
             throw new InvalidCircleDataException("La date de rencontre ne peut pas être dans le passé.");
         }
 
+        boolean exists = circleRepository.existsByCreateurIdAndDateRencontre(createurId,
+                dto.getDateRencontre());
+        if (exists) {
+            throw new CircleAlreadyExistsException(
+                    "Un cercle a déjà été créé à cette date et heure par cet utilisateur.");
+        }
+
         circleRepository.save(circle);
     }
 
@@ -65,6 +73,16 @@ public class CircleServiceImpl implements CircleService {
 
         if (dto.getDateRencontre() != null && dto.getDateRencontre().isBefore(LocalDateTime.now())) {
             throw new InvalidCircleDataException("La date de rencontre ne peut pas être dans le passé.");
+        }
+
+        boolean exists = circleRepository.existsByCreateurIdAndDateRencontreAndIdNot(
+                circleExisting.getCreateurId(),
+                dto.getDateRencontre(),
+                dto.getId());
+
+        if (exists) {
+            throw new CircleAlreadyExistsException(
+                    "Un cercle a déjà été créé à cette date et heure par cet utilisateur.");
         }
 
         circleRepository.save(circleExisting);
