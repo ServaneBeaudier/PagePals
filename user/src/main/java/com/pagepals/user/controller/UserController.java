@@ -37,18 +37,17 @@ public class UserController {
     private final UserProfileRepository userProfileRepository;
 
     @PostMapping("/create")
-public ResponseEntity<Void> createUserProfile(@RequestBody UserProfileCreateRequest request) {
-    try {
-        System.out.println("==> Requête reçue dans /api/user/create : " + request);
-        userProfileService.createProfile(request);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    } catch (Exception e) {
-        System.out.println("❌ Erreur pendant la création de l'utilisateur :");
-        e.printStackTrace();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    public ResponseEntity<Void> createUserProfile(@RequestBody UserProfileCreateRequest request) {
+        try {
+            System.out.println("==> Requête reçue dans /api/user/create : " + request);
+            userProfileService.createProfile(request);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (Exception e) {
+            System.out.println("❌ Erreur pendant la création de l'utilisateur :");
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
-}
-
 
     @PutMapping("/update")
     public ResponseEntity<Void> updateUserProfile(@RequestBody UpdateUserProfileDTO dto) {

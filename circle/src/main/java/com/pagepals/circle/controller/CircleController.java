@@ -1,8 +1,11 @@
 package com.pagepals.circle.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pagepals.circle.dto.CircleDTO;
 import com.pagepals.circle.dto.CreateCircleDTO;
 import com.pagepals.circle.dto.UpdateCircleDTO;
 import com.pagepals.circle.jwt.JWTUtil;
@@ -26,6 +30,17 @@ public class CircleController {
     private final CircleService circleService;
 
     private final JWTUtil jwtUtil;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CircleDTO> getCircleById(@PathVariable Long id) {
+        CircleDTO dto = circleService.getCircleById(id);
+        return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CircleDTO>> getAllCircles() {
+        return ResponseEntity.ok(circleService.getAllCircles());
+    }
 
     @PostMapping("/create")
     public ResponseEntity<Void> createCircle(@RequestBody CreateCircleDTO dto,
