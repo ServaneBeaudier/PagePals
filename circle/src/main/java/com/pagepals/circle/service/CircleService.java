@@ -9,8 +9,10 @@ import com.pagepals.circle.dto.UpdateCircleDTO;
 public interface CircleService {
 
     void createCircle(CreateCircleDTO dto, long createurId);
-    void updateCircle(UpdateCircleDTO dto);
+    void updateCircle(UpdateCircleDTO dto, long createurId);
     void deleteCircle(long id, long createurId);
     CircleDTO getCircleById(long id);
-    List<CircleDTO> getAllCircles();
+    List<CircleDTO> getCirclesActive();
+    List<CircleDTO> getCirclesArchived();
+    void archiverCerclesPassés();
 }

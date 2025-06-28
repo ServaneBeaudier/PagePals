@@ -3,14 +3,16 @@ package com.pagepals.circle.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.pagepals.circle.dto.BookDTO;
 import com.pagepals.circle.dto.CircleDTO;
 import com.pagepals.circle.dto.CreateCircleDTO;
 import com.pagepals.circle.dto.UpdateCircleDTO;
+import com.pagepals.circle.exception.AccessDeniedException;
 import com.pagepals.circle.exception.CircleAlreadyExistsException;
 import com.pagepals.circle.exception.CircleNotFoundException;
 import com.pagepals.circle.exception.InvalidCircleDataException;
@@ -57,10 +59,9 @@ public class CircleServiceImpl implements CircleService {
             throw new CircleAlreadyExistsException(
                     "Un cercle a déjà été créé à cette date et heure par cet utilisateur.");
         }
-        System.out.println("Livre reçu dans le DTO : " + dto.getLivrePropose());
+
         if (dto.getLivrePropose() != null) {
             Book book = convertToEntity(dto.getLivrePropose());
-            System.out.println("Livre à sauvegarder : " + book);
             Book savedBook = bookRepository.save(book);
             bookRepository.flush();
             circle.setLivrePropose(savedBook);
@@ -70,9 +71,14 @@ public class CircleServiceImpl implements CircleService {
     }
 
     @Override
-    public void updateCircle(UpdateCircleDTO dto) {
+    @Transactional
+    public void updateCircle(UpdateCircleDTO dto, long createurId) {
         Circle circleExisting = circleRepository.findById(dto.getId())
                 .orElseThrow(() -> new CircleNotFoundException("Cercle non trouvé"));
+
+        if (!Objects.equals(circleExisting.getCreateurId(), createurId)) {
+            throw new AccessDeniedException("Vous n'êtes pas le créateur de ce cercle");
+        }
 
         circleExisting.setNom(dto.getNom());
         circleExisting.setDateRencontre(dto.getDateRencontre());
@@ -90,6 +96,19 @@ public class CircleServiceImpl implements CircleService {
             throw new InvalidCircleDataException("La date de rencontre ne peut pas être dans le passé.");
         }
 
+        if (dto.getLivrePropose() != null) {
+            Book ancienLivre = circleExisting.getLivrePropose();
+
+            Book book = convertToEntity(dto.getLivrePropose());
+            Book savedBook = bookRepository.save(book);
+            bookRepository.flush();
+            circleExisting.setLivrePropose(savedBook);
+
+            if (ancienLivre != null && ancienLivre.getId() != savedBook.getId()) {
+                bookRepository.delete(ancienLivre);
+            }
+        }
+
         boolean exists = circleRepository.existsByCreateurIdAndDateRencontreAndIdNot(
                 circleExisting.getCreateurId(),
                 dto.getDateRencontre(),
@@ -100,16 +119,11 @@ public class CircleServiceImpl implements CircleService {
                     "Un cercle a déjà été créé à cette date et heure par cet utilisateur.");
         }
 
-        if (dto.getLivrePropose() != null) {
-            Book book = convertToEntity(dto.getLivrePropose());
-            bookRepository.save(book);
-            circleExisting.setLivrePropose(book);
-        }
-
         circleRepository.save(circleExisting);
     }
 
     @Override
+    @Transactional
     public void deleteCircle(long id, long createurId) {
         Circle circleExisting = circleRepository.findById(id)
                 .orElseThrow(() -> new CircleNotFoundException("Cercle non trouvé"));
@@ -140,8 +154,8 @@ public class CircleServiceImpl implements CircleService {
     }
 
     @Override
-    public List<CircleDTO> getAllCircles() {
-        List<Circle> circles = circleRepository.findAll();
+    public List<CircleDTO> getCirclesActive() {
+        List<Circle> circles = circleRepository.findByIsArchivedFalse();
 
         return circles.stream().map(circle -> {
             CircleDTO dto = new CircleDTO();
@@ -157,6 +171,37 @@ public class CircleServiceImpl implements CircleService {
 
             return dto;
         }).toList();
+    }
+
+    @Override
+    public List<CircleDTO> getCirclesArchived() {
+        List<Circle> circles = circleRepository.findByIsArchivedTrue();
+
+        return circles.stream().map(circle -> {
+            CircleDTO dto = new CircleDTO();
+            dto.setId(circle.getId());
+            dto.setNom(circle.getNom());
+            dto.setDescription(circle.getDescription());
+            dto.setDateRencontre(circle.getDateRencontre());
+            dto.setDateCreation(circle.getDateCreation());
+            dto.setModeRencontre(circle.getModeRencontre());
+            dto.setLieuRencontre(circle.getLieuRencontre());
+            dto.setLienVisio(circle.getLienVisio());
+            dto.setCreateurId(circle.getCreateurId());
+
+            return dto;
+        }).toList();
+    }
+
+    @Scheduled(cron = "0 0 2 * * *") // Tous les jours à 2h du matin
+    public void archiverCerclesPassés() {
+        List<Circle> cerclesÀArchiver = circleRepository.findByDateRencontreBeforeAndIsArchivedFalse(LocalDate.now());
+
+        for (Circle c : cerclesÀArchiver) {
+            c.setArchived(true);
+        }
+
+        circleRepository.saveAll(cerclesÀArchiver);
     }
 
     private Book convertToEntity(BookDTO dto) {

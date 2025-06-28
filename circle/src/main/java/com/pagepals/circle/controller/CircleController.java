@@ -37,9 +37,14 @@ public class CircleController {
         return ResponseEntity.ok(dto);
     }
 
-    @GetMapping
-    public ResponseEntity<List<CircleDTO>> getAllCircles() {
-        return ResponseEntity.ok(circleService.getAllCircles());
+    @GetMapping("active")
+    public ResponseEntity<List<CircleDTO>> getCirclesActive() {
+        return ResponseEntity.ok(circleService.getCirclesActive());
+    }
+
+    @GetMapping("archived")
+    public ResponseEntity<List<CircleDTO>> getCirclesArchived() {
+        return ResponseEntity.ok(circleService.getCirclesArchived());
     }
 
     @PostMapping("/create")
@@ -52,9 +57,11 @@ public class CircleController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<Void> updateCircle(@RequestBody UpdateCircleDTO dto) {
-        circleService.updateCircle(dto);
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Void> updateCircle(@RequestBody UpdateCircleDTO dto, @PathVariable long id,
+            @RequestHeader("X-User-Id") Long userId) {
+        dto.setId(id);
+        circleService.updateCircle(dto, userId);
         return ResponseEntity.noContent().build();
     }
 
