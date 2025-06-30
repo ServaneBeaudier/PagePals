@@ -25,50 +25,50 @@ services:
     networks:
       - pagepals-net
 
-  # auth-service:
-  #   build:
-  #     context: ./auth
-  #   container_name: auth-service
-  #   ports:
-  #     - "8081:8081"
-  #   networks:
-  #     - pagepals-net
+  auth-service:
+    build:
+      context: ./auth
+    container_name: auth-service
+    ports:
+      - "8081:8081"
+    networks:
+      - pagepals-net
 
-  # user-service:
-  #   build:
-  #     context: ./user
-  #   container_name: user-service
-  #   ports:
-  #     - "8082:8082"
-  #   networks:
-  #     - pagepals-net
+  user-service:
+    build:
+      context: ./user
+    container_name: user-service
+    ports:
+      - "8082:8082"
+    networks:
+      - pagepals-net
 
-  # circle-service:
-  #   build:
-  #     context: ./circle
-  #   container_name: circle-service
-  #   ports:
-  #     - "8083:8083"
-  #   networks:
-  #     - pagepals-net
+  circle-service:
+    build:
+      context: ./circle
+    container_name: circle-service
+    ports:
+      - "8083:8083"
+    networks:
+      - pagepals-net
 
-  # membership-service:
-  #   build:
-  #     context: ./membership
-  #   container_name: membership-service
-  #   ports:
-  #     - "8084:8084"
-  #   networks:
-  #     - pagepals-net
+  membership-service:
+    build:
+      context: ./membership
+    container_name: membership-service
+    ports:
+      - "8084:8084"
+    networks:
+      - pagepals-net
 
-  # search-service:
-  #   build:
-  #     context: ./search
-  #   container_name: search-service
-  #   ports:
-  #     - "8085:8085"
-  #   networks:
-  #     - pagepals-net
+  search-service:
+    build:
+      context: ./search
+    container_name: search-service
+    ports:
+      - "8085:8085"
+    networks:
+      - pagepals-net
 
 networks:
   pagepals-net:

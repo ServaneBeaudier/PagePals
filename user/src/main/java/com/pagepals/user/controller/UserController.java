@@ -1,5 +1,8 @@
 package com.pagepals.user.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.MediaType;
 
+import com.pagepals.user.dto.ParticipantDTO;
 import com.pagepals.user.dto.UpdateUserProfileDTO;
 import com.pagepals.user.dto.UserProfileCreateRequest;
 import com.pagepals.user.model.UserProfile;
@@ -26,7 +30,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("api/user")
+@RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -106,6 +110,13 @@ public class UserController {
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/pseudos")
+    public List<ParticipantDTO> getPseudosByIds(@RequestParam("ids") List<Long> userIds) {
+        return userProfileRepository.findAllById(userIds).stream()
+                .map(user -> new ParticipantDTO(user.getId(), user.getPseudo()))
+                .collect(Collectors.toList());
     }
 
 }
