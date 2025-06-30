@@ -4,21 +4,12 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.pagepals.circle.dto.CircleDTO;
-import com.pagepals.circle.dto.CreateCircleDTO;
-import com.pagepals.circle.dto.UpdateCircleDTO;
+import com.pagepals.circle.dto.*;
 import com.pagepals.circle.jwt.JWTUtil;
 import com.pagepals.circle.service.CircleService;
+import com.pagepals.circle.service.MessageService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 public class CircleController {
 
     private final CircleService circleService;
+
+    private final MessageService messageService;
 
     private final JWTUtil jwtUtil;
 
@@ -75,4 +68,16 @@ public class CircleController {
         return ResponseEntity.ok("Cercle supprimé !");
     }
 
+    @GetMapping("/{circleId}/messages")
+    public ResponseEntity<List<MessageDTO>> getMessages(@PathVariable Long circleId) {
+        return ResponseEntity.ok(messageService.getMessagesByCircleId(circleId));
+    }
+
+    @PostMapping("/{circleId}/messages")
+    public ResponseEntity<Void> envoyerMessage(@PathVariable Long circleId, @RequestBody MessageDTO dto) {
+        // on s'assure que le cercleId correspond bien à celui envoyé
+        dto.setCircleId(circleId);
+        messageService.sendMessage(dto);
+        return ResponseEntity.ok().build();
+    }
 }

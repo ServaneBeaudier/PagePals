@@ -6,21 +6,11 @@ import java.util.stream.Collectors;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.MediaType;
 
-import com.pagepals.user.dto.ParticipantDTO;
-import com.pagepals.user.dto.UpdateUserProfileDTO;
-import com.pagepals.user.dto.UserProfileCreateRequest;
+import com.pagepals.user.dto.*;
 import com.pagepals.user.model.UserProfile;
 import com.pagepals.user.repository.UserProfileRepository;
 import com.pagepals.user.service.FileStorageService;
@@ -119,4 +109,22 @@ public class UserController {
                 .collect(Collectors.toList());
     }
 
+    @GetMapping("/infos")
+    public UserInfoDTO getUserInfo(@RequestParam("id") long userId) {
+        UserProfile user = userProfileRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
+
+        return new UserInfoDTO(user.getId(), user.getPseudo(), user.getPhotoProfil());
+    }
+
+    @GetMapping("/message")
+    public List<MessageDTO> getInfosPourMessage(@RequestParam("ids") List<Long> userIds) {
+        return userProfileRepository.findAllById(userIds).stream()
+                .map(user -> MessageDTO.builder()
+                        .auteurId(user.getId())
+                        .pseudoAuteur(user.getPseudo())
+                        .photoAuteur(user.getPhotoProfil())
+                        .build())
+                .collect(Collectors.toList());
+    }
 }
