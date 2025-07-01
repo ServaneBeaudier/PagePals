@@ -2,27 +2,19 @@ package com.pagepals.circle.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.pagepals.circle.dto.BookDTO;
-import com.pagepals.circle.dto.CircleDTO;
-import com.pagepals.circle.dto.CreateCircleDTO;
-import com.pagepals.circle.dto.UpdateCircleDTO;
-import com.pagepals.circle.exception.AccessDeniedException;
-import com.pagepals.circle.exception.CircleAlreadyExistsException;
-import com.pagepals.circle.exception.CircleNotFoundException;
-import com.pagepals.circle.exception.InvalidCircleDataException;
-import com.pagepals.circle.model.Book;
-import com.pagepals.circle.model.Circle;
-import com.pagepals.circle.model.ModeRencontre;
-import com.pagepals.circle.repository.BookRepository;
-import com.pagepals.circle.repository.CircleRepository;
+import com.pagepals.circle.dto.*;
+import com.pagepals.circle.exception.*;
+import com.pagepals.circle.model.*;
+import com.pagepals.circle.repository.*;
 
-import jakarta.transaction.Transactional;
+import jakarta.persistence.*;
+import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -32,6 +24,11 @@ public class CircleServiceImpl implements CircleService {
     private final CircleRepository circleRepository;
 
     private final BookRepository bookRepository;
+
+    private final LiteraryGenreRepository literaryGenreRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     @Transactional
@@ -59,6 +56,15 @@ public class CircleServiceImpl implements CircleService {
             throw new CircleAlreadyExistsException(
                     "Un cercle a déjà été créé à cette date et heure par cet utilisateur.");
         }
+
+        List<Long> genreIds = dto.getGenreIds();
+        Set<LiteraryGenre> genres = new HashSet<>(literaryGenreRepository.findAllById(genreIds));
+
+        if (genres.size() != genreIds.size()) {
+            throw new IllegalArgumentException("Certains genres sont invalides.");
+        }
+
+        circle.setGenres(genres);
 
         if (dto.getLivrePropose() != null) {
             Book book = convertToEntity(dto.getLivrePropose());
@@ -95,6 +101,14 @@ public class CircleServiceImpl implements CircleService {
         if (dto.getDateRencontre() != null && dto.getDateRencontre().isBefore(LocalDateTime.now())) {
             throw new InvalidCircleDataException("La date de rencontre ne peut pas être dans le passé.");
         }
+
+        List<Long> genreIds = dto.getGenreIds();
+        Set<LiteraryGenre> genres = new HashSet<>(literaryGenreRepository.findAllById(genreIds));
+        if (genres.size() != genreIds.size()) {
+            throw new IllegalArgumentException("Certains genres sont invalides.");
+        }
+
+        circleExisting.setGenres(genres);
 
         if (dto.getLivrePropose() != null) {
             Book ancienLivre = circleExisting.getLivrePropose();
@@ -212,6 +226,47 @@ public class CircleServiceImpl implements CircleService {
         book.setIsbn(dto.getIsbn());
         book.setCouvertureUrl(dto.getCouvertureUrl());
         return book;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CircleDTO> searchCircles(SearchCriteriaDTO criteria) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Circle> query = cb.createQuery(Circle.class);
+        Root<Circle> root = query.from(Circle.class);
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (criteria.getMotCle() != null && !criteria.getMotCle().isBlank()) {
+            predicates.add(cb.like(cb.lower(root.get("nom")), "%" + criteria.getMotCle().toLowerCase() + "%"));
+        }
+
+        if (criteria.getFormat() != null && !criteria.getFormat().isBlank()) {
+            predicates.add(cb.equal(cb.lower(root.get("format")), criteria.getFormat().toLowerCase()));
+        }
+
+        if (criteria.getGenre() != null && !criteria.getGenre().isBlank()) {
+            // À adapter selon ta relation réelle (ManyToMany ou autre)
+            Join<Object, Object> genreJoin = root.join("genres", JoinType.LEFT);
+            predicates.add(cb.equal(cb.lower(genreJoin.get("nomGenre")), criteria.getGenre().toLowerCase()));
+        }
+
+        query.select(root).where(cb.and(predicates.toArray(new Predicate[0])));
+        List<Circle> result = entityManager.createQuery(query).getResultList();
+
+        return result.stream()
+                .map(c -> CircleDTO.builder()
+                        .id(c.getId())
+                        .nom(c.getNom())
+                        .description(c.getDescription())
+                        .modeRencontre(c.getModeRencontre())
+                        .lieuRencontre(c.getLieuRencontre())
+                        .lienVisio(c.getLienVisio())
+                        .dateRencontre(c.getDateRencontre())
+                        .genres(c.getGenres().stream()
+                                .map(LiteraryGenre::getNomGenre)
+                                .toList())
+                        .build())
+                .toList();
     }
 
 }

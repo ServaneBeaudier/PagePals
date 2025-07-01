@@ -2,6 +2,8 @@ package com.pagepals.circle.model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,14 +13,14 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name="circle")
+@Table(name = "circle")
 public class Circle {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column (nullable = false)
+    @Column(nullable = false)
     private String nom;
 
     @Column(length = 1000)
@@ -42,9 +44,14 @@ public class Circle {
     private long createurId;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name ="livre_propose_id")
+    @JoinColumn(name = "livre_propose_id")
     private Book livrePropose;
 
     private boolean isArchived;
+
+    @ManyToMany
+    @JoinTable(name = "circle_genre", joinColumns = @JoinColumn(name = "circle_id"),
+        inverseJoinColumns = @JoinColumn(name = "genre_id"))
+    private Set<LiteraryGenre> genres = new HashSet<>();
 
 }

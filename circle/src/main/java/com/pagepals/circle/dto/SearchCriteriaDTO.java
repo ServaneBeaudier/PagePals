@@ -1,4 +1,4 @@
-package com.pagepals.search.dto;
+package com.pagepals.circle.dto;
 
 import java.time.LocalDate;
 

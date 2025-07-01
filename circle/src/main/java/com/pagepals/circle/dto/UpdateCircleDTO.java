@@ -1,6 +1,7 @@
 package com.pagepals.circle.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.pagepals.circle.model.ModeRencontre;
 
@@ -15,6 +16,8 @@ public class UpdateCircleDTO {
     private String description;
     private ModeRencontre modeRencontre;
     private LocalDateTime dateRencontre;
+
+    private List<Long> genreIds;
 
     private String lieuRencontre;
     private String lienVisio;

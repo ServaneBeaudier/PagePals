@@ -2,12 +2,16 @@ package com.pagepals.circle.dto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.pagepals.circle.model.ModeRencontre;
 
-import lombok.Data;
+import lombok.*;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CircleDTO {
 
     private long id;
@@ -17,6 +21,8 @@ public class CircleDTO {
     private ModeRencontre modeRencontre;
     private LocalDate dateCreation;
     private LocalDateTime dateRencontre;
+
+    private List<String> genres;
 
     private String lieuRencontre;
     private String lienVisio;

@@ -51,7 +51,7 @@ public class MessageServiceImpl implements MessageService {
                 .distinct()
                 .toList();
 
-        var userInfos = userClient.getInfosPourMessage(List.of(2L));
+        var userInfos = userClient.getInfosPourMessage(userIds);
 
         return messages.stream().map(msg -> {
             var info = userInfos.stream()
