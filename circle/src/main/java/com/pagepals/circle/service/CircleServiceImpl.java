@@ -66,6 +66,14 @@ public class CircleServiceImpl implements CircleService {
 
         circle.setGenres(genres);
 
+        int nbMax = (dto.getNbMaxMembres() != null) ? dto.getNbMaxMembres() : 20;
+
+        if (nbMax < 1 || nbMax > 20) {
+            throw new InvalidCircleDataException("Le nombre maximal de membres doit être compris entre 1 et 20.");
+        }
+
+        circle.setNbMaxMembres(nbMax);
+
         if (dto.getLivrePropose() != null) {
             Book book = convertToEntity(dto.getLivrePropose());
             Book savedBook = bookRepository.save(book);
@@ -109,6 +117,14 @@ public class CircleServiceImpl implements CircleService {
         }
 
         circleExisting.setGenres(genres);
+
+        int nbMax = (dto.getNbMaxMembres() != null) ? dto.getNbMaxMembres() : 20;
+
+        if (nbMax < 1 || nbMax > 20) {
+            throw new InvalidCircleDataException("Le nombre maximal de membres doit être compris entre 1 et 20.");
+        }
+
+        circleExisting.setNbMaxMembres(nbMax);
 
         if (dto.getLivrePropose() != null) {
             Book ancienLivre = circleExisting.getLivrePropose();
@@ -231,6 +247,7 @@ public class CircleServiceImpl implements CircleService {
     @Override
     @Transactional(readOnly = true)
     public List<CircleDTO> searchCircles(SearchCriteriaDTO criteria) {
+        System.out.println("🔍 Recherche reçue : " + criteria);
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Circle> query = cb.createQuery(Circle.class);
         Root<Circle> root = query.from(Circle.class);
@@ -241,13 +258,18 @@ public class CircleServiceImpl implements CircleService {
         }
 
         if (criteria.getFormat() != null && !criteria.getFormat().isBlank()) {
-            predicates.add(cb.equal(cb.lower(root.get("format")), criteria.getFormat().toLowerCase()));
+            predicates.add(cb.equal(cb.lower(root.get("modeRencontre")), criteria.getFormat().toLowerCase()));
         }
 
         if (criteria.getGenre() != null && !criteria.getGenre().isBlank()) {
-            // À adapter selon ta relation réelle (ManyToMany ou autre)
             Join<Object, Object> genreJoin = root.join("genres", JoinType.LEFT);
             predicates.add(cb.equal(cb.lower(genreJoin.get("nomGenre")), criteria.getGenre().toLowerCase()));
+        }
+
+        if (criteria.getDateExacte() != null) {
+            predicates.add(cb.equal(root.get("dateRencontre"), criteria.getDateExacte()));
+        } else if (criteria.getDate() != null) {
+            predicates.add(cb.greaterThanOrEqualTo(root.get("dateRencontre"), criteria.getDate()));
         }
 
         query.select(root).where(cb.and(predicates.toArray(new Predicate[0])));
@@ -262,6 +284,7 @@ public class CircleServiceImpl implements CircleService {
                         .lieuRencontre(c.getLieuRencontre())
                         .lienVisio(c.getLienVisio())
                         .dateRencontre(c.getDateRencontre())
+                        .nbMaxMembres(c.getNbMaxMembres())
                         .genres(c.getGenres().stream()
                                 .map(LiteraryGenre::getNomGenre)
                                 .toList())

@@ -13,4 +13,6 @@ public interface MembershipService {
     List<ParticipantDTO> getParticipantsWithPseudo(long circleId);
 
     boolean estInscrit(long userId, Long circleId);
+
+    int countMembersForCircle(Long circleId);
 }

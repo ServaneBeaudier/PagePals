@@ -12,6 +12,7 @@ import com.pagepals.membership.client.UserClient;
 import com.pagepals.membership.dto.CircleDTO;
 import com.pagepals.membership.dto.ParticipantDTO;
 import com.pagepals.membership.exception.AlreadyMemberException;
+import com.pagepals.membership.exception.CircleFullException;
 import com.pagepals.membership.exception.MembershipNotFoundException;
 import com.pagepals.membership.exception.TooLateToRegisterException;
 import com.pagepals.membership.model.Membership;
@@ -61,6 +62,13 @@ public class MembershipServiceImpl implements MembershipService {
             throw new AlreadyMemberException("Vous êtes déjà inscrit à ce cercle.");
         }
 
+        long current = membershipRepository.countByCircleId(circleId);
+        int max = circleClient.getMaxMembres(circleId);
+
+        if (current >= max) {
+            throw new CircleFullException("Ce cercle est complet.");
+        }
+
         Membership membership = new Membership();
         membership.setUserId(userId);
         membership.setCircleId(circleId);
@@ -97,5 +105,10 @@ public class MembershipServiceImpl implements MembershipService {
     public boolean estInscrit(long userId, Long circleId) {
         return membershipRepository.existsByUserIdAndCircleId(userId, circleId);
 
+    }
+
+    @Override
+    public int countMembersForCircle(Long circleId) {
+        return membershipRepository.countByCircleId(circleId);
     }
 }

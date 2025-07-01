@@ -7,7 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.pagepals.circle.dto.*;
+import com.pagepals.circle.exception.CircleNotFoundException;
 import com.pagepals.circle.jwt.JWTUtil;
+import com.pagepals.circle.model.Circle;
+import com.pagepals.circle.repository.CircleRepository;
 import com.pagepals.circle.service.CircleService;
 import com.pagepals.circle.service.MessageService;
 
@@ -23,6 +26,8 @@ public class CircleController {
     private final MessageService messageService;
 
     private final JWTUtil jwtUtil;
+
+    private final CircleRepository circleRepository;
 
     @GetMapping("/{id}")
     public ResponseEntity<CircleDTO> getCircleById(@PathVariable Long id) {
@@ -93,5 +98,13 @@ public class CircleController {
     public ResponseEntity<List<CircleDTO>> searchCircles(@RequestBody SearchCriteriaDTO criteria) {
         List<CircleDTO> resultats = circleService.searchCircles(criteria);
         return ResponseEntity.ok(resultats);
+    }
+
+    @GetMapping("/{id}/max-membres")
+    public int getMaxMembres(@PathVariable Long id) {
+        Circle circle = circleRepository.findById(id)
+                .orElseThrow(() -> new CircleNotFoundException("Cercle introuvable"));
+
+        return circle.getNbMaxMembres();
     }
 }

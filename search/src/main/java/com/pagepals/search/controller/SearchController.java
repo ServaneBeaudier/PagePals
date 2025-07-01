@@ -23,6 +23,7 @@ public class SearchController {
 
     @PostMapping
     public ResponseEntity<List<CircleDTO>> searchCircles(@RequestBody SearchCriteriaDTO criteria) {
+        System.out.println("Requête reçue dans le controller avec : " + criteria);
         List<CircleDTO> results = searchService.searchCircles(criteria);
         return ResponseEntity.ok(results);
     }

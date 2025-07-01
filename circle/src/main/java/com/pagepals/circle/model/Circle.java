@@ -40,6 +40,9 @@ public class Circle {
 
     private String lienVisio;
 
+    @Column(name = "nb_max_membres")
+    private Integer nbMaxMembres;
+
     @Column(nullable = false)
     private long createurId;
 

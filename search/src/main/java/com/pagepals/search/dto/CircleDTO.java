@@ -1,6 +1,7 @@
 package com.pagepals.search.dto;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,9 +24,15 @@ public class CircleDTO {
 
     private String lieuRencontre;
 
-    private String lienVision;
+    private String lienVisio;
 
     private LocalDate dateRencontre;
 
-    private String genre;
+    private List<String> genres;
+
+    private Integer nbMaxMembres;
+
+    private int nombreInscrits;
+
+    private boolean estOuvert;
 }

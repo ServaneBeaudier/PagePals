@@ -22,6 +22,8 @@ public class CircleDTO {
     private LocalDate dateCreation;
     private LocalDateTime dateRencontre;
 
+    private Integer nbMaxMembres;
+
     private List<String> genres;
 
     private String lieuRencontre;

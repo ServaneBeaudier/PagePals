@@ -15,6 +15,8 @@ public class CreateCircleDTO {
     private ModeRencontre modeRencontre;
     private LocalDateTime dateRencontre;
 
+    private Integer nbMaxMembres;
+
     private List<Long> genreIds;
 
     private String lieuRencontre;

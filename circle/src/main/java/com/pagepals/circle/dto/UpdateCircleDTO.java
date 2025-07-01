@@ -17,6 +17,8 @@ public class UpdateCircleDTO {
     private ModeRencontre modeRencontre;
     private LocalDateTime dateRencontre;
 
+    private Integer nbMaxMembres;
+
     private List<Long> genreIds;
 
     private String lieuRencontre;

@@ -20,4 +20,6 @@ public class SearchCriteriaDTO {
     private String format;
 
     private LocalDate date;
+
+    private LocalDate dateExacte;
 }

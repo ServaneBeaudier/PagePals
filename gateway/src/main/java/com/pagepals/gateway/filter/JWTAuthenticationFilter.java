@@ -27,7 +27,9 @@ public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
     System.out.println("==> Header Authorization : " + authHeader);
 
     if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-        if (path.startsWith("/api/auth") || path.startsWith("/api/search")
+        if (path.startsWith("/api/auth") 
+                || path.startsWith("/api/search") 
+                || path.equals("/api/circles//{id}/max-membres")
                 || path.equals("/api/circles/search")) {
             System.out.println("==> Route publique détectée");
             return chain.filter(exchange);

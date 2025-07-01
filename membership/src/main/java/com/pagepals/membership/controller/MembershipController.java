@@ -47,4 +47,9 @@ public class MembershipController {
     public ResponseEntity<List<ParticipantDTO>> getParticipantsWithPseudo(@PathVariable Long circleId) {
         return ResponseEntity.ok(membershipService.getParticipantsWithPseudo(circleId));
     }
+
+    @GetMapping("/count/{circleId}")
+    public int getMemberCount(@PathVariable Long circleId){
+        return membershipService.countMembersForCircle(circleId);
+    }
 }
