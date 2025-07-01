@@ -74,10 +74,24 @@ public class CircleController {
     }
 
     @PostMapping("/{circleId}/messages")
-    public ResponseEntity<Void> envoyerMessage(@PathVariable Long circleId, @RequestBody MessageDTO dto) {
-        // on s'assure que le cercleId correspond bien à celui envoyé
+    public ResponseEntity<Void> envoyerMessage(@PathVariable Long circleId,
+            @RequestBody MessageDTO dto,
+            @RequestHeader("Authorization") String authHeader) {
+        // Extraire l’ID de l’auteur depuis le token
+        String token = authHeader.replace("Bearer ", "");
+        Long auteurId = jwtUtil.extractUserId(token);
+
+        // Compléter le DTO
         dto.setCircleId(circleId);
+        dto.setAuteurId(auteurId);
+
         messageService.sendMessage(dto);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<List<CircleDTO>> searchCircles(@RequestBody SearchCriteriaDTO criteria) {
+        List<CircleDTO> resultats = circleService.searchCircles(criteria);
+        return ResponseEntity.ok(resultats);
     }
 }
