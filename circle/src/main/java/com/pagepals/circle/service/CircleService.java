@@ -17,4 +17,5 @@ public interface CircleService {
     List<CircleDTO> getCirclesArchived();
     void archiverCerclesPassés();
     List<CircleDTO> searchCircles(SearchCriteriaDTO criteria);
+    List<CircleDTO> findCirclesByCreateur(Long createurId);
 }

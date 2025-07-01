@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.pagepals.circle.client.MembershipClient;
 import com.pagepals.circle.dto.*;
 import com.pagepals.circle.exception.*;
 import com.pagepals.circle.model.*;
@@ -26,6 +27,8 @@ public class CircleServiceImpl implements CircleService {
     private final BookRepository bookRepository;
 
     private final LiteraryGenreRepository literaryGenreRepository;
+
+    private final MembershipClient membershipClient;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -81,7 +84,8 @@ public class CircleServiceImpl implements CircleService {
             circle.setLivrePropose(savedBook);
         }
 
-        circleRepository.save(circle);
+        circle = circleRepository.save(circle);
+        membershipClient.ajouterCreateurCommeMembre(circle.getId(), createurId);
     }
 
     @Override
@@ -290,6 +294,31 @@ public class CircleServiceImpl implements CircleService {
                                 .toList())
                         .build())
                 .toList();
+    }
+
+    @Transactional
+    public void anonymiserOuSupprimerCercles(Long userId) {
+        List<Circle> cercles = circleRepository.findByCreateurId(userId);
+
+        for (Circle c : cercles) {
+            if (c.isArchived()) {
+                c.setCreateurId(null);
+            } else {
+                circleRepository.delete(c);
+            }
+        }
+    }
+
+    @Override
+    public List<CircleDTO> findCirclesByCreateur(Long createurId) {
+        List<Circle> circles = circleRepository.findByCreateurId(createurId);
+
+        return circles.stream().map(circle -> {
+            CircleDTO dto = new CircleDTO();
+            dto.setId(circle.getId());
+            dto.setCreateurId(circle.getCreateurId());
+            return dto;
+        }).toList();
     }
 
 }

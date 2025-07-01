@@ -29,7 +29,7 @@ public class CircleDTO {
     private String lieuRencontre;
     private String lienVisio;
 
-    private long createurId;
+    private Long createurId;
     private BookDTO livrepropose;
 
     private boolean isArchived;

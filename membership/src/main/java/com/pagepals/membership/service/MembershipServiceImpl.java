@@ -111,4 +111,11 @@ public class MembershipServiceImpl implements MembershipService {
     public int countMembersForCircle(Long circleId) {
         return membershipRepository.countByCircleId(circleId);
     }
+
+    @Override
+    @Transactional
+    public void supprimerToutesLesInscriptionsPourUtilisateur(Long userId) {
+        List<Membership> inscriptions = membershipRepository.findByUserId(userId);
+        membershipRepository.deleteAll(inscriptions);
+    }
 }

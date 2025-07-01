@@ -15,4 +15,6 @@ public interface MembershipService {
     boolean estInscrit(long userId, Long circleId);
 
     int countMembersForCircle(Long circleId);
+
+    void supprimerToutesLesInscriptionsPourUtilisateur(Long userId);
 }

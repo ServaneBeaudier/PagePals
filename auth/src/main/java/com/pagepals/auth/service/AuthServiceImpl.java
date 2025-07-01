@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.pagepals.auth.client.UserProfileClient;
 import com.pagepals.auth.dto.AuthResponseDTO;
@@ -98,4 +99,14 @@ public class AuthServiceImpl implements AuthService {
         userRepository.save(user);
     }
 
+    @Override
+    @Transactional
+    public void anonymiserUtilisateur(Long userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("Utilisateur introuvable"));
+
+        user.setEmail("deleted_" + userId + "@example.com");
+        user.setMotDePasse("deleted");
+        userRepository.save(user);
+    }
 }

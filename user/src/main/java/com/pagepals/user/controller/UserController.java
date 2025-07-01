@@ -127,4 +127,17 @@ public class UserController {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    @DeleteMapping("/cleanup")
+    public ResponseEntity<Void> cleanupCompte(@RequestParam("userId") Long userId) {
+        try {
+            userProfileService.cleanupUser(userId);
+            return ResponseEntity.noContent().build(); // 204 No Content
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build(); // 404 Not Found
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 500
+        }
+    }
 }

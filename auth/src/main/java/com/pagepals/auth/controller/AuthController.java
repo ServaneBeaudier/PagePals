@@ -41,4 +41,10 @@ public class AuthController {
         authService.updatePassword(dto);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/cleanup")
+    public ResponseEntity<Void> cleanupAuthUser(@RequestParam Long userId) {
+        authService.anonymiserUtilisateur(userId);
+        return ResponseEntity.noContent().build();
+    }
 }

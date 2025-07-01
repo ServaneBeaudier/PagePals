@@ -44,7 +44,7 @@ public class Circle {
     private Integer nbMaxMembres;
 
     @Column(nullable = false)
-    private long createurId;
+    private Long createurId;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "livre_propose_id")
@@ -56,5 +56,4 @@ public class Circle {
     @JoinTable(name = "circle_genre", joinColumns = @JoinColumn(name = "circle_id"),
         inverseJoinColumns = @JoinColumn(name = "genre_id"))
     private Set<LiteraryGenre> genres = new HashSet<>();
-
 }

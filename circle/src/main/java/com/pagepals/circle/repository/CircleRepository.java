@@ -20,4 +20,6 @@ public interface CircleRepository extends JpaRepository<Circle, Long> {
 
     List<Circle> findByIsArchivedTrue();
 
+    List<Circle> findByCreateurId(Long createurId);
+
 }
