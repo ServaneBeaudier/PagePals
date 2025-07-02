@@ -2,16 +2,20 @@
   <div class="navbar-content">
     <!-- Bloc gauche : logo -->
     <div class="navbar-left">
-      <img src="assets/images/icone_pagepals.png" alt="Logo" width="50" height="50" />
-      <span class="navbar-title desktop-only">PagePals</span>
-      <span class="navbar-title mobile-only">{{ pageTitle }}</span>
+      <a routerLink="/" class="navbar-brand"
+        style="display: flex; align-items: center; gap: 8px; text-decoration: none; color: inherit;">
+        <img src="assets/images/icone_pagepals.png" alt="Logo" width="50" height="50" />
+        <span class="navbar-title desktop-only">PagePals</span>
+        <span class="navbar-title mobile-only">{{ pageTitle }}</span>
+      </a>
     </div>
+
 
     <!-- Bloc centre : navigation -->
     <div class="navbar-middle desktop-only">
-      <a href="#" class="nav-button">Calendrier</a>
-      <a href="#" class="nav-button">Recherche</a>
-      <a href="#" class="nav-button">Mon profil</a>
+      <a routerLink="/" class="nav-button">Calendrier</a> <!-- à revoir quand calendrier sera fait-->
+      <a routerLink="/circles" class="nav-button">Recherche</a>
+      <a routerLink="/profile" class="nav-button">Mon profil</a>
     </div>
 
     <!-- Bloc droite : paramètres -->
@@ -20,9 +24,9 @@
         <img src="assets/images/icons8/parametre.png" alt="Paramètres" width="40" height="40" />
       </a>
       <ul class="dropdown-menu dropdown-menu-end">
-        <li><a class="dropdown-item" href="#">Mon compte</a></li>
-        <li><a class="dropdown-item" href="#">Archives</a></li>
-        <li><a class="dropdown-item logout-item" href="#">Déconnexion</a></li>
+        <li><a class="dropdown-item" routerLink="/profile">Mon compte</a></li>
+        <li><a class="dropdown-item" routerLink="/archives">Archives</a></li>
+        <!-- <li><a class="dropdown-item logout-item" href="#" (click)="logout()">Déconnexion</a></li> -->
       </ul>
     </div>
   </div>

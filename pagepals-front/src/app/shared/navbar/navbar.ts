@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-navbar',
   standalone:true,
-  imports: [],
+  imports: [RouterModule],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css'
 })
