@@ -25,6 +25,22 @@ services:
     networks:
       - pagepals-net
 
+  discovery:
+      build:
+        context: ./discovery
+      ports:
+        - "8761:8761"
+      networks:
+        - pagepals-net
+
+  gateway:
+      build:
+        context: ./gateway
+      ports:
+        - "8080:8080"
+      networks:
+        - pagepals-net
+
   auth-service:
     build:
       context: ./auth
@@ -67,6 +83,15 @@ services:
     container_name: search-service
     ports:
       - "8085:8085"
+    networks:
+      - pagepals-net
+
+  front:
+    build:
+      context: ./pagepals-front
+    container_name: pagepals-front
+    ports:
+      - "4200:80"
     networks:
       - pagepals-net
 

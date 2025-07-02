@@ -1,0 +1,149 @@
+/* === GLOBAL NAVBAR STYLE === */
+.navbar-centered {
+  background-color: #FAF3EB;
+  padding: 10px 0;
+  font-family: "Quicksand", sans-serif;
+  position: relative;
+}
+
+.navbar-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+  gap: 80px;
+}
+
+/* === LEFT / MIDDLE / RIGHT BLOCKS === */
+.navbar-left,
+.navbar-middle,
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-left {
+  gap: 10px;
+}
+
+.navbar-title {
+  font-weight: bold;
+  color: #5C4A42;
+  font-size: 2em;
+}
+
+.navbar-middle .nav-button {
+  background-color: #D6A4A4;
+  border-radius: 42px;
+  padding: 6px 18px;
+  color: #5C4A42;
+  text-decoration: none;
+  font-weight: 500;
+  margin: 0 10px;
+  transition: background-color 0.3s ease;
+}
+
+.navbar-middle .nav-button:hover {
+  background-color: #e4b9b9;
+}
+
+/* === DROPDOWN === */
+.dropdown-menu {
+  background-color: #FAF3EB;
+  border: none;
+  border-radius: 16px;
+  padding: 10px 0;
+  min-width: 200px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease;
+}
+
+.dropdown-item {
+  color: #5C4A42;
+  padding: 12px 20px;
+  font-weight: 500;
+  text-align: center;
+  border-radius: 8px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.dropdown-item:not(.logout-item):hover {
+  background-color: rgba(214, 164, 164, 0.3);
+}
+
+.logout-item {
+  color: red;
+}
+
+.logout-item:hover {
+  background-color: rgba(182, 58, 58, 0.1);
+  color: #B63A3A;
+}
+
+/* === MOBILE NAVBAR === */
+.navbar-bottom {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background-color: #FAF3EB;
+  width: 100%;
+  height: 60px;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 1000;
+}
+
+.navbar-bottom a {
+    background-color: #D6A4A4;
+    border-radius: 50px;
+    padding: 10px;
+}
+
+.navbar-bottom a img {
+  width: 28px;
+  height: 28px;
+}
+
+/* === RESPONSIVE RULES === */
+@media screen and (max-width: 768px) {
+  .navbar-content {
+    justify-content: space-between;
+    padding: 0 20px;
+    gap: 0;
+  }
+
+  .navbar-middle {
+    display: none;
+  }
+
+  .navbar-bottom {
+    display: flex;
+  }
+}
+/* CACHER EN VERSION MOBILE */
+.desktop-only {
+  display: flex;
+}
+
+.mobile-only {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
+
+  .mobile-only {
+    display: flex !important;
+  }
+
+  .navbar-title {
+    display: none;
+  }
+}
