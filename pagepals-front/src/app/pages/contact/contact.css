@@ -1,0 +1,73 @@
+.contact-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  gap: 60px;
+  font-family: "Quicksand", sans-serif;
+  color: #5C4A42;
+  flex-wrap: wrap;
+}
+
+.logo-side img {
+  max-width: 500px;
+  height: auto;
+  border-radius: 16px;
+}
+
+.form-side {
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+.form-side h2 {
+  font-size: 1.8em;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.form-side p {
+  font-size: 1em;
+  margin-bottom: 20px;
+}
+
+.form-side input,
+.form-side textarea {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 18px;
+  background-color: #D8D1C8;
+  font-family: inherit;
+  font-size: 1em;
+  margin-bottom: 15px;
+  color: #5C4A42;
+}
+
+.form-side input::placeholder,
+.form-side textarea::placeholder {
+  color: #5C4A42;
+}
+
+.form-side button {
+  background-color: #A8C3BC;
+  color: #5C4A42;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 20px;
+  font-weight: 600;
+  font-family: inherit;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+.form-side button:hover {
+  background-color: #96b3ad;
+}
+
+@media(max-width: 1200px){
+    .logo-side img {
+        display: none;
+    }
+}

@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-navbar',
@@ -9,4 +11,22 @@ import { Component } from '@angular/core';
 })
 export class Navbar {
 
+  pageTitle: string = 'PagePals';
+
+  private routeTitles: { [key: string]: string } = {
+    '/': 'Accueil',
+    '/contact': 'Contactez-nous',
+    '/confidentialite': 'Confidentialité',
+    '/profile': 'Mon profil',
+    '/circles': 'Cercles littéraires',
+    // ajoute ici toutes tes routes importantes et titres associés
+  };
+
+  constructor(private router: Router) {
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      this.pageTitle = this.routeTitles[event.urlAfterRedirects] || 'PagePals';
+    });
+  }
 }
