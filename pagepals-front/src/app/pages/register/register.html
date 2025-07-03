@@ -1,1 +1,44 @@
-<p>register works!</p>
+<div class="container">
+
+  <p class="citation">
+    « La lecture est un partage entre l’auteur et le lecteur, entre l’intime et l’univers »<br />
+    <em>Daniel Pennac</em>
+  </p>
+
+  <div class="main-content">
+
+    <div class="left-panel">
+      <div class="logo-box">
+        <img src="assets/images/Logo_PagePals.png" alt="Logo PagePals" />
+      </div>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="right-panel">
+
+      <h2>Créer votre compte</h2>
+
+      <input formControlName="pseudo" placeholder="Pseudo" class="input-field" />
+      <input formControlName="email" type="email" placeholder="Mail" class="input-field" />
+      <input formControlName="password" type="password" placeholder="Mot de passe" class="input-field" />
+      <input formControlName="confirmPassword" type="password" placeholder="Confirmation mdp" class="input-field" />
+
+      <label class="checkbox-label">
+        <input type="checkbox" formControlName="acceptPolicy" />
+        J’accepte l’utilisation de mes données conformément à la
+        <a href="#" (click)="openPolicy(); $event.preventDefault()">politique de confidentialité</a>
+      </label>
+
+      <!-- Modal -->
+      <div class="modal" *ngIf="isPolicyModalOpen" role="dialog" aria-modal="true">
+        <div class="modal-scrollable">
+          <app-confidentialite></app-confidentialite>
+        </div>
+        <button class="btn-quit" (click)="closePolicy()">Fermer</button>
+      </div>
+
+
+      <button type="submit" [disabled]="registerForm.invalid" class="btn-validate">Valider</button>
+    </form>
+
+  </div>
+</div>

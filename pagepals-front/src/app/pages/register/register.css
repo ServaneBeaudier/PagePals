@@ -1,0 +1,225 @@
+:root {
+  --bs-backdrop-bg: rgba(0, 0, 0, 0.5);
+  /* noir semi-transparent */
+}
+
+/* Container global */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
+  font-family: "Lora", serif;
+}
+
+/* Citation en haut, centrée */
+.citation {
+  white-space: normal;
+  word-wrap: break-word;
+  max-width: 90vw;
+  font-style: italic;
+  text-align: center;
+  color: #5C4A42;
+  margin-bottom: 1.5rem;
+  font-size: 1.3rem;
+  /* un peu plus grand */
+  line-height: 1.4;
+}
+
+/* Contenu principal : flex gauche-droite */
+.main-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: flex-start;
+  /* aligner le haut des colonnes */
+}
+
+/* Panel gauche pour le logo */
+.left-panel {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.logo-box img {
+  max-width: 500px;
+  max-height: 500px;
+  object-fit: contain;
+}
+
+/* Panel droit pour le formulaire */
+.right-panel {
+  flex: 1.2;
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  margin-left: 100px;
+}
+
+/* Titre du formulaire */
+.right-panel h2 {
+  color: #5C4A42;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+  font-size: 1.8rem;
+}
+
+.left-panel,
+.right-panel {
+  flex: 1 1 300px;
+  /* largeur minimale 300px, flex-grow 1, flex-shrink 1 */
+  min-width: 250px;
+  /* largeur minimum pour éviter trop petit */
+}
+
+
+/* Champs inputs arrondis gris clair */
+.input-field {
+  background-color: #ccc8c3;
+  border: none;
+  border-radius: 20px;
+  padding: 14px 20px;
+  margin-bottom: 1.2rem;
+  font-size: 1rem;
+  color: #5C4A42;
+  width: 100%;
+  box-sizing: border-box;
+  transition: box-shadow 0.3s ease;
+}
+
+.input-field:focus {
+  outline: none;
+  box-shadow: 0 0 5px #9dbeb8;
+}
+
+/* Case à cocher + texte */
+.checkbox-label {
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #5C4A42;
+  margin-bottom: 1.8rem;
+  white-space: normal;
+  max-width: 90vw;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.checkbox-label a {
+  color: #5C4A42;
+  text-decoration: underline;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* Bouton valider vert pastel arrondi */
+.btn-validate {
+  background-color: #9dbeb8;
+  border: none;
+  border-radius: 30px;
+  padding: 14px 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #5C4A42;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+.btn-validate:disabled {
+  background-color: #c7d5d2;
+  cursor: not-allowed;
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff8f8;
+  padding: 1rem 1.5rem 1.5rem 1.5rem;
+  border-radius: 15px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  z-index: 11;
+  display: flex;
+  flex-direction: column;
+  color: #5C4A42;
+  font-family: 'Lora', serif;
+}
+
+.modal-backdrop {
+  background-color: transparent !important;
+}
+
+.modal h2 {
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.modal-scrollable {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  /* pour éviter que le scroll masque le texte */
+  margin-bottom: 1rem;
+}
+
+/* bouton fermer */
+.btn-quit {
+  align-self: center;
+  background-color: #cb8c8c;
+  border: none;
+  border-radius: 20px;
+  padding: 0.6rem 1.5rem;
+  font-size: 1rem;
+  color: #5C4A42;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+  width: 100px;
+}
+
+.btn-quit:hover {
+  background-color: #b07070;
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .left-panel,
+  .right-panel {
+    flex-basis: auto;
+    min-width: auto;
+    width: 100%;
+    /* prennent toute la largeur */
+  }
+}
+
+@media(max-width: 992px) {
+  .left-panel {
+    display: none;
+  }
+
+  .right-panel {
+    margin: 0 auto;
+    /* centre horizontalement */
+    width: 90%;
+    /* limite largeur pour respire */
+  }
+
+  ::after,
+  ::before {
+    box-sizing: border-box;
+  }
+}
