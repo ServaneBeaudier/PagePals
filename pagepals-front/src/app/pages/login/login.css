@@ -1,0 +1,106 @@
+.login-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  font-family: 'Lora', serif;
+  color: #5c4a42;
+}
+
+.login-quote {
+  font-style: italic;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 1.3rem;
+}
+
+.login-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.login-logo img {
+  max-width: 500px;
+  height: auto;
+}
+
+.login-form {
+  flex: 1;
+  min-width: 280px;
+  max-width: 350px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.input-field {
+  background-color: #ccc8c3;
+  border: none;
+  border-radius: 20px;
+  padding: 14px 20px;
+  font-size: 1rem;
+  color: #5c4a42;
+  width: 100%;
+  box-sizing: border-box;
+  transition: box-shadow 0.3s ease;
+}
+
+.input-field:focus {
+  outline: none;
+  box-shadow: 0 0 5px #9dbeb8;
+}
+
+.forgot-password-link {
+  font-size: 0.85rem;
+  text-align: center;
+  color: #5c4a42;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.btn-validate {
+  background-color: #9dbeb8;
+  border: none;
+  border-radius: 30px;
+  padding: 14px 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #4a443c;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-validate:disabled {
+  background-color: #c7d5d2;
+  cursor: not-allowed;
+}
+
+.register-prompt {
+  font-size: 0.9rem;
+  text-align: center;
+}
+.register-prompt a {
+  color: #5c4a42;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.error-message {
+  color: #c0392b;
+  background-color: #f9d6d5;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
+@media (max-width:992px) {
+    .login-logo img {
+        display: none;
+    }
+    .login-main {
+        justify-content: center;
+        flex-direction: column;
+    }
+}

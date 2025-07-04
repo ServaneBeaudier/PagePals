@@ -39,7 +39,7 @@ export interface UpdatePasswordDTO {
 export class AuthService {
   private baseUrl = '/api/auth';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   register(data: RegisterDTO): Observable<AuthResponseDTO> {
     return this.http.post<AuthResponseDTO>(`${this.baseUrl}/register`, data);
@@ -65,5 +65,10 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('auth-token');
     localStorage.removeItem('auth-user');
+  }
+
+  getUserIdFromStorage(): number | null {
+    const stored = localStorage.getItem('userId');
+    return stored ? +stored : null;
   }
 }

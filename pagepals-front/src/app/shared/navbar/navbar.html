@@ -2,7 +2,7 @@
   <div class="navbar-content">
     <!-- Bloc gauche : logo -->
     <div class="navbar-left">
-      <a routerLink="/" class="navbar-brand"
+      <a routerLink="/profile" class="navbar-brand"
         style="display: flex; align-items: center; gap: 8px; text-decoration: none; color: inherit;">
         <img src="assets/images/icone_pagepals.png" alt="Logo" width="50" height="50" />
         <span class="navbar-title desktop-only">PagePals</span>
@@ -26,15 +26,15 @@
       <ul class="dropdown-menu dropdown-menu-end">
         <li><a class="dropdown-item" routerLink="/profile">Mon compte</a></li>
         <li><a class="dropdown-item" routerLink="/archives">Archives</a></li>
-        <!-- <li><a class="dropdown-item logout-item" href="#" (click)="logout()">Déconnexion</a></li> -->
+        <li><a class="dropdown-item logout-item" href="#" (click)="logout()">Déconnexion</a></li>
       </ul>
     </div>
   </div>
 
   <!-- Barre mobile en bas -->
   <div class="navbar-bottom mobile-only">
-    <a href="#"><img src="assets/images/icons8/calendrier.png" alt="Calendrier"></a>
-    <a href="#"><img src="assets/images/icons8/loupe.png" alt="Recherche"></a>
-    <a href="#"><img src="assets/images/icons8/user.png" alt="Profil"></a>
+    <a routerLink="/"><img src="assets/images/icons8/calendrier.png" alt="Calendrier"></a>
+    <a routerLink="/circles"><img src="assets/images/icons8/loupe.png" alt="Recherche"></a>
+    <a routerLink="/profile"><img src="assets/images/icons8/user.png" alt="Profil"></a>
   </div>
 </nav>

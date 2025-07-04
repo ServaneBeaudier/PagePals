@@ -114,7 +114,7 @@ public class UserController {
         UserProfile user = userProfileRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
 
-        return new UserInfoDTO(user.getId(), user.getPseudo(), user.getPhotoProfil());
+        return new UserInfoDTO(user.getId(), user.getPseudo(), user.getPhotoProfil(), user.getDateInscription());
     }
 
     @GetMapping("/message")

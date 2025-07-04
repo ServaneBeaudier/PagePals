@@ -56,7 +56,7 @@ export class Register {
       }).subscribe({
         next: (response) => {
           console.log('Inscription réussie', response);
-          this.router.navigate(['/login']);
+          this.router.navigate(['/profile']);
         },
         error: (err) => {
           console.error('Erreur lors de l\'inscription', err);

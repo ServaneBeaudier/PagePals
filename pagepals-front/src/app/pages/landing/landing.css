@@ -1,0 +1,101 @@
+.landing-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    font-family: 'Lora', serif;
+    color: #5c4a42;
+    padding: 0 1rem;
+}
+
+.landing-quote {
+    font-style: italic;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1.3rem;
+}
+
+.landing-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+}
+
+.landing-logo img {
+    max-width: 350px;
+    height: auto;
+    margin-right: 60px;
+}
+
+.landing-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    flex: 1;
+    min-width: 200px;
+    max-width: 300px;
+    margin-right: 60px;
+}
+
+.btn-primary {
+    background-color: #9dbeb8;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 0;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #4a443c;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.btn-primary:hover {
+    background-color: #8caeaa;
+}
+
+.landing-register {
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.landing-register a {
+    color: #5c4a42;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.landing-features {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.feature-card {
+    background-color: #D6A4A4;
+    padding: 1rem;
+    border-radius: 10px;
+    flex: 1 1 250px;
+    box-sizing: border-box;
+    text-align: center;
+    color: #4a3b3b;
+}
+
+@media (max-width:992px) {
+    .landing-main {
+        flex-wrap: nowrap;
+    }
+}
+
+@media(max-width:768px) {
+    .landing-logo img {
+        display: none;
+    }
+
+    .landing-main {
+       justify-content: center; 
+    }
+    
+}

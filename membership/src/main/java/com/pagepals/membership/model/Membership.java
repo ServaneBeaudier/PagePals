@@ -36,5 +36,4 @@ public class Membership {
 
     @Column(name = "date_inscription", nullable = false)
     private LocalDateTime dateInscription;
-
 }

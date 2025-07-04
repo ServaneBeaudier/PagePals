@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { AuthService } from '../../core/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -22,11 +23,16 @@ export class Navbar {
     // ajoute ici toutes tes routes importantes et titres associés
   };
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private authService: AuthService) {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
       this.pageTitle = this.routeTitles[event.urlAfterRedirects] || 'PagePals';
     });
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/']);
   }
 }

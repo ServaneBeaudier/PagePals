@@ -1,5 +1,7 @@
 package com.pagepals.membership.client;
 
+import java.util.List;
+
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,4 +16,7 @@ public interface CircleClient {
 
     @GetMapping("/{id}/max-membres")
     int getMaxMembres(@PathVariable("id") Long circleId);
+
+    @GetMapping("/active")
+    List<CircleDTO> getCirclesActive();
 }

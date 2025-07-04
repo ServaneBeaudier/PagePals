@@ -64,7 +64,7 @@ public class AuthServiceImpl implements AuthService {
         // Génération du token JWT
         String token = jwtGenerator.generateToken(user.getId(), user.getRole().name(), user.getEmail());
 
-        return new AuthResponseDTO(token, user.getEmail(), user.getRole().name());
+        return new AuthResponseDTO(token, user.getEmail(), user.getRole().name(), user.getId());
     }
 
     @Override
@@ -78,7 +78,7 @@ public class AuthServiceImpl implements AuthService {
 
         String token = jwtGenerator.generateToken(user.getId(), user.getRole().name(), user.getEmail());
 
-        return new AuthResponseDTO(token, user.getEmail(), user.getRole().name());
+        return new AuthResponseDTO(token, user.getEmail(), user.getRole().name(), user.getId());
     }
 
     @Override

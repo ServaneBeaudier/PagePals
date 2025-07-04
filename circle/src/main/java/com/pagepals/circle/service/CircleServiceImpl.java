@@ -203,6 +203,14 @@ public class CircleServiceImpl implements CircleService {
             dto.setLienVisio(circle.getLienVisio());
             dto.setCreateurId(circle.getCreateurId());
 
+            int membersCount = 0;
+            try {
+                membersCount = membershipClient.countMembersForCircle(circle.getId());
+            } catch (Exception e) {
+                System.err.println("Erreur récupération membres cercle id=" + circle.getId() + ": " + e.getMessage());
+            }
+            dto.setMembersCount(membersCount);
+
             return dto;
         }).toList();
     }

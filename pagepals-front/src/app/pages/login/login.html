@@ -1,1 +1,33 @@
-<p>login works!</p>
+<div class="login-container">
+
+    <p class="login-quote">
+        « La lecture est un partage entre l’auteur et le lecteur, entre l’intime et l’univers »<br />
+        <em>Daniel Pennac</em>
+    </p>
+
+    <div class="login-main">
+
+        <div class="login-logo">
+            <img src="assets/images/Logo_PagePals.png" alt="Logo PagePals" />
+        </div>
+
+        <form class="login-form" (ngSubmit)="onSubmit()" [formGroup]="loginForm">
+
+            <input formControlName="email" placeholder="Mail" type="email" class="input-field" />
+            <input formControlName="password" placeholder="Mot de passe" type="password" class="input-field" />
+
+            <a routerLink="/forgot-password" class="forgot-password-link">Mot de passe oublié ?</a>
+
+            <button type="submit" [disabled]="loginForm.invalid" class="btn-validate">Valider</button>
+            <div *ngIf="errorMessage" class="error-message">
+                {{ errorMessage }}
+            </div>
+
+            <p class="register-prompt">
+                Pas encore de compte ? <a routerLink="/register">Inscrivez-vous !</a>
+            </p>
+        </form>
+
+    </div>
+
+</div>

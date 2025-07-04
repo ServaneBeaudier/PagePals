@@ -13,7 +13,7 @@ import { Footer } from "./shared/footer/footer";
 export class App {
   constructor(public router: Router) {}
 
-  hideNavbarRoutes = ['/login', '/register'];
+  hideNavbarRoutes = ['/', '/login', '/register'];
 
   shouldShowNavbar(): boolean {
     return !this.hideNavbarRoutes.includes(this.router.url);

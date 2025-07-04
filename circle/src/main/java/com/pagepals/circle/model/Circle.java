@@ -43,6 +43,9 @@ public class Circle {
     @Column(name = "nb_max_membres")
     private Integer nbMaxMembres;
 
+    @Column(name = "nb_inscrits")
+    private Integer memberCounts;
+
     @Column(nullable = false)
     private Long createurId;
 

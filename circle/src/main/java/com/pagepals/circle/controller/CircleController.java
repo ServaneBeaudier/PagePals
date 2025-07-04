@@ -108,7 +108,7 @@ public class CircleController {
         return circle.getNbMaxMembres();
     }
 
-    @GetMapping("/cleanup/{userId}")
+    @GetMapping("/created-by/{userId}")
     public List<CircleDTO> getCirclesByCreateur(@PathVariable Long userId) {
         return circleService.findCirclesByCreateur(userId);
     }

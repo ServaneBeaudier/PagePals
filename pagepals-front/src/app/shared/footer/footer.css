@@ -5,13 +5,12 @@
   right:0;
   width: auto;
   box-sizing: border-box;
-  padding-left: 30px; /* comme dans ton css d’origine */
+  padding-left: 30px;
   padding-right: 30px;
-  z-index: 1000;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #D8D1C8; /* ta couleur de fond */
+  background-color: #D8D1C8;
   color: #5C4A42;
   font-family: "Quicksand", sans-serif;
   font-size: 0.9em;

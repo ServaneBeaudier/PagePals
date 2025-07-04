@@ -1,0 +1,282 @@
+/* Container global */
+.profile-container {
+  display: flex;
+  gap: 2rem;
+  font-family: 'Lora', serif;
+  color: #5C4A42;
+  padding: 1.5rem;
+  min-height: 80vh;
+}
+
+/* Sidebar profil */
+.profile-sidebar {
+  background-color: #D8D1C8;
+  border-radius: 15px;
+  padding: 1.5rem;
+  width: 350px;
+  height: 500px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Avatar rond */
+.profile-avatar img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Pseudo */
+.profile-pseudo {
+  font-weight: 700;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+/* Membre depuis */
+.profile-member-since {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #5C4A42;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Bio */
+.profile-bio {
+  background: #FAF3EB;
+  border-radius: 15px;
+  padding: 0.8rem 1rem;
+  font-style: italic;
+  font-size: 0.9rem;
+  color: #5C4A42;
+  width: 100%;
+  position: relative;
+}
+
+.bullepensee {
+  position: absolute;
+  top: 8px;
+  right: 8px; 
+  width: 24px; 
+  height: 24px;
+}
+
+/* Icône édition bio (exemple) */
+.icon-edit-bio {
+  position: absolute;
+  top: 0.5rem;
+  right: 1rem;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #5C4A42;
+}
+
+/* Contenu principal */
+.profile-main {
+  flex: 1;
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+/* Sans cercle rejoint */
+.no-joined-circles {
+  flex-direction: column;
+  text-align: center;
+  width: 100%;
+}
+
+.no-joined-circles .info-text {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  font-style: italic;
+}
+
+/* Boutons version "sans cercle" */
+.btn-find-circle,
+.btn-propose-circle {
+  border: none;
+  border-radius: 20px;
+  padding: 0.8rem 2rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin: 0.8rem auto;
+  min-width: 220px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-find-circle {
+  background-color: #9dbeb8;
+  color: #5C4A42;
+}
+
+.btn-find-circle:hover {
+  background-color: #86a79d;
+}
+
+.btn-propose-circle {
+  background-color: #cb8c8c;
+  color: #5C4A42;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-propose-circle:hover {
+  background-color: #b07070;
+}
+
+/* Section cercles créés et rejoints */
+.with-circles {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+/* Colonne cercles créés ou rejoints */
+.circles-created,
+.circles-joined {
+  background: #fff8f8;
+  border-radius: 20px;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  flex: 1;
+  min-width: 280px;
+  max-width: 480px;
+}
+
+/* Titres des colonnes */
+.circles-created h3,
+.circles-joined h3 {
+  font-weight: 700;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #cb8c8c;
+  padding-bottom: 0.3rem;
+  color: #7f5b5b;
+}
+
+/* Carte cercle */
+.circle-card {
+  background-color: #9dbeb8;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  color: #4a443c;
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
+  position: relative;
+}
+
+.circle-card.created {
+  background-color: #a6bfb9;
+}
+
+.circle-card h4 {
+  margin: 0 0 0.5rem 0;
+  font-weight: 700;
+}
+
+.circle-card p {
+  margin: 0.1rem 0;
+  font-size: 0.9rem;
+}
+
+.circle-mode {
+  font-style: italic;
+  color: #566b66;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 0.85rem;
+}
+
+/* Boutons modifier et quitter */
+.btn-modify,
+.btn-quit {
+  background-color: #cb8c8c;
+  border: none;
+  border-radius: 15px;
+  padding: 0.3rem 1rem;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  margin-top: 0.7rem;
+  transition: background-color 0.25s ease;
+  box-shadow: 1px 1px 2px rgba(0,0,0,0.15);
+}
+
+.btn-modify:hover,
+.btn-quit:hover {
+  background-color: #b07070;
+}
+
+/* Boutons trouver et proposer cercle en bas */
+.circles-created > button,
+.circles-joined > button {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border-radius: 30px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: inset 0 0 3px rgba(0,0,0,0.1);
+}
+
+.circles-created > button {
+  background-color: #cb8c8c;
+  color: #fff;
+}
+
+.circles-created > button:hover {
+  background-color: #b07070;
+}
+
+.circles-joined > button {
+  background-color: #9dbeb8;
+  color: #4a443c;
+}
+
+.circles-joined > button:hover {
+  background-color: #86a79d;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .profile-container {
+    flex-direction: column;
+    padding: 1rem;
+  }
+  .profile-sidebar {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    padding: 1rem;
+    gap: 1rem;
+  }
+  .profile-bio {
+    flex: 1;
+    position: static;
+  }
+  .profile-main {
+    width: 100%;
+  }
+  .with-circles {
+    flex-direction: column;
+  }
+  .circles-created,
+  .circles-joined {
+    max-width: 100%;
+  }
+}

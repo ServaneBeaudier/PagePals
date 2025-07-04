@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -118,4 +119,19 @@ public class MembershipServiceImpl implements MembershipService {
         List<Membership> inscriptions = membershipRepository.findByUserId(userId);
         membershipRepository.deleteAll(inscriptions);
     }
+
+    public List<CircleDTO> findActiveCirclesJoinedByUser(Long userId) {
+        List<Membership> memberships = membershipRepository.findByUserId(userId);
+
+        List<Long> joinedCircleIds = memberships.stream()
+                .map(Membership::getCircleId)
+                .collect(Collectors.toList());
+
+        List<CircleDTO> activeCircles = circleClient.getCirclesActive();
+
+        return activeCircles.stream()
+                .filter(circle -> joinedCircleIds.contains(circle.getId()))
+                .collect(Collectors.toList());
+    }
+
 }

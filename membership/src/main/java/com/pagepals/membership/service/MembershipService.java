@@ -2,6 +2,7 @@ package com.pagepals.membership.service;
 
 import java.util.List;
 
+import com.pagepals.membership.dto.CircleDTO;
 import com.pagepals.membership.dto.ParticipantDTO;
 
 public interface MembershipService {
@@ -17,4 +18,6 @@ public interface MembershipService {
     int countMembersForCircle(Long circleId);
 
     void supprimerToutesLesInscriptionsPourUtilisateur(Long userId);
+
+    public List<CircleDTO> findActiveCirclesJoinedByUser(Long userId);
 }

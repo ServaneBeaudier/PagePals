@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.pagepals.membership.dto.CircleDTO;
 import com.pagepals.membership.dto.MembershipRequestDTO;
 import com.pagepals.membership.dto.ParticipantDTO;
 import com.pagepals.membership.service.MembershipService;
@@ -60,5 +61,10 @@ public class MembershipController {
         return ResponseEntity.noContent().build();
     }
 
-   
+    @GetMapping("/by-user/{userId}")
+    public ResponseEntity<List<CircleDTO>> getCirclesByUser(@PathVariable Long userId) {
+        List<CircleDTO> circles = membershipService.findActiveCirclesJoinedByUser(userId);
+        return ResponseEntity.ok(circles);
+    }
+
 }
