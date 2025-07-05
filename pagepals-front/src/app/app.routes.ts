@@ -17,8 +17,8 @@ export const routes: Routes = [
   { path: 'register', component: Register },
   { path: 'profile', component: Profile, canActivate: [AuthGuard]},
   { path: 'circles', component: Circles },
-  { path: 'circles/:id', component: CircleDetail },
   { path: 'circles/create', component: CreateCircle, canActivate: [AuthGuard] },
+  { path: 'circles/:id', component: CircleDetail },
   { path: 'confidentialite', component: Confidentialite },
   { path: 'contact', component: Contact },
   { path: '**', component: NotFound }

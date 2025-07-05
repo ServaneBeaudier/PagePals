@@ -1,5 +1,7 @@
 package com.pagepals.circle.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,14 +18,14 @@ public class BookController {
 
     private final BookSearchService bookSearchService;
 
-    public BookController(BookSearchService bookSearchService){
+    public BookController(BookSearchService bookSearchService) {
         this.bookSearchService = bookSearchService;
     }
 
     @PostMapping("/search")
-    public ResponseEntity<BookDTO> searchBook(@RequestBody SearchBookDTO dto) {
+    public ResponseEntity<List<BookDTO>> searchBook(@RequestBody SearchBookDTO dto) {
         System.out.println(">>> Appel reçu dans BookController <<<");
-        BookDTO result = bookSearchService.searchBook(dto.getCritereRecherche());
-        return ResponseEntity.ok(result);
+        List<BookDTO> results = bookSearchService.searchBooks(dto.getCritereRecherche());
+        return ResponseEntity.ok(results);
     }
 }

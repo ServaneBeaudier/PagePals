@@ -1,0 +1,50 @@
+.position-relative {
+  position: relative;
+}
+
+.list-group {
+  z-index: 1050; /* au-dessus de tout */
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.container {
+    color: #5C4A42; 
+}
+
+.dropdown-menu .form-check {
+  margin-left: 0.8rem;       /* espace à gauche pour la checkbox */
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;             /* espace entre checkbox et label */
+}
+
+.dropdown-menu .form-check-label {
+  margin-bottom: 0;
+  cursor: pointer;
+}
+
+.dropdown-toggle {
+    background-color: white;
+    border-color: #e7e7e7;
+}
+
+.btn-validate {
+  background-color: #D6A4A4;
+  border: none;
+  border-radius: 30px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #5C4A42;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 25%;
+  height: 40px;
+}
+
+.btn-validate:disabled {
+  cursor: not-allowed;
+}
+

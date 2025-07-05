@@ -12,6 +12,6 @@ public interface MembershipClient {
     @PostMapping("/auto-inscription")
     void ajouterCreateurCommeMembre(@RequestParam("circleId") long circleId, @RequestParam("userId") long userId);
 
-    @GetMapping("/api/memberships/count/{circleId}")
+    @GetMapping("/count/{circleId}")
     int countMembersForCircle(@PathVariable("circleId") Long circleId);
 }

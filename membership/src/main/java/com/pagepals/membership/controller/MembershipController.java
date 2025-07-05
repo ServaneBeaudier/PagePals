@@ -67,4 +67,10 @@ public class MembershipController {
         return ResponseEntity.ok(circles);
     }
 
+    @GetMapping("/created-by/{userId}")
+    public ResponseEntity<List<CircleDTO>> getCirclesByCreator(@PathVariable Long userId) {
+        List<CircleDTO> circles = membershipService.findActiveCirclesCreatedByUser(userId);
+        return ResponseEntity.ok(circles);
+    }
+
 }

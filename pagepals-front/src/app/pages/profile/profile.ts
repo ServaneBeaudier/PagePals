@@ -17,10 +17,14 @@ export class Profile implements OnInit {
   loading = true;
   errorMessage: string | null = null;
   userId = 0;
+  successMessage: string | null = null;
 
   constructor(private userService: UserService, private router: Router) { }
 
   ngOnInit(): void {
+    const navigation = this.router.getCurrentNavigation();
+    this.successMessage = navigation?.extras?.state?.['message'] ?? null;
+
     const storedUserId = localStorage.getItem('userId');
     if (!storedUserId) {
       this.router.navigate(['/login']);
@@ -59,15 +63,15 @@ export class Profile implements OnInit {
 
 
   onProposeCircle(): void {
-    this.router.navigate(['/circle/create']);
+    this.router.navigate(['/circles/create']);
   }
 
   onFindCircle(): void {
-    this.router.navigate(['/circle/search']);
+    this.router.navigate(['/circles/search']);
   }
 
   onModifyCircle(circleId: number): void {
-    this.router.navigate([`/circle/edit/${circleId}`]);
+    this.router.navigate([`/circles/edit/${circleId}`]);
   }
 
   onQuitCircle(circleId: number): void {

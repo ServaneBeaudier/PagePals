@@ -19,5 +19,7 @@ public interface MembershipService {
 
     void supprimerToutesLesInscriptionsPourUtilisateur(Long userId);
 
-    public List<CircleDTO> findActiveCirclesJoinedByUser(Long userId);
+    List<CircleDTO> findActiveCirclesJoinedByUser(Long userId);
+
+    List<CircleDTO> findActiveCirclesCreatedByUser(Long userId);
 }

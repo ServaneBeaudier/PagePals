@@ -134,4 +134,13 @@ public class MembershipServiceImpl implements MembershipService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<CircleDTO> findActiveCirclesCreatedByUser(Long userId) {
+        List<CircleDTO> activeCircles = circleClient.getCirclesActive();
+
+    return activeCircles.stream()
+            .filter(circle -> userId.equals(circle.getCreateurId()))
+            .collect(Collectors.toList());
+    }
+
 }

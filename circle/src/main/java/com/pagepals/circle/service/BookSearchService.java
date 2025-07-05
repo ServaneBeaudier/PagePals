@@ -36,62 +36,66 @@ public class BookSearchService {
         }
     }
 
-    public BookDTO searchBook(String critereRecherche) {
+    public List<BookDTO> searchBooks(String critereRecherche) {
         String url = "https://www.googleapis.com/books/v1/volumes?q=" + critereRecherche
-                + "&langRestrict=fr&maxResults=1&key=" + apiKey;
+                + "&langRestrict=fr&maxResults=10&key=" + apiKey;
 
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+
+        List<BookDTO> results = new ArrayList<>();
 
         if (response.getStatusCode().is2xxSuccessful()) {
             try {
                 JSONObject root = new JSONObject(response.getBody());
-                JSONArray items = root.getJSONArray("items");
+                JSONArray items = root.optJSONArray("items");
 
-                if (items.isEmpty()) {
+                if (items == null || items.length() == 0) {
                     throw new BookNotFoundException("Aucun livre trouvé pour : " + critereRecherche);
                 }
 
-                JSONObject volumeInfo = items.getJSONObject(0).getJSONObject("volumeInfo");
+                for (int i = 0; i < items.length(); i++) {
+                    JSONObject volumeInfo = items.getJSONObject(i).getJSONObject("volumeInfo");
 
-                BookDTO dto = new BookDTO();
-                dto.setTitre(volumeInfo.optString("title", "Titre inconnu"));
+                    BookDTO dto = new BookDTO();
+                    dto.setTitre(volumeInfo.optString("title", "Titre inconnu"));
 
-                // Auteurs
-                JSONArray auteursArray = volumeInfo.optJSONArray("authors");
-                if (auteursArray != null) {
-                    List<String> auteurs = new ArrayList<>();
-                    for (int i = 0; i < auteursArray.length(); i++) {
-                        auteurs.add(auteursArray.getString(i));
+                    // Auteurs
+                    JSONArray auteursArray = volumeInfo.optJSONArray("authors");
+                    if (auteursArray != null) {
+                        List<String> auteurs = new ArrayList<>();
+                        for (int j = 0; j < auteursArray.length(); j++) {
+                            auteurs.add(auteursArray.getString(j));
+                        }
+                        dto.setAuteurs(auteurs);
                     }
-                    dto.setAuteurs(auteurs);
-                }
 
-                // ISBN
-                JSONArray industryIdentifiers = volumeInfo.optJSONArray("industryIdentifiers");
-                if (industryIdentifiers != null && industryIdentifiers.length() > 0) {
-                    dto.setIsbn(industryIdentifiers.getJSONObject(0).optString("identifier"));
-                }
+                    // ISBN
+                    JSONArray industryIdentifiers = volumeInfo.optJSONArray("industryIdentifiers");
+                    if (industryIdentifiers != null && industryIdentifiers.length() > 0) {
+                        dto.setIsbn(industryIdentifiers.getJSONObject(0).optString("identifier"));
+                    }
 
-                // Genre
-                JSONArray categories = volumeInfo.optJSONArray("categories");
-                if (categories != null && categories.length() > 0) {
-                    dto.setGenre(categories.getString(0));
-                }
+                    // Genre
+                    JSONArray categories = volumeInfo.optJSONArray("categories");
+                    if (categories != null && categories.length() > 0) {
+                        dto.setGenre(categories.getString(0));
+                    }
 
-                // Couverture
-                JSONObject imageLinks = volumeInfo.optJSONObject("imageLinks");
-                if (imageLinks != null) {
-                    dto.setCouvertureUrl(imageLinks.optString("thumbnail"));
-                }
+                    // Couverture
+                    JSONObject imageLinks = volumeInfo.optJSONObject("imageLinks");
+                    if (imageLinks != null) {
+                        dto.setCouvertureUrl(imageLinks.optString("thumbnail"));
+                    }
 
-                return dto;
+                    results.add(dto);
+                }
+                return results;
 
             } catch (JSONException e) {
                 throw new ExternalApiException("Erreur lors de l'appel à l'API externe");
             }
         } else {
             throw new ExternalApiException("Erreur lors de l'appel à l'API externe");
-
         }
     }
 

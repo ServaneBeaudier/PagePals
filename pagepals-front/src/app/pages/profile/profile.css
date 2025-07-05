@@ -49,6 +49,11 @@
   gap: 0.5rem;
 }
 
+.profile-member-since img {
+  width: 20px;
+  height: 20px;
+}
+
 /* Bio */
 .profile-bio {
   background: #FAF3EB;
@@ -175,6 +180,9 @@
   color: #4a443c;
   box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .circle-card.created {
@@ -191,6 +199,13 @@
   font-size: 0.9rem;
 }
 
+/* Ligne membres et max */
+.circle-members {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+/* Mode rencontre en haut à droite */
 .circle-mode {
   font-style: italic;
   color: #566b66;
@@ -198,6 +213,7 @@
   top: 1rem;
   right: 1rem;
   font-size: 0.85rem;
+  text-transform: capitalize;
 }
 
 /* Boutons modifier et quitter */
@@ -213,11 +229,20 @@
   margin-top: 0.7rem;
   transition: background-color 0.25s ease;
   box-shadow: 1px 1px 2px rgba(0,0,0,0.15);
+  align-self: flex-start;
 }
 
 .btn-modify:hover,
 .btn-quit:hover {
   background-color: #b07070;
+}
+
+/* Date à droite */
+.circle-date {
+  font-weight: 700;
+  color: #423733;
+  align-self: flex-end;
+  margin-top: 0.5rem;
 }
 
 /* Boutons trouver et proposer cercle en bas */

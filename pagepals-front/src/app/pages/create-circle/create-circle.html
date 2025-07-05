@@ -1,1 +1,109 @@
-<p>create-circle works!</p>
+<form [formGroup]="createCircleForm" (ngSubmit)="submit()" class="container mt-4">
+
+    <div class="mb-3">
+        <label for="nom" class="form-label">Nom du cercle</label>
+        <input id="nom" type="text" class="form-control" formControlName="nom" placeholder="Nom du cercle" />
+        <div *ngIf="createCircleForm.get('nom')?.invalid && createCircleForm.get('nom')?.touched"
+            class="text-danger small">
+            Le nom est obligatoire (minimum 3 caractères).
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea id="description" rows="3" class="form-control" formControlName="description"
+            placeholder="Description du cercle"></textarea>
+        <div *ngIf="createCircleForm.get('description')?.invalid && createCircleForm.get('description')?.touched"
+            class="text-danger small">
+            La description est obligatoire.
+        </div>
+    </div>
+
+    <div class="row g-3 mb-3">
+        <div class="col-md-6">
+            <label for="dateRencontre" class="form-label">Date et heure de la rencontre</label>
+            <input id="dateRencontre" type="datetime-local" class="form-control" formControlName="dateRencontre" />
+            <div *ngIf="createCircleForm.get('dateRencontre')?.invalid && createCircleForm.get('dateRencontre')?.touched"
+                class="text-danger small">
+                La date de la rencontre est obligatoire.
+            </div>
+        </div>
+        <div class="col-md-6">
+            <label for="nbMaxMembres" class="form-label">Nombre max de membres</label>
+            <input id="nbMaxMembres" type="number" min="1" max="20" class="form-control"
+                formControlName="nbMaxMembres" />
+            <div *ngIf="createCircleForm.get('nbMaxMembres')?.invalid && createCircleForm.get('nbMaxMembres')?.touched"
+                class="text-danger small">
+                Veuillez saisir un nombre entre 1 et 20.
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-3 dropdown" [class.show]="dropdownOpen">
+        <button class="btn dropdown-toggle w-100" type="button" (click)="toggleDropdown()"
+            [attr.aria-expanded]="dropdownOpen">
+            Genres littéraires
+            <span *ngIf="selectedGenres.length > 0">({{selectedGenres.length}} sélectionné{{selectedGenres.length > 1 ?
+                's' : ''}})</span>
+        </button>
+        <div class="dropdown-menu w-100" [class.show]="dropdownOpen" style="max-height: 200px; overflow-y: auto;">
+            <div *ngFor="let genre of genres" class="form-check px-3">
+                <input class="form-check-input" type="checkbox" [id]="'genre-' + genre.id" [value]="genre.id"
+                    (change)="onGenreChange($event)" [checked]="isGenreSelected(genre.id)" />
+                <label class="form-check-label" [for]="'genre-' + genre.id">
+                    {{ genre.nom }}
+                </label>
+            </div>
+        </div>
+    </div>
+
+
+    <fieldset class="mb-3">
+        <legend class="col-form-label pt-0">Format de rencontre</legend>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" formControlName="modeRencontre" id="enLigne" value="ENLIGNE" />
+            <label class="form-check-label" for="enLigne">En ligne</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" formControlName="modeRencontre" id="presentiel"
+                value="PRESENTIEL" />
+            <label class="form-check-label" for="presentiel">En présentiel</label>
+        </div>
+    </fieldset>
+
+    <div class="mb-3" *ngIf="createCircleForm.get('modeRencontre')?.value === 'PRESENTIEL'">
+        <label for="lieuRencontre" class="form-label">Lieu de rencontre</label>
+        <input id="lieuRencontre" type="text" class="form-control" formControlName="lieuRencontre"
+            placeholder="Adresse du lieu" />
+        <div *ngIf="createCircleForm.get('lieuRencontre')?.invalid && createCircleForm.get('lieuRencontre')?.touched"
+            class="text-danger small">
+            Le lieu de rencontre est obligatoire en présentiel.
+        </div>
+    </div>
+
+    <div class="mb-3" *ngIf="createCircleForm.get('modeRencontre')?.value === 'ENLIGNE'">
+        <label for="lienVisio" class="form-label">Lien de visioconférence</label>
+        <input id="lienVisio" type="url" class="form-control" formControlName="lienVisio" placeholder="https://..." />
+        <!-- <div *ngIf="createCircleForm.get('lienVisio')?.invalid && createCircleForm.get('lienVisio')?.touched"
+            class="text-danger small">
+            Le lien de visioconférence est obligatoire en ligne.
+        </div> -->
+    </div>
+
+    <div class="mb-3 position-relative">
+        <label for="livrePropose" class="form-label">Livre proposé</label>
+        <input type="text" id="livrePropose" class="form-control"
+            [value]="selectedBook ? displayBook(selectedBook) : ''" (input)="onLivreInput($event)"
+            placeholder="Recherche un livre..." autocomplete="off" (focus)="filteredBooks = []" />
+        <ul class="list-group position-absolute w-100 zindex-tooltip" *ngIf="filteredBooks.length > 0"
+            style="max-height: 200px; overflow-y: auto;">
+            <li class="list-group-item list-group-item-action" *ngFor="let book of filteredBooks"
+                (click)="onBookSelected(book)" style="cursor: pointer;">
+                {{ displayBook(book) }}
+            </li>
+        </ul>
+    </div>
+
+    <div class="d-flex justify-content-center mt-4">
+        <button type="submit" class="btn-validate" [disabled]="createCircleForm.invalid">Valider</button>
+    </div>
