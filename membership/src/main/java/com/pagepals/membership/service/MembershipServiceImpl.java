@@ -20,6 +20,7 @@ import com.pagepals.membership.model.Membership;
 import com.pagepals.membership.model.ModeRencontre;
 import com.pagepals.membership.repository.MembershipRepository;
 
+import feign.FeignException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -36,15 +37,27 @@ public class MembershipServiceImpl implements MembershipService {
     @Override
     @Transactional
     public void inscrire(long userId, long circleId) {
-        CircleDTO circle = circleClient.getCircleById(circleId);
+        CircleDTO circle = null;
+        int attempts = 0;
+        while (circle == null && attempts < 3) {
+            try {
+                circle = circleClient.getCircleById(circleId);
+            } catch (FeignException.NotFound e) {
+                attempts++;
+                try {
+                    Thread.sleep(500); // 0.5 seconde d’attente
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+        if (circle == null) {
+            throw new IllegalStateException("Cercle non trouvé après plusieurs tentatives");
+        }
         LocalDateTime dateRencontre = circle.getDateRencontre();
 
         if (dateRencontre == null) {
             throw new IllegalStateException("La date de rencontre n'est pas définie pour ce cercle.");
-        }
-
-        if (circle.getCreateurId() == userId) {
-            throw new IllegalArgumentException("Le créateur ne peut pas se désinscrire de son cercle.");
         }
 
         Duration tempsRestant = Duration.between(LocalDateTime.now(), dateRencontre);
@@ -99,18 +112,26 @@ public class MembershipServiceImpl implements MembershipService {
                 .map(Membership::getUserId)
                 .toList();
 
+        CircleDTO circle = circleClient.getCircleById(circleId);
+        if (circle.getCreateurId() != null && !userIds.contains(circle.getCreateurId())) {
+            userIds.add(circle.getCreateurId());
+        }
+
         return userClient.getPseudosByIds(userIds);
     }
 
     @Override
     public boolean estInscrit(long userId, Long circleId) {
+        CircleDTO circle = circleClient.getCircleById(circleId);
+        if (circle.getCreateurId() == userId) {
+            return true;
+        }
         return membershipRepository.existsByUserIdAndCircleId(userId, circleId);
-
     }
 
     @Override
     public int countMembersForCircle(Long circleId) {
-        return membershipRepository.countByCircleId(circleId);
+        return membershipRepository.countByCircleId(circleId) + 1;
     }
 
     @Override
@@ -138,9 +159,9 @@ public class MembershipServiceImpl implements MembershipService {
     public List<CircleDTO> findActiveCirclesCreatedByUser(Long userId) {
         List<CircleDTO> activeCircles = circleClient.getCirclesActive();
 
-    return activeCircles.stream()
-            .filter(circle -> userId.equals(circle.getCreateurId()))
-            .collect(Collectors.toList());
+        return activeCircles.stream()
+                .filter(circle -> userId.equals(circle.getCreateurId()))
+                .collect(Collectors.toList());
     }
 
 }

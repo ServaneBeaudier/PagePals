@@ -22,24 +22,43 @@
   gap: 1rem;
 }
 
+/* Conteneur avatar + pseudo */
+.profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+
 /* Avatar rond */
-.profile-avatar img {
+.profile-avatar {
   width: 100px;
   height: 100px;
   border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 
-/* Pseudo */
+/* Info pseudo + date */
+.profile-info {
+  text-align: center;
+  width: 100%;
+}
+
 .profile-pseudo {
   font-weight: 700;
   font-size: 1.5rem;
-  text-transform: uppercase;
   letter-spacing: 1px;
   margin: 0;
 }
 
-/* Membre depuis */
 .profile-member-since {
   font-weight: 600;
   font-size: 0.9rem;
@@ -47,6 +66,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  margin: 0;
 }
 
 .profile-member-since img {
@@ -69,8 +89,8 @@
 .bullepensee {
   position: absolute;
   top: 8px;
-  right: 8px; 
-  width: 24px; 
+  right: 8px;
+  width: 24px;
   height: 24px;
 }
 
@@ -117,10 +137,11 @@
   margin: 0.8rem auto;
   min-width: 220px;
   transition: background-color 0.3s ease;
+  color: #5C4A42;
 }
 
 .btn-find-circle {
-  background-color: #9dbeb8;
+  background-color: #A8C3BC;
   color: #5C4A42;
 }
 
@@ -129,7 +150,7 @@
 }
 
 .btn-propose-circle {
-  background-color: #cb8c8c;
+  background-color: #D6A4A4;
   color: #5C4A42;
   display: flex;
   align-items: center;
@@ -152,10 +173,10 @@
 /* Colonne cercles créés ou rejoints */
 .circles-created,
 .circles-joined {
-  background: #fff8f8;
+  background: #FAF3EB;
   border-radius: 20px;
   padding: 1rem 1.5rem;
-  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
   flex: 1;
   min-width: 280px;
   max-width: 480px;
@@ -168,17 +189,17 @@
   margin-bottom: 1rem;
   border-bottom: 2px solid #cb8c8c;
   padding-bottom: 0.3rem;
-  color: #7f5b5b;
+  color: #5C4A42;
 }
 
 /* Carte cercle */
 .circle-card {
-  background-color: #9dbeb8;
+  background-color: #A8C3BC;
   border-radius: 12px;
   padding: 1rem;
   margin-bottom: 1rem;
-  color: #4a443c;
-  box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
+  color: #5C4A42;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -186,12 +207,13 @@
 }
 
 .circle-card.created {
-  background-color: #a6bfb9;
+  background-color: #A8C3BC;
 }
 
 .circle-card h4 {
   margin: 0 0 0.5rem 0;
   font-weight: 700;
+  font-size: 20px;
 }
 
 .circle-card p {
@@ -208,7 +230,7 @@
 /* Mode rencontre en haut à droite */
 .circle-mode {
   font-style: italic;
-  color: #566b66;
+  color: #5C4A42;
   position: absolute;
   top: 1rem;
   right: 1rem;
@@ -219,16 +241,16 @@
 /* Boutons modifier et quitter */
 .btn-modify,
 .btn-quit {
-  background-color: #cb8c8c;
+  background-color: #FAF3EB;
   border: none;
   border-radius: 15px;
   padding: 0.3rem 1rem;
   font-weight: 600;
-  color: #fff;
+  color: #5C4A42;
   cursor: pointer;
   margin-top: 0.7rem;
   transition: background-color 0.25s ease;
-  box-shadow: 1px 1px 2px rgba(0,0,0,0.15);
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.15);
   align-self: flex-start;
 }
 
@@ -240,14 +262,14 @@
 /* Date à droite */
 .circle-date {
   font-weight: 700;
-  color: #423733;
+  color: #5C4A42;
   align-self: flex-end;
   margin-top: 0.5rem;
 }
 
 /* Boutons trouver et proposer cercle en bas */
-.circles-created > button,
-.circles-joined > button {
+.circles-created>button,
+.circles-joined>button {
   margin-top: 1rem;
   width: 100%;
   padding: 0.8rem 1rem;
@@ -256,52 +278,99 @@
   font-weight: 700;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  box-shadow: inset 0 0 3px rgba(0,0,0,0.1);
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.1);
 }
 
-.circles-created > button {
-  background-color: #cb8c8c;
-  color: #fff;
+.circles-created>button {
+  background-color: #D6A4A4;
+  color: #5C4A42;
 }
 
-.circles-created > button:hover {
+.circles-created>button:hover {
   background-color: #b07070;
 }
 
-.circles-joined > button {
-  background-color: #9dbeb8;
-  color: #4a443c;
+.circles-joined>button {
+  background-color: #A8C3BC;
+  color: #5C4A42;
 }
 
-.circles-joined > button:hover {
+.circles-joined>button:hover {
   background-color: #86a79d;
 }
 
 /* Responsive */
-@media (max-width: 900px) {
+@media (max-width: 991.98px) {
   .profile-container {
     flex-direction: column;
-    padding: 1rem;
   }
+
   .profile-sidebar {
-    width: 100%;
-    flex-direction: row;
-    align-items: center;
-    padding: 1rem;
+    max-width: 100% !important;
+    max-width: none !important;
+    flex: none;
+    margin: 0 auto 1rem auto;
+    height: auto !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start;
     gap: 1rem;
+    padding: 1rem 1.5rem;
+    flex-wrap: nowrap;
   }
-  .profile-bio {
-    flex: 1;
-    position: static;
-  }
-  .profile-main {
+
+  .profile-header {
     width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: nowrap;
   }
-  .with-circles {
+
+  .profile-main {
+    display: block;
+  }
+
+  .profile-info {
+    display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    text-align: center;
   }
+
+  .profile-member-since {
+    font-size: 0.85rem;
+  }
+
+  .profile-bio {
+    flex-basis: auto;
+    margin-top: 1rem;
+    width: 100%;
+    text-align: center;
+  }
+
+  .profile-avatar {
+    margin: 0 !important;
+    flex-shrink: 0;
+  }
+
+  .profile-avatar img {
+    display: block;
+    margin: 0 auto;
+  }
+
+  /* Circles container en colonne (pas touché au reste) */
+  .circles-container {
+    flex-direction: column !important;
+  }
+
   .circles-created,
   .circles-joined {
-    max-width: 100%;
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box;
   }
+
 }

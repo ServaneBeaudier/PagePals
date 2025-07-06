@@ -3,6 +3,7 @@ package com.pagepals.circle.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,7 @@ public class CircleServiceImpl implements CircleService {
         circle.setNom(dto.getNom());
         circle.setDateRencontre(dto.getDateRencontre());
         circle.setDateCreation(LocalDate.now());
+        circle.setDescription(dto.getDescription());
         circle.setModeRencontre(dto.getModeRencontre());
         circle.setCreateurId(createurId);
 
@@ -85,7 +87,6 @@ public class CircleServiceImpl implements CircleService {
         }
 
         circle = circleRepository.save(circle);
-        membershipClient.ajouterCreateurCommeMembre(circle.getId(), createurId);
     }
 
     @Override
@@ -101,6 +102,7 @@ public class CircleServiceImpl implements CircleService {
         circleExisting.setNom(dto.getNom());
         circleExisting.setDateRencontre(dto.getDateRencontre());
         circleExisting.setModeRencontre(dto.getModeRencontre());
+        circleExisting.setDescription(dto.getDescription());
 
         if (ModeRencontre.PRESENTIEL.equals(dto.getModeRencontre())) {
             circleExisting.setLieuRencontre(dto.getLieuRencontre());
@@ -183,6 +185,12 @@ public class CircleServiceImpl implements CircleService {
         dto.setLieuRencontre(circle.getLieuRencontre());
         dto.setLienVisio(circle.getLienVisio());
         dto.setCreateurId(circle.getCreateurId());
+        dto.setNbMaxMembres(circle.getNbMaxMembres());
+
+        dto.setGenreIds(circle.getGenres()
+                .stream()
+                .map(LiteraryGenre::getId)
+                .collect(Collectors.toList()));
 
         return dto;
     }
@@ -202,14 +210,15 @@ public class CircleServiceImpl implements CircleService {
             dto.setLieuRencontre(circle.getLieuRencontre());
             dto.setLienVisio(circle.getLienVisio());
             dto.setCreateurId(circle.getCreateurId());
+            dto.setNbMaxMembres(circle.getNbMaxMembres());
 
-            int membersCount = 0;
+            int membresInscrits = 0;
             try {
-                membersCount = membershipClient.countMembersForCircle(circle.getId());
+                membresInscrits = membershipClient.countMembersForCircle(circle.getId());
             } catch (Exception e) {
                 System.err.println("Erreur récupération membres cercle id=" + circle.getId() + ": " + e.getMessage());
             }
-            dto.setMembersCount(membersCount);
+            dto.setMembersCount(membresInscrits + 1);
 
             return dto;
         }).toList();
@@ -230,6 +239,15 @@ public class CircleServiceImpl implements CircleService {
             dto.setLieuRencontre(circle.getLieuRencontre());
             dto.setLienVisio(circle.getLienVisio());
             dto.setCreateurId(circle.getCreateurId());
+            dto.setNbMaxMembres(circle.getNbMaxMembres());
+
+            int membresInscrits = 0;
+            try {
+                membresInscrits = membershipClient.countMembersForCircle(circle.getId());
+            } catch (Exception e) {
+                System.err.println("Erreur récupération membres cercle id=" + circle.getId() + ": " + e.getMessage());
+            }
+            dto.setMembersCount(membresInscrits + 1);
 
             return dto;
         }).toList();
@@ -259,7 +277,7 @@ public class CircleServiceImpl implements CircleService {
     @Override
     @Transactional(readOnly = true)
     public List<CircleDTO> searchCircles(SearchCriteriaDTO criteria) {
-        System.out.println("🔍 Recherche reçue : " + criteria);
+        System.out.println("Recherche reçue : " + criteria);
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Circle> query = cb.createQuery(Circle.class);
         Root<Circle> root = query.from(Circle.class);
@@ -325,8 +343,31 @@ public class CircleServiceImpl implements CircleService {
             CircleDTO dto = new CircleDTO();
             dto.setId(circle.getId());
             dto.setCreateurId(circle.getCreateurId());
+            dto.setNom(circle.getNom());
+            dto.setDescription(circle.getDescription());
+            dto.setDateRencontre(circle.getDateRencontre());
+            dto.setDateCreation(circle.getDateCreation());
+            dto.setModeRencontre(circle.getModeRencontre());
+            dto.setLieuRencontre(circle.getLieuRencontre());
+            dto.setLienVisio(circle.getLienVisio());
+            dto.setNbMaxMembres(circle.getNbMaxMembres());
+
+            int membresInscrits = 0;
+            try {
+                membresInscrits = membershipClient.countMembersForCircle(circle.getId());
+            } catch (Exception e) {
+                System.err.println("Erreur récupération membres cercle id=" + circle.getId() + ": " + e.getMessage());
+            }
+            dto.setMembersCount(membresInscrits + 1);
+
+            dto.setGenres(circle.getGenres() == null ? List.of()
+                    : circle.getGenres().stream()
+                            .map(LiteraryGenre::getNomGenre)
+                            .toList());
+
             return dto;
         }).toList();
+
     }
 
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BookDTO, CircleService, CreateCircleDTO, Genre } from '../../core/circle.service';
+import { BookDTO, CircleDTO, CircleService, Genre } from '../../core/circle.service';
 import { debounceTime, distinctUntilChanged, Observable, of, switchMap } from 'rxjs';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../core/auth.service';
@@ -7,10 +7,12 @@ import { TokenStorage } from '../../core/token-storage';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { MatSelectModule } from '@angular/material/select';
+import { AddressAutocomplete, NominatimResult } from '../../address-autocomplete/address-autocomplete';
+
 
 @Component({
   selector: 'app-create-circle',
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, FormsModule, MatSelectModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, FormsModule, MatSelectModule, AddressAutocomplete],
   templateUrl: './create-circle.html',
   styleUrl: './create-circle.css'
 })
@@ -127,7 +129,7 @@ export class CreateCircle implements OnInit {
 
     const formValue = this.createCircleForm.value;
 
-    const dto: CreateCircleDTO = {
+    const dto: CircleDTO = {
       nom: formValue.nom,
       description: formValue.description,
       modeRencontre: formValue.modeRencontre,
@@ -182,4 +184,12 @@ export class CreateCircle implements OnInit {
   isGenreSelected(id: number): boolean {
     return this.selectedGenres.includes(id);
   }
+
+  selectedAddress: NominatimResult | null = null;
+
+  onAddressSelected(address: NominatimResult) {
+    this.selectedAddress = address;
+    this.createCircleForm.patchValue({ lieuRencontre: address.display_name });
+  }
+
 }

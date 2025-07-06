@@ -13,5 +13,5 @@ public class CircleDTO {
     private String description;
     private LocalDateTime dateRencontre;
     private ModeRencontre modeRencontre;
-    private long createurId;
+    private Long createurId;
 }

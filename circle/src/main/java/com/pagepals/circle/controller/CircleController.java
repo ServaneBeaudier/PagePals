@@ -55,7 +55,7 @@ public class CircleController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Void> updateCircle(@RequestBody UpdateCircleDTO dto, @PathVariable long id,
             @RequestHeader("X-User-Id") Long userId) {
         dto.setId(id);

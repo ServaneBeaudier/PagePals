@@ -31,7 +31,6 @@ export class Profile implements OnInit {
       return;
     }
     this.userId = Number(storedUserId);
-    console.log('UserId récupéré :', this.userId);
 
     forkJoin({
       userProfile: this.userService.getUserProfile(this.userId),
@@ -39,16 +38,24 @@ export class Profile implements OnInit {
       joinedCircles: this.userService.getJoinedCircles(this.userId)
     }).subscribe({
       next: ({ userProfile, createdCircles, joinedCircles }) => {
-        console.log('Données userProfile :', userProfile);
         console.log('Cercles créés :', createdCircles);
         console.log('Cercles rejoints :', joinedCircles);
         this.userProfile = userProfile;
-        this.createdCircles = createdCircles;
+        this.createdCircles = createdCircles.map(c => ({
+          id: c.id,
+          nom: c.nom,
+          nbMaxMembres: c.nbMaxMembres,
+          membersCount: c.membersCount,
+          modeRencontre: c.modeRencontre,
+          dateRencontre: c.dateRencontre,
+          lieuRencontre: c.lieuRencontre,
+          lienVisio: c.lienVisio
+        }));
+
         this.joinedCircles = joinedCircles;
         this.loading = false;
       },
       error: (err) => {
-        console.error('Erreur lors du chargement du profil:', err);
         this.errorMessage = 'Erreur lors du chargement du profil';
         this.loading = false;
       }
@@ -60,6 +67,16 @@ export class Profile implements OnInit {
       ? `/api/user/photo/${this.userProfile?.photoProfil}`
       : 'assets/images/icons8/photo-profil.png';
   }
+
+  formatMode(mode: string): string {
+    if (!mode) return '';
+    switch (mode.toUpperCase()) {
+      case 'ENLIGNE': return 'En ligne';
+      case 'PRESENTIEL': return 'Présentiel';
+      default: return mode;
+    }
+  }
+
 
 
   onProposeCircle(): void {

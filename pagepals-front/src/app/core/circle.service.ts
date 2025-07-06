@@ -4,7 +4,8 @@ import { Observable } from 'rxjs';
 
 export type ModeRencontre = 'EN_LIGNE' | 'PRESENTIEL';
 
-export interface CreateCircleDTO {
+export interface CircleDTO {
+  id?: number;
   nom: string;
   description: string;
   modeRencontre: ModeRencontre;
@@ -42,7 +43,7 @@ export class CircleService {
 
   constructor(private http: HttpClient) { }
 
-  createCircle(dto: CreateCircleDTO, token: string): Observable<void> {
+  createCircle(dto: CircleDTO, token: string): Observable<void> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
     });
@@ -58,4 +59,20 @@ export class CircleService {
       critereRecherche: query
     });
   }
+
+  getCircleById(id: number): Observable<CircleDTO> {
+    return this.http.get<CircleDTO>(`${this.apiUrl}/${id}`);
+  }
+
+  updateCircle(dto: CircleDTO, token: string): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${dto.id}`, dto, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+  }
+
+  deleteCircle(id: number, token: string): Observable<void> {
+    const headers = { Authorization: `Bearer ${token}` };
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers });
+  }
+
 }

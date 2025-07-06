@@ -26,6 +26,7 @@ public class CircleDTO {
     private Integer membersCount;
 
     private List<String> genres;
+    private List<Long> genreIds;
 
     private String lieuRencontre;
     private String lienVisio;

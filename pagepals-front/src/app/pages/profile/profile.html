@@ -1,28 +1,33 @@
 <div class="profile-container">
 
   <aside class="profile-sidebar">
-    <div class="profile-avatar">
-      <img [src]="profilePhotoUrl" alt="Photo de profil" class="profile-photo" />
+    <div class="profile-header">
+      <div class="profile-avatar">
+        <img [src]="profilePhotoUrl" alt="Photo de profil" class="profile-photo" />
+      </div>
+      <div class="profile-info">
+        <h2 class="profile-pseudo">{{ userProfile?.pseudo || 'PSEUDO' }}</h2>
+        <p class="profile-member-since">
+          <img src="assets/images/icons8/livre.png" alt="livre" />
+          Membre depuis le {{ userProfile?.dateInscription | date:'dd/MM/yyyy' }}
+        </p>
+      </div>
     </div>
-    <h2 class="profile-pseudo">{{ userProfile?.pseudo || 'PSEUDO' }}</h2>
-    <p class="profile-member-since">
-      <img src="assets/images/icons8/livre.png" alt="livre" />
-      Membre depuis le {{ userProfile?.dateInscription | date:'dd/MM/yyyy' }}
-    </p>
     <div class="profile-bio">
       <em>{{ userProfile?.bio || 'Courte bio ou description' }}</em>
       <img class="bullepensee" src="assets/images/icons8/pensee.png" alt="bulle pensée" />
     </div>
   </aside>
 
+
   <main class="profile-main">
 
-    <!-- SI PAS DE CERCLES REJOINTS -->
-    <section *ngIf="joinedCircles.length === 0" class="no-joined-circles">
+    <!-- Page 1 : Aucun cercle créé ni rejoint -->
+    <section *ngIf="createdCircles.length === 0 && joinedCircles.length === 0" class="no-circles">
       <br /><br />
       <p class="info-text">
-        Tu n’as pas encore rejoint de cercle !<br /><br />
-        Explore les cercles selon tes goûts ou tes envies !
+        Tu n’as pas encore rejoint ni créé de cercle !<br /><br />
+        Explore les cercles selon tes goûts ou tes envies ou crée le tien !
       </p>
 
       <button (click)="onFindCircle()" class="btn-find-circle">Trouver un cercle</button><br />
@@ -32,44 +37,53 @@
       <button (click)="onProposeCircle()" class="btn-propose-circle">Proposer un cercle</button>
     </section>
 
-    <!-- SI CERCLES REJOINTS -->
-    <section *ngIf="joinedCircles.length > 0" class="with-circles">
+    <!-- Page 2 : Au moins un cercle créé ou rejoint -->
+    <section *ngIf="createdCircles.length > 0 || joinedCircles.length > 0" class="circles-container d-flex gap-4">
 
-      <section class="circles-created">
+      <div class="circles-created flex-fill">
         <h3>Vous avez créé {{ createdCircles.length }} cercle{{ createdCircles.length > 1 ? 's' : '' }}</h3>
 
         <div *ngIf="successMessage" class="alert alert-success" role="alert">
           {{ successMessage }}
         </div>
 
+        <div *ngIf="createdCircles.length === 0" class="no-created-circles">
+          <p>Vous n'avez pas encore créé de cercle.</p>
+        </div>
         <div *ngFor="let circle of createdCircles" class="circle-card created">
           <h4>{{ circle.nom }}</h4>
           <p class="circle-members">{{ circle.membersCount }} membres / {{ circle.nbMaxMembres }}</p>
-          <p class="circle-mode">{{ circle.modeRencontre }}</p>
-          <p class="circle-date">{{ circle.dateRencontre | date:'dd/MM/yyyy' }}</p>
+          <p class="circle-mode">{{ formatMode(circle.modeRencontre) }}</p>
+          <p class="circle-date">{{ circle.dateRencontre | date:'dd/MM/yyyy' }} - {{ circle.dateRencontre | date:'HH:mm'
+            }}</p>
           <button (click)="onModifyCircle(circle.id)" class="btn-modify">Modifier</button>
         </div>
 
-        <button (click)="onProposeCircle()" class="btn-propose-circle">
-          <i class="icon-plus-circle"></i> Proposer un cercle
-        </button>
-      </section>
+        <!-- Bouton toujours visible -->
+        <button (click)="onProposeCircle()" class="btn-propose-circle mt-3">Proposer un cercle</button>
+      </div>
 
-      <section class="circles-joined">
+      <div class="circles-joined flex-fill">
         <h3>Mes cercles rejoints</h3>
 
+        <div *ngIf="joinedCircles.length === 0" class="no-joined-circles">
+          <p>Vous n'avez pas encore rejoint de cercle.</p>
+        </div>
         <div *ngFor="let circle of joinedCircles" class="circle-card joined">
           <h4>{{ circle.nom }}</h4>
           <p class="circle-members">{{ circle.membersCount }} membres / {{ circle.nbMaxMembres }}</p>
-          <p class="circle-mode">{{ circle.modeRencontre }}</p>
-          <p class="circle-date">{{ circle.dateRencontre | date:'dd/MM/yyyy' }}</p>
+          <p class="circle-mode">{{ formatMode(circle.modeRencontre) }}</p>
+          <p class="circle-date">{{ circle.dateRencontre | date:'dd/MM/yyyy' }} - {{ circle.dateRencontre | date:'HH:mm'
+            }}</p>
           <button (click)="onQuitCircle(circle.id)" class="btn-quit">Quitter</button>
         </div>
 
-        <button (click)="onFindCircle()" class="btn-find-circle">Trouver un cercle</button>
-      </section>
+        <!-- Bouton toujours visible -->
+        <button (click)="onFindCircle()" class="btn-find-circle mt-3">Trouver un cercle</button>
+      </div>
 
     </section>
+
 
   </main>
 
