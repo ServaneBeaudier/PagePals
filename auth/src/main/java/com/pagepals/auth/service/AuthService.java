@@ -12,6 +12,6 @@ public interface AuthService {
     AuthResponseDTO login (LoginDTO dto);
     void updateMail(UpdateMailDTO dto);
     void updatePassword(UpdatePasswordDTO dto);
-    void anonymiserUtilisateur(Long userId);
     String getEmailByUserId(Long userId);
+    void deleteUserById(Long userId);
 }

@@ -159,18 +159,6 @@ public class CircleServiceImpl implements CircleService {
     }
 
     @Override
-    @Transactional
-    public void deleteCircle(long id, long createurId) {
-        Circle circleExisting = circleRepository.findById(id)
-                .orElseThrow(() -> new CircleNotFoundException("Cercle non trouvé"));
-        if (circleExisting.getCreateurId() != createurId) {
-            throw new AccessDeniedException("Vous n'êtes pas autorisé à supprimer ce cercle.");
-        }
-
-        circleRepository.delete(circleExisting);
-    }
-
-    @Override
     public CircleDTO getCircleById(long id) {
         Circle circle = circleRepository.findById(id)
                 .orElseThrow(() -> new CircleNotFoundException("Cercle non trouvé"));
@@ -322,19 +310,6 @@ public class CircleServiceImpl implements CircleService {
                 .toList();
     }
 
-    @Transactional
-    public void anonymiserOuSupprimerCercles(Long userId) {
-        List<Circle> cercles = circleRepository.findByCreateurId(userId);
-
-        for (Circle c : cercles) {
-            if (c.isArchived()) {
-                c.setCreateurId(null);
-            } else {
-                circleRepository.delete(c);
-            }
-        }
-    }
-
     @Override
     public List<CircleDTO> findCirclesByCreateur(Long createurId) {
         List<Circle> circles = circleRepository.findByCreateurId(createurId);
@@ -368,6 +343,21 @@ public class CircleServiceImpl implements CircleService {
             return dto;
         }).toList();
 
+    }
+
+    @Transactional
+    public void deleteActiveCirclesByCreateur(Long userId) {
+        List<Circle> activeCircles = circleRepository.findByCreateurIdAndIsArchivedFalse(userId);
+        circleRepository.deleteAll(activeCircles);
+    }
+
+    @Transactional
+    public void anonymizeUserInArchivedCircles(Long userId) {
+        List<Circle> archivedCircles = circleRepository.findByCreateurIdAndIsArchivedTrue(userId);
+        for (Circle circle : archivedCircles) {
+            circle.setCreateurId(null);
+            circleRepository.save(circle);
+        }
     }
 
 }

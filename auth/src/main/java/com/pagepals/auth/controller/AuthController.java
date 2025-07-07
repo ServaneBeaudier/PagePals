@@ -22,7 +22,7 @@ public class AuthController {
 
     private final AuthService authService;
 
-     @GetMapping("/email")
+    @GetMapping("/email")
     public ResponseEntity<Map<String, String>> getEmail(@RequestParam("id") Long userId) {
         String email = authService.getEmailByUserId(userId);
         if (email == null) {
@@ -56,9 +56,10 @@ public class AuthController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/cleanup")
-    public ResponseEntity<Void> cleanupAuthUser(@RequestParam Long userId) {
-        authService.anonymiserUtilisateur(userId);
+    @DeleteMapping("/cleanup/{userId}")
+    public ResponseEntity<Void> cleanupAuthUser(@PathVariable Long userId) {
+        authService.deleteUserById(userId);
         return ResponseEntity.noContent().build();
     }
+
 }

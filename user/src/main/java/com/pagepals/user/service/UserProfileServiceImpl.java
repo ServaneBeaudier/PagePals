@@ -68,12 +68,12 @@ public class UserProfileServiceImpl implements UserProfileService {
         UserProfile user = userProfileRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
 
-        // Appels aux microservices
-        membershipClient.supprimerInscriptions(userId);
-        circleClient.cleanupUserData(userId);
+        // Appels microservices circle
+        circleClient.deleteActiveCirclesByCreateur(userId);
+        circleClient.anonymizeUserInArchivedCircles(userId);
         authClient.cleanupAuthUser(userId);
 
-        // Anonymisation locale
+        // Anonymisation locale utilisateur
         user.setPseudo("Utilisateur supprimé");
         user.setPhotoProfil(null);
         user.setBio(null);

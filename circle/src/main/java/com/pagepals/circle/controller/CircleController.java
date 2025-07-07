@@ -63,16 +63,6 @@ public class CircleController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{circleId}")
-    public ResponseEntity<String> deleteCircle(@PathVariable Long circleId,
-            @RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.replace("Bearer ", "");
-        Long userId = jwtUtil.extractUserId(token);
-
-        circleService.deleteCircle(circleId, userId);
-        return ResponseEntity.noContent().build();
-    }
-
     @GetMapping("/{circleId}/messages")
     public ResponseEntity<List<MessageDTO>> getMessages(@PathVariable Long circleId) {
         return ResponseEntity.ok(messageService.getMessagesByCircleId(circleId));
@@ -111,5 +101,17 @@ public class CircleController {
     @GetMapping("/created-by/{userId}")
     public List<CircleDTO> getCirclesByCreateur(@PathVariable Long userId) {
         return circleService.findCirclesByCreateur(userId);
+    }
+
+    @DeleteMapping("/active-by-createur/{userId}")
+    public ResponseEntity<Void> deleteActiveCirclesByCreateur(@PathVariable Long userId) {
+        circleService.deleteActiveCirclesByCreateur(userId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/anonymize-user/{userId}")
+    public ResponseEntity<Void> anonymizeUserInArchivedCircles(@PathVariable Long userId) {
+        circleService.anonymizeUserInArchivedCircles(userId);
+        return ResponseEntity.noContent().build();
     }
 }

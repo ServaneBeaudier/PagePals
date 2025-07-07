@@ -19,6 +19,7 @@ import com.pagepals.auth.exception.UserNotFoundException;
 import com.pagepals.auth.jwt.JWTGenerator;
 import com.pagepals.auth.repository.UserRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 import com.pagepals.auth.model.Role;
@@ -107,13 +108,11 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    @Transactional
-    public void anonymiserUtilisateur(Long userId) {
-        UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("Utilisateur introuvable"));
-
-        user.setEmail("deleted_" + userId + "@example.com");
-        user.setMotDePasse("deleted");
-        userRepository.save(user);
+    public void deleteUserById(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new EntityNotFoundException("Utilisateur introuvable avec l'id : " + userId);
+        }
+        userRepository.deleteById(userId);
     }
+
 }
