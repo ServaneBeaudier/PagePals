@@ -1,5 +1,8 @@
 package com.pagepals.user.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -93,9 +96,17 @@ public class UserController {
         try {
             Resource file = fileStorageService.loadFile(fileName);
 
-            return ResponseEntity
-                    .ok()
-                    .contentType(MediaType.IMAGE_JPEG) // adapte si PNG ou autre
+            // Detecter le type mime via Files.probeContentType
+            String contentType = "application/octet-stream";
+            try {
+                Path path = file.getFile().toPath();
+                contentType = Files.probeContentType(path);
+            } catch (IOException ex) {
+                // fallback
+            }
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(contentType))
                     .body(file);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -114,7 +125,7 @@ public class UserController {
         UserProfile user = userProfileRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
 
-        return new UserInfoDTO(user.getId(), user.getPseudo(), user.getPhotoProfil(), user.getDateInscription());
+        return new UserInfoDTO(user.getId(), user.getPseudo(), user.getPhotoProfil(), user.getDateInscription(), user.getBio());
     }
 
     @GetMapping("/message")

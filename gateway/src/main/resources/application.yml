@@ -8,6 +8,8 @@ spring:
     name: gateway
   cloud:
     gateway:
+      httpclient:
+        uri-encoding: UTF-8
       routes:
         - id: auth
           uri: lb://auth

@@ -63,9 +63,11 @@ export class Profile implements OnInit {
   }
 
   get profilePhotoUrl(): string {
-    return this.userProfile?.photoProfil
-      ? `/api/user/photo/${this.userProfile?.photoProfil}`
-      : 'assets/images/icons8/photo-profil.png';
+    if (this.userProfile?.photoProfil) {
+      console.log(this.userProfile.photoProfil);
+      return `/api/user/photo/${encodeURIComponent(this.userProfile.photoProfil)}`;
+    }
+    return 'assets/images/icons8/photo-profil.png';
   }
 
   formatMode(mode: string): string {
@@ -76,8 +78,6 @@ export class Profile implements OnInit {
       default: return mode;
     }
   }
-
-
 
   onProposeCircle(): void {
     this.router.navigate(['/circles/create']);

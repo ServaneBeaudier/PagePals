@@ -70,7 +70,7 @@ public class CircleController {
         Long userId = jwtUtil.extractUserId(token);
 
         circleService.deleteCircle(circleId, userId);
-        return ResponseEntity.ok("Cercle supprimé !");
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{circleId}/messages")

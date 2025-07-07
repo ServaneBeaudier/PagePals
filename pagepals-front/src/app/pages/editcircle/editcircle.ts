@@ -263,11 +263,18 @@ export class Editcircle implements OnInit {
     });
   }
 
-  deleteCircle(): void {
-    if (!confirm('Voulez-vous vraiment supprimer ce cercle ? Cette action est irréversible.')) {
-      return;
-    }
+  showDeleteModal = false; // contrôle l'affichage du modal
 
+  openDeleteModal() {
+    this.showDeleteModal = true;
+  }
+
+  cancelDelete() {
+    this.showDeleteModal = false;
+  }
+
+  deleteCircle(): void {
+    // Cette méthode ne sera appelée que quand l'utilisateur confirme dans le modal
     const token = this.tokenStorage.getToken();
     if (!token) {
       alert('Vous devez être connecté pour supprimer un cercle.');
@@ -276,7 +283,6 @@ export class Editcircle implements OnInit {
 
     this.circleService.deleteCircle(this.circleId, token).subscribe({
       next: () => {
-        alert('Cercle supprimé avec succès.');
         this.router.navigate(['/profile']);
       },
       error: (err) => {
@@ -285,6 +291,7 @@ export class Editcircle implements OnInit {
       }
     });
   }
+
 
   selectedAddress: NominatimResult | null = null;
 

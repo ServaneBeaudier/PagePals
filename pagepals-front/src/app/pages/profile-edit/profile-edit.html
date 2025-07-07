@@ -1,0 +1,62 @@
+<div class="profile-edit-container">
+    <h2>Modifier mon profil</h2>
+
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" novalidate>
+
+        <div class="avatar-section">
+            <img [src]="getPhotoUrl(profileForm.value.photoProfil)" alt="Photo de profil" class="avatar" />
+            <input type="file" (change)="onFileSelected($event)" />
+        </div>
+
+        <div class="form-group">
+            <label for="pseudo">Pseudo</label>
+            <input id="pseudo" type="text" formControlName="pseudo" />
+            <div *ngIf="profileForm.get('pseudo')?.invalid && profileForm.get('pseudo')?.touched" class="error">
+                Le pseudo est obligatoire.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="bio">Bio</label>
+            <textarea id="bio" rows="3" formControlName="bio" placeholder="Courte bio ou description"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="mail">Adresse mail</label>
+            <input id="mail" type="email" formControlName="mail" />
+            <div *ngIf="profileForm.get('mail')?.invalid && profileForm.get('mail')?.touched" class="error">
+                Adresse mail invalide.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Ancien mot de passe</label>
+            <input id="password" type="password" formControlName="password" />
+        </div>
+
+        <div class="form-group">
+            <label for="password">Nouveau mot de passe</label>
+            <input id="password" type="password" formControlName="password" />
+        </div>
+
+        <div class="form-group">
+            <label for="confirmPassword">Confirmer le mot de passe</label>
+            <input id="confirmPassword" type="password" formControlName="confirmPassword" />
+        </div>
+
+        <button type="submit" [disabled]="profileForm.invalid" class="btn-save">Enregistrer modification</button>
+    </form>
+
+    <button (click)="onDeleteAccount()" class="btn-delete">Supprimer le compte</button>
+</div>
+
+<div class="modal-overlay" *ngIf="showDeleteConfirm">
+    <div class="modal-content">
+        <p>Etes-vous sûr de vouloir supprimer votre compte ?<br>Cette action est irréversible.</p>
+        <div class="modal-buttons">
+            <button class="btn-cancel" (click)="cancelDelete()">Annuler</button>
+            <button class="btn-confirm" (click)="confirmDelete()">Oui</button>
+        </div>
+
+    </div>
+</div>

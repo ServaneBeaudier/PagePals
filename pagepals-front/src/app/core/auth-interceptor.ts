@@ -5,12 +5,13 @@ import { TokenStorage } from './token-storage';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private tokenStorage: TokenStorage) {}
+  constructor(private tokenStorage: TokenStorage) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = this.tokenStorage.getToken();
 
-    if (token) {
+    // Exclure les URLs des images
+    if (token && !req.url.includes('/api/user/photo')) {
       const cloned = req.clone({
         headers: req.headers.set('Authorization', 'Bearer ' + token),
       });
@@ -19,4 +20,5 @@ export class AuthInterceptor implements HttpInterceptor {
       return next.handle(req);
     }
   }
+
 }

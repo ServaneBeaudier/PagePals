@@ -23,8 +23,8 @@ public class FileStorageService {
 
         try {
             // Création du nom de fichier unique
-            String originalFilename = Path.of(file.getOriginalFilename()).getFileName().toString(); // pour éviter les
-                                                                                                    // chemins chelous
+            String originalFilename = Path.of(file.getOriginalFilename()).getFileName().toString();
+                                                                                                    
             String fileName = UUID.randomUUID() + "_" + originalFilename;
 
             // Création du dossier si besoin

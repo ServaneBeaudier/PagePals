@@ -114,13 +114,13 @@
 }
 
 /* Sans cercle rejoint */
-.no-joined-circles {
+.no-circles {
   flex-direction: column;
   text-align: center;
   width: 100%;
 }
 
-.no-joined-circles .info-text {
+.no-circles .info-text {
   font-size: 1.1rem;
   margin-bottom: 2rem;
   font-style: italic;

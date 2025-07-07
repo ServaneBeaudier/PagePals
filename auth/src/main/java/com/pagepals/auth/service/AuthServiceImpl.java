@@ -82,6 +82,13 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public String getEmailByUserId(Long userId) {
+        return userRepository.findById(userId)
+                .map(user -> user.getEmail())
+                .orElse(null);
+    }
+
+    @Override
     public void updateMail(UpdateMailDTO dto) {
         UserEntity user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new UserNotFoundException("Utilisateur introuvable"));

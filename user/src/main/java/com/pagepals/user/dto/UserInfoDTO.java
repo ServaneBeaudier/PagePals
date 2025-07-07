@@ -14,4 +14,5 @@ public class UserInfoDTO {
     private String pseudo;
     private String photoProfil;
     private LocalDate dateInscription;
+    private String bio;
 }

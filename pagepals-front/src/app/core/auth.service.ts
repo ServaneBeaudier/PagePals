@@ -49,6 +49,11 @@ export class AuthService {
     return this.http.post<AuthResponseDTO>(`${this.baseUrl}/login`, credentials);
   }
 
+  getEmail(userId: number): Observable<{ email: string }> {
+    return this.http.get<{ email: string }>(`${this.baseUrl}/email?id=${userId}`);
+  }
+
+
   updateEmail(data: UpdateMailDTO): Observable<void> {
     return this.http.put<void>(`${this.baseUrl}/update-email`, data);
   }

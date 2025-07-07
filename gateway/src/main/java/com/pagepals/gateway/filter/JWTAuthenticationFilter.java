@@ -30,7 +30,8 @@ public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         if (path.startsWith("/api/auth") 
                 || path.startsWith("/api/search") 
                 || path.equals("/api/circles//{id}/max-membres")
-                || path.equals("/api/circles/search")) {
+                || path.equals("/api/circles/search")
+                || path.startsWith("/api/user/photo/")) {
             System.out.println("==> Route publique détectée");
             return chain.filter(exchange);
         }

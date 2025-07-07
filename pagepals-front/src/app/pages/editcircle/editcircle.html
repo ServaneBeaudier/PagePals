@@ -99,8 +99,24 @@
     </div>
 
     <div class="d-flex justify-content-between mt-4">
-        <button type="button" class="btn-delete" (click)="deleteCircle()">Supprimer</button>
+        <button type="button" class="btn-delete" (click)="openDeleteModal()">Supprimer</button>
         <button type="submit" class="btn-validate">Valider</button>
     </div>
 
 </form>
+
+<!-- Modal suppression -->
+<div class="modal-backdrop" *ngIf="showDeleteModal">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modalTitle"
+        aria-describedby="modalDesc">
+        <h2 id="modalTitle">Confirmer la suppression</h2>
+        <p id="modalDesc">
+            Êtes-vous sûr de vouloir supprimer le cercle ?<br />
+            Cette action est irréversible.
+        </p>
+        <div class="modal-buttons">
+            <button class="btn-cancel" (click)="cancelDelete()">Annuler</button>
+            <button class="btn-confirm" (click)="deleteCircle()">Oui</button>
+        </div>
+    </div>
+</div>
