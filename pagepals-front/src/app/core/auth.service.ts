@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { TokenStorage } from './token-storage';
 
 export interface RegisterDTO {
   email: string;
@@ -39,14 +40,29 @@ export interface UpdatePasswordDTO {
 export class AuthService {
   private baseUrl = '/api/auth';
 
-  constructor(private http: HttpClient) { }
+  private loggedIn: BehaviorSubject<boolean>;
+
+  isLoggedIn$: Observable<boolean>;
+
+  constructor(private http: HttpClient, private tokenStorage: TokenStorage) {
+    // Initialise ici, après injection
+    this.loggedIn = new BehaviorSubject<boolean>(!!this.tokenStorage.getToken());
+    this.isLoggedIn$ = this.loggedIn.asObservable();
+  }
 
   register(data: RegisterDTO): Observable<AuthResponseDTO> {
     return this.http.post<AuthResponseDTO>(`${this.baseUrl}/register`, data);
   }
 
   login(credentials: LoginDTO): Observable<AuthResponseDTO> {
-    return this.http.post<AuthResponseDTO>(`${this.baseUrl}/login`, credentials);
+    return this.http.post<AuthResponseDTO>(`${this.baseUrl}/login`, credentials).pipe(
+      tap(response => {
+        this.tokenStorage.saveToken(response.token);
+        localStorage.setItem('userId', response.id.toString());
+        localStorage.setItem('auth-user', JSON.stringify(response));
+        this.loggedIn.next(true);
+      })
+    );
   }
 
   getEmail(userId: number): Observable<{ email: string }> {
@@ -68,8 +84,9 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem('auth-token');
+    this.tokenStorage.signOut();
     localStorage.removeItem('auth-user');
+    this.loggedIn.next(false);
   }
 
   getUserIdFromStorage(): number | null {

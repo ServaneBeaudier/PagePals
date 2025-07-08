@@ -1,22 +1,15 @@
 .footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right:0;
-  width: auto;
-  box-sizing: border-box;
-  padding-left: 30px;
-  padding-right: 30px;
+  background-color: #D8D1C8;
+  color: #5C4A42;
+  padding: 15px 30px;
+  font-family: "Quicksand", sans-serif;
+  font-size: 0.9em;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #D8D1C8;
-  color: #5C4A42;
-  font-family: "Quicksand", sans-serif;
-  font-size: 0.9em;
   box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+  /* PAS de position: fixed */
 }
-
 
 .footer a {
   color: #5C4A42;

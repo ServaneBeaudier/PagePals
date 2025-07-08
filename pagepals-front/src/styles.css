@@ -25,12 +25,20 @@ app-root {
 
 main {
   flex: 1;
+  padding-bottom: 60px;
 }
 
 app-footer {
-  flex-shrink: 0;
   width: 100%;
+  height: auto; /* laisse la hauteur naturelle */
+  background-color: #FAF3EB;
+  z-index: auto; /* ou supprime cette ligne */
+  padding: 15px 30px; /* ajoute un peu de padding si besoin */
+  box-sizing: border-box;
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+@media screen and (max-width: 992px) {
+  main.container {
+    padding-bottom: 60px; /* hauteur de ta navbar mobile */
+  }
+}

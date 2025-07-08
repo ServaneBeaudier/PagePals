@@ -58,6 +58,7 @@
   min-width: 200px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
   transition: all 0.3s ease;
+  z-index: 1050;
 }
 
 .dropdown-item {
@@ -84,18 +85,16 @@
 
 /* === MOBILE NAVBAR === */
 .navbar-bottom {
-  display: none;
   position: fixed;
-  bottom: 0;
+  bottom: 0px; /* décale la navbar au-dessus du footer de 60px */
   left: 0;
-  background-color: #FAF3EB;
-  width: 100%;
+  right: 0;
   height: 60px;
-  border-top: 1px solid #ddd;
+  background-color: #FAF3EB;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  z-index: 1000;
+  z-index: 900; /* en dessous du footer */
 }
 
 .navbar-bottom a {
