@@ -187,6 +187,19 @@ public class CircleServiceImpl implements CircleService {
                 .map(LiteraryGenre::getId)
                 .collect(Collectors.toList()));
 
+        if (circle.getLivrePropose() != null) {
+            Book livre = circle.getLivrePropose();
+            BookDTO livreDTO = new BookDTO();
+            livreDTO.setTitre(livre.getTitre());
+            livreDTO.setAuteurs(livre.getAuteurs());
+            livreDTO.setIsbn(livre.getIsbn());
+            livreDTO.setGenre(livre.getGenre());
+            livreDTO.setCouvertureUrl(livre.getCouvertureUrl());
+            dto.setLivrePropose(livreDTO);
+        } else {
+            dto.setLivrePropose(null);
+        }
+
         return dto;
     }
 
@@ -215,6 +228,24 @@ public class CircleServiceImpl implements CircleService {
                 System.err.println("Erreur récupération membres cercle id=" + circle.getId() + ": " + e.getMessage());
             }
             dto.setMembersCount(membresInscrits + 1);
+
+            dto.setGenreIds(circle.getGenres()
+                    .stream()
+                    .map(LiteraryGenre::getId)
+                    .collect(Collectors.toList()));
+
+            if (circle.getLivrePropose() != null) {
+                Book livre = circle.getLivrePropose();
+                BookDTO livreDTO = new BookDTO();
+                livreDTO.setTitre(livre.getTitre());
+                livreDTO.setAuteurs(livre.getAuteurs());
+                livreDTO.setIsbn(livre.getIsbn());
+                livreDTO.setGenre(livre.getGenre());
+                livreDTO.setCouvertureUrl(livre.getCouvertureUrl());
+                dto.setLivrePropose(livreDTO);
+            } else {
+                dto.setLivrePropose(null);
+            }
 
             return dto;
         }).toList();
@@ -245,6 +276,24 @@ public class CircleServiceImpl implements CircleService {
                 System.err.println("Erreur récupération membres cercle id=" + circle.getId() + ": " + e.getMessage());
             }
             dto.setMembersCount(membresInscrits + 1);
+
+            dto.setGenreIds(circle.getGenres()
+                    .stream()
+                    .map(LiteraryGenre::getId)
+                    .collect(Collectors.toList()));
+
+            if (circle.getLivrePropose() != null) {
+                Book livre = circle.getLivrePropose();
+                BookDTO livreDTO = new BookDTO();
+                livreDTO.setTitre(livre.getTitre());
+                livreDTO.setAuteurs(livre.getAuteurs());
+                livreDTO.setIsbn(livre.getIsbn());
+                livreDTO.setGenre(livre.getGenre());
+                livreDTO.setCouvertureUrl(livre.getCouvertureUrl());
+                dto.setLivrePropose(livreDTO);
+            } else {
+                dto.setLivrePropose(null);
+            }
 
             return dto;
         }).toList();
@@ -344,6 +393,19 @@ public class CircleServiceImpl implements CircleService {
                 System.err.println("Erreur récupération membres cercle id=" + circle.getId() + ": " + e.getMessage());
             }
             dto.setMembersCount(membresInscrits + 1);
+
+            if (circle.getLivrePropose() != null) {
+                Book livre = circle.getLivrePropose();
+                BookDTO livreDTO = new BookDTO();
+                livreDTO.setTitre(livre.getTitre());
+                livreDTO.setAuteurs(livre.getAuteurs());
+                livreDTO.setIsbn(livre.getIsbn());
+                livreDTO.setGenre(livre.getGenre());
+                livreDTO.setCouvertureUrl(livre.getCouvertureUrl());
+                dto.setLivrePropose(livreDTO);
+            } else {
+                dto.setLivrePropose(null);
+            }
 
             dto.setGenres(circle.getGenres() == null ? List.of()
                     : circle.getGenres().stream()

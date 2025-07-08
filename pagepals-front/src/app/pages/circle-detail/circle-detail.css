@@ -52,6 +52,7 @@
   border-radius: 25px;
   width: 100%;
   text-align: center;
+  height: 300px;
 }
 
 .stats {
@@ -66,9 +67,65 @@
 }
 
 .book-info {
-  margin-bottom: 20px;
-  font-style: italic;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   color: #5C4A42;
+}
+
+.book-text {
+  flex: 1;
+}
+
+.book-title {
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: underline;
+  margin-bottom: 0.2rem;
+}
+
+.book-authors {
+  font-size: 0.9rem;
+  color: #5C4A42;
+}
+
+.book-cover img {
+  max-width: 100px;
+  max-height: 140px;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
+}
+
+/*Liste de participants*/
+.members-dropdown {
+  position: absolute;
+  top: 25px;
+  left: 0;
+  background: white;
+  border: 1px solid #ccc;
+  width: 200px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 5px 0;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  z-index: 1000;
+  list-style: none;
+}
+
+.members-dropdown li {
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  cursor: default;
+}
+
+.member-avatar, .photo-creator, .photo-message {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
 }
 
 /*Icones*/
@@ -98,9 +155,25 @@
   color: #5C4A42;
 }
 
+.btn-fil-mobile {
+  display: none;
+}
+
+@media (max-width : 992px) {
+  .btn-fil-mobile {
+    display: block;
+    background-color: #D6A4A4;
+    border-radius: 25px;
+    border: none;
+    color: #5C4A42;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+}
+
 
 /* Partie discussion*/
-.discussion {
+.discussion{
   flex: 2;
   background-color: #FAF3EB;
   border-radius: 10px;
@@ -109,6 +182,12 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+}
+
+@media (max-width:992px) {
+  .discussion {
+    display: none;
+  }
 }
 
 .messages-list {
@@ -138,7 +217,7 @@
   font-size: 1em;
 }
 
-.new-message button {
+.btn-new-message {
   width: 50px;
   background-color: #D6A4A4;
   border: none;
@@ -147,3 +226,26 @@
   cursor: pointer;
   padding: 0;
 }
+
+.header-message {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.left-part {
+  display: flex;
+  align-items: center;
+}
+
+.msg-pseudo {
+  margin: 0;
+}
+
+.date-heure-message {
+  margin: 0;
+  font-size: 0.85em;
+  color: #5C4A42;
+}
+
+

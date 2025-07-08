@@ -44,6 +44,16 @@ export interface Genre {
   nom: string;
 }
 
+export interface MessageDTO {
+  id?: number;
+  circleId: number;
+  auteurId: number;
+  contenu: string;
+  dateEnvoi?: string;
+  pseudoAuteur?: string;
+  photoAuteur?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -82,6 +92,15 @@ export class CircleService {
   deleteCircle(id: number, token: string): Observable<void> {
     const headers = { Authorization: `Bearer ${token}` };
     return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers });
+  }
+
+  getMessages(circleId: number): Observable<MessageDTO[]> {
+    return this.http.get<MessageDTO[]>(`${this.apiUrl}/${circleId}/messages`);
+  }
+
+  sendMessage(circleId: number, dto: MessageDTO, token: string): Observable<void> {
+    const headers = { Authorization: `Bearer ${token}` };
+    return this.http.post<void>(`${this.apiUrl}/${circleId}/messages`, dto, { headers });
   }
 
 }

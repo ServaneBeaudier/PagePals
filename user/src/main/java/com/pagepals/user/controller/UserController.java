@@ -116,7 +116,7 @@ public class UserController {
     @GetMapping("/pseudos")
     public List<ParticipantDTO> getPseudosByIds(@RequestParam("ids") List<Long> userIds) {
         return userProfileRepository.findAllById(userIds).stream()
-                .map(user -> new ParticipantDTO(user.getId(), user.getPseudo()))
+                .map(user -> new ParticipantDTO(user.getId(), user.getPseudo(), user.getPhotoProfil()))
                 .collect(Collectors.toList());
     }
 

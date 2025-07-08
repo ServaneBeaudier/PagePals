@@ -12,6 +12,7 @@ import { Landing } from './pages/landing/landing';
 import { AuthGuard } from './core/auth-guard';
 import { Editcircle } from './pages/editcircle/editcircle';
 import { ProfileEdit } from './pages/profile-edit/profile-edit';
+import { CircleDiscussion } from './pages/circle-discussion/circle-discussion';
 
 export const routes: Routes = [
   { path: '', component: Landing },
@@ -23,6 +24,7 @@ export const routes: Routes = [
   { path: 'circles/create', component: CreateCircle, canActivate: [AuthGuard] },
   { path: 'circles/edit/:id', component: Editcircle, canActivate: [AuthGuard] },
   { path: 'circles/:id', component: CircleDetail },
+  { path: 'circles/:id/discussion', component: CircleDiscussion },
   { path: 'confidentialite', component: Confidentialite },
   { path: 'contact', component: Contact },
   { path: '**', component: NotFound }

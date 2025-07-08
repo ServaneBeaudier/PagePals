@@ -110,7 +110,7 @@
 }
 
 /* === RESPONSIVE RULES === */
-@media screen and (max-width: 815px) {
+@media screen and (max-width: 992px) {
   .navbar-content {
     justify-content: space-between;
     padding: 0 20px;

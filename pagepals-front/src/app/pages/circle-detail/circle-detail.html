@@ -7,7 +7,10 @@
             </span>
         </small>
 
-        <div class="created-by">Créé par {{ createurPseudo }}</div>
+        <div class="created-by" *ngIf="circle?.createurId">
+            <img [src]="getPhotoUrl(createurPhotoFilename)" alt="Photo créateur" class="photo-creator" />
+            <span>Créé par {{ createurPseudo }}</span>
+        </div>
 
         <p class="description">{{ circle.description }}</p>
 
@@ -34,21 +37,46 @@
             </li>
 
             <li>
-                <img src="assets/images/icons8/date.png" class="icones"> {{ circle.dateRencontre | date:'dd/MM/yy à HH:mm' }}
+                <img src="assets/images/icons8/date.png" class="icones"> {{ circle.dateRencontre | date:'dd/MM/yy à
+                HH:mm' }}
             </li>
-            <!-- <li class="members" (click)="openMembersList()">
-        <i class="icon-members"></i> 5 / {{ circle?.nbMaxMembres ?? 20 }}
-      </li> -->
+
+            <li class="members" (click)="toggleParticipantsDropdown()" style="cursor:pointer;">
+                <img src="assets/images/icons8/membre.png" alt="Membres" class="icones" />
+                {{ participants.length }} / {{ circle?.nbMaxMembres ?? 20 }}
+                <ul *ngIf="showParticipantsDropdown" class="dropdown-members">
+                    <li *ngFor="let participant of participants" class="participant-item">
+                        <img [src]="getPhotoUrl(participant.photoProfil)" alt="Photo participant"
+                            class="member-avatar" />
+                        <span>{{ participant.pseudo }}</span>
+                    </li>
+                </ul>
+
+            </li>
+
         </ul>
 
         <div class="book-info">
             <ng-container *ngIf="circle?.livrePropose; else lectureLibre">
-                <div>{{ circle.livrePropose?.titre }} / {{ circle.livrePropose?.auteurs }}</div>
+                <div class="book-text">
+                    <div class="book-title">{{ circle.livrePropose?.titre }}</div>
+                    <div class="book-authors">
+                        {{ getAuthors(circle.livrePropose?.auteurs) }}
+                    </div>
+                </div>
+                <div class="book-cover" *ngIf="circle?.livrePropose?.couvertureUrl">
+                    <img [src]="circle.livrePropose?.couvertureUrl || 'assets/images/icons8/couverture-livre.png'"
+                        alt="Couverture du livre" />
+                </div>
             </ng-container>
             <ng-template #lectureLibre>
                 <small>Lecture au choix sur le thème !</small>
             </ng-template>
         </div>
+
+        <button class="btn-fil-mobile" (click)="goToDiscussion(circleId)">
+            Voir le fil de discussion
+        </button>
 
         <button *ngIf="circle.id !== undefined" (click)="onModifyCircle(circle.id!)"
             class="btn btn-modify">Modifier</button>
@@ -57,13 +85,29 @@
 
     <div class="discussion">
         <div class="messages-list">
-            <!-- Messages ici -->
-            <p>Aucun message pour l'instant</p>
+            <ng-container *ngIf="messages.length > 0; else noMessages">
+                <div *ngFor="let msg of messages" class="message-item">
+                    <div class="header-message">
+                        <div class="left-part">
+                            <img *ngIf="msg.photoAuteur" [src]="getPhotoUrl(msg.photoAuteur)" alt="Photo auteur"
+                                class="photo-message" />
+                            <strong class="msg-pseudo">{{ msg.pseudoAuteur }}</strong>
+                        </div>
+                        <p class="date-heure-message">{{ msg.dateEnvoi | date : 'dd/MM/yy - HH:mm' }}</p>
+                    </div>
+                    <p>{{ msg.contenu }}</p>
+                </div>
+            </ng-container>
+            <ng-template #noMessages>
+                <p>Aucun message pour l'instant</p>
+            </ng-template>
         </div>
 
         <div class="new-message">
-            <textarea placeholder="Nouveau message"></textarea>
-            <button><img src="assets/images/icons8/plus.png" alt="icone-plus" class="icone-plus"></button>
+            <textarea [(ngModel)]="newMessageContent" placeholder="Nouveau message"></textarea>
+            <button (click)="sendMessage()" class="btn-new-message">
+                <img src="assets/images/icons8/plus.png" alt="icone-plus" class="icone-plus" />
+            </button>
         </div>
     </div>
 </div>

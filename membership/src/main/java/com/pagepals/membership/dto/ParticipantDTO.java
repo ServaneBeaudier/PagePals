@@ -12,4 +12,6 @@ public class ParticipantDTO {
     private long id;
 
     private String pseudo;
+
+    private String photoProfil;
 }

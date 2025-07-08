@@ -1,0 +1,93 @@
+.discussion{
+  background-color: #FAF3EB;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 0 5px rgba(150, 120, 115, 0.3);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  font-family: "Lora", serif;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.messages-list {
+  flex-grow: 1;
+  overflow-y: auto;
+  background-color: #D8D1C8;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 0.9em;
+  color: #5C4A42;
+}
+
+.new-message {
+  display: flex;
+  gap: 10px;
+}
+
+.new-message textarea {
+  flex-grow: 1;
+  resize: vertical;
+  height: 50px;
+  border-radius: 8px;
+  border: 1px solid #c8b3b0;
+  padding: 5px;
+  font-size: 1em;
+}
+
+.btn-new-message {
+  width: 50px;
+  background-color: #D6A4A4;
+  border: none;
+  border-radius: 50%;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+}
+
+.header-message {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.left-part {
+  display: flex;
+  align-items: center;
+}
+
+.msg-pseudo {
+  margin: 0;
+}
+
+.date-heure-message {
+  margin: 0;
+  font-size: 0.85em;
+  color: #5C4A42;
+}
+
+.photo-message {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
+}
+
+.btn-retour-container {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.btn-retour {
+  padding: 8px 15px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  width: fit-content;
+  background-color: #A8C3BC;
+  color: #5C4A42;
+}

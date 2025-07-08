@@ -20,7 +20,11 @@ export class Navbar {
     '/confidentialite': 'Confidentialité',
     '/profile': 'Mon profil',
     '/circles': 'Cercles littéraires',
-    'profile/edit': 'Mon compte',
+    '/circles/create': 'Création cercle',
+    '/circles/:id': 'Cercle littéraire',
+    '/circles/:id/discussion': 'Discussion',
+    '/circles/edit/:id': 'Modification cercle',
+    '/profile/edit': 'Mon compte',
     // ajoute ici toutes tes routes importantes et titres associés
   };
 

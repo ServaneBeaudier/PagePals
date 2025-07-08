@@ -1,0 +1,32 @@
+<div class="circle-discussion-container">
+    <div class="discussion">
+        <div class="messages-list">
+            <ng-container *ngIf="messages.length > 0; else noMessages">
+                <div *ngFor="let msg of messages" class="message-item">
+                    <div class="header-message">
+                        <div class="left-part">
+                            <img *ngIf="msg.photoAuteur" [src]="getPhotoUrl(msg.photoAuteur)" alt="Photo auteur"
+                                class="photo-message" />
+                            <strong class="msg-pseudo">{{ msg.pseudoAuteur }}</strong>
+                        </div>
+                        <p class="date-heure-message">{{ msg.dateEnvoi | date : 'dd/MM/yy - HH:mm' }}</p>
+                    </div>
+                    <p>{{ msg.contenu }}</p>
+                </div>
+            </ng-container>
+            <ng-template #noMessages>
+                <p>Aucun message pour l'instant</p>
+            </ng-template>
+        </div>
+
+        <div class="new-message">
+            <textarea [(ngModel)]="newMessageContent" placeholder="Nouveau message"></textarea>
+            <button (click)="sendMessage()" class="btn-new-message">
+                <img src="assets/images/icons8/plus.png" alt="icone-plus" class="icone-plus" />
+            </button>
+        </div>
+    </div>
+    <div class="btn-retour-container">
+        <button class="btn-retour" (click)="goToCercle(circleId)">Retour cercle</button>
+    </div>
+</div>

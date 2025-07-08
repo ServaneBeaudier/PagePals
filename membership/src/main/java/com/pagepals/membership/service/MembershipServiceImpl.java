@@ -2,22 +2,15 @@ package com.pagepals.membership.service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.pagepals.membership.client.CircleClient;
-import com.pagepals.membership.client.UserClient;
-import com.pagepals.membership.dto.CircleDTO;
-import com.pagepals.membership.dto.ParticipantDTO;
-import com.pagepals.membership.exception.AlreadyMemberException;
-import com.pagepals.membership.exception.CircleFullException;
-import com.pagepals.membership.exception.MembershipNotFoundException;
-import com.pagepals.membership.exception.TooLateToRegisterException;
-import com.pagepals.membership.model.Membership;
-import com.pagepals.membership.model.ModeRencontre;
+import com.pagepals.membership.client.*;
+import com.pagepals.membership.dto.*;
+import com.pagepals.membership.exception.*;
+import com.pagepals.membership.model.*;
 import com.pagepals.membership.repository.MembershipRepository;
 
 import feign.FeignException;
@@ -108,9 +101,9 @@ public class MembershipServiceImpl implements MembershipService {
     @Override
     public List<ParticipantDTO> getParticipantsWithPseudo(long circleId) {
         List<Membership> memberships = membershipRepository.findByCircleId(circleId);
-        List<Long> userIds = memberships.stream()
+        List<Long> userIds = new ArrayList<>(memberships.stream()
                 .map(Membership::getUserId)
-                .toList();
+                .toList());
 
         CircleDTO circle = circleClient.getCircleById(circleId);
         if (circle.getCreateurId() != null && !userIds.contains(circle.getCreateurId())) {

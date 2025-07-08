@@ -38,8 +38,7 @@ export class Profile implements OnInit {
       joinedCircles: this.userService.getJoinedCircles(this.userId)
     }).subscribe({
       next: ({ userProfile, createdCircles, joinedCircles }) => {
-        console.log('Cercles créés :', createdCircles);
-        console.log('Cercles rejoints :', joinedCircles);
+        console.log(userProfile);
         this.userProfile = userProfile;
         this.createdCircles = createdCircles.map(c => ({
           id: c.id,
