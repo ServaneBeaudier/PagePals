@@ -22,6 +22,7 @@ public class UpdateCircleDTO {
     private List<Long> genreIds;
 
     private String lieuRencontre;
+    private AdresseDetailsDTO lieuRencontreDetails;
     private String lienVisio;
 
     private BookDTO livrePropose;

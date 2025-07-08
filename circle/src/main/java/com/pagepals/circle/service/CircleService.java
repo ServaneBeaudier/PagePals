@@ -11,6 +11,7 @@ public interface CircleService {
 
     void createCircle(CreateCircleDTO dto, long createurId);
     void updateCircle(UpdateCircleDTO dto, long createurId);
+    void deleteCircleById(Long id);
     void deleteActiveCirclesByCreateur(Long userId);
     void anonymizeUserInArchivedCircles(Long userId);
     CircleDTO getCircleById(long id);

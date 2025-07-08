@@ -4,6 +4,14 @@ import { Observable } from 'rxjs';
 
 export type ModeRencontre = 'EN_LIGNE' | 'PRESENTIEL';
 
+export interface AdresseDetails {
+  shop?: string;
+  houseNumber?: string;
+  road?: string;
+  postcode?: string;
+  city?: string;
+}
+
 export interface CircleDTO {
   id?: number;
   nom: string;
@@ -13,6 +21,7 @@ export interface CircleDTO {
   nbMaxMembres?: number;
   genreIds: number[];
   lieuRencontre?: string;
+  lieuRencontreDetails?: AdresseDetails;
   lienVisio?: string;
   createurId: number;
   livrePropose?: BookDTO;

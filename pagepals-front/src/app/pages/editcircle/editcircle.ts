@@ -30,6 +30,8 @@ export class Editcircle implements OnInit {
   dropdownOpen = false;
   selectedGenres: number[] = [];
 
+  selectedAddress: NominatimResult | null = null;
+
   constructor(
     private fb: FormBuilder,
     private circleService: CircleService,
@@ -45,9 +47,16 @@ export class Editcircle implements OnInit {
       description: ['', Validators.required],
       modeRencontre: [null, Validators.required],
       dateRencontre: ['', Validators.required],
-      nbMaxMembres: [10, [Validators.required, Validators.min(1), Validators.max(50)]],
+      nbMaxMembres: [10, [Validators.required, Validators.min(1), Validators.max(20)]],
       genreIds: [[]],
       lieuRencontre: [''],
+      lieuRencontreDetails: this.fb.group({
+        shop: [''],
+        houseNumber: [''],
+        road: [''],
+        postcode: [''],
+        city: ['']
+      }),
       lienVisio: [''],
       livrePropose: [null]
     });
@@ -107,8 +116,6 @@ export class Editcircle implements OnInit {
     });
   }
 
-
-
   loadCircleData(id: number): void {
     this.circleService.getCircleById(id).subscribe({
       next: circle => {
@@ -122,8 +129,6 @@ export class Editcircle implements OnInit {
           dateRencontreFormatted = circle.dateRencontre.length > 16 ? circle.dateRencontre.substring(0, 16) : circle.dateRencontre;
         }
 
-        console.log('Circle raw data:', circle);
-
         this.editCircleForm.patchValue({
           nom: circle.nom,
           description: descriptionClean,
@@ -136,6 +141,14 @@ export class Editcircle implements OnInit {
           livrePropose: circle.livrePropose ? this.formatBookForForm(circle.livrePropose) : ''
         });
 
+        this.editCircleForm.get('lieuRencontreDetails')?.patchValue({
+          shop: circle.lieuRencontreDetails?.shop || '',
+          houseNumber: circle.lieuRencontreDetails?.houseNumber || '',
+          road: circle.lieuRencontreDetails?.road || '',
+          postcode: circle.lieuRencontreDetails?.postcode || '',
+          city: circle.lieuRencontreDetails?.city || ''
+        });
+
         this.selectedGenres = genres;
         this.editCircleForm.get('modeRencontre')?.setValue(circle.modeRencontre, { emitEvent: true });
 
@@ -145,7 +158,6 @@ export class Editcircle implements OnInit {
           modeControl.markAsDirty();
           modeControl.markAsTouched();
         }
-
 
         // Ajuster les validateurs
         if (circle.modeRencontre === 'PRESENTIEL') {
@@ -248,10 +260,13 @@ export class Editcircle implements OnInit {
       nbMaxMembres: formValue.nbMaxMembres,
       genreIds: formValue.genreIds,
       lieuRencontre: formValue.lieuRencontre || undefined,
+      lieuRencontreDetails: formValue.lieuRencontreDetails || undefined,
       lienVisio: formValue.lienVisio || undefined,
       livrePropose: this.selectedBook,
       createurId: this.createurId,
     };
+
+    console.log('Données envoyées au backend:', dto);
 
     this.circleService.updateCircle(dto, token).subscribe({
       next: () => {
@@ -261,6 +276,8 @@ export class Editcircle implements OnInit {
         alert('Erreur lors de la modification du cercle.');
       }
     });
+
+    console.log('Données envoyées au backend:', dto);
   }
 
   showDeleteModal = false; // contrôle l'affichage du modal
@@ -292,12 +309,19 @@ export class Editcircle implements OnInit {
     });
   }
 
-
-  selectedAddress: NominatimResult | null = null;
-
   onAddressSelected(address: NominatimResult) {
     this.selectedAddress = address;
-    this.editCircleForm.patchValue({ lieuRencontre: address.display_name });
+    this.editCircleForm.patchValue({
+      lieuRencontre: address.display_name
+    });
+    this.editCircleForm.get('lieuRencontreDetails')?.patchValue({
+      shop: address.address.shop || '',
+      houseNumber: address.address.house_number || '',
+      road: address.address.road || '',
+      postcode: address.address.postcode || '',
+      city: address.address.city || address.address.town || ''
+    });
   }
+
 
 }

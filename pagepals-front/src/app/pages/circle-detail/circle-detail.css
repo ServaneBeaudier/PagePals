@@ -1,0 +1,149 @@
+.circle-detail-container {
+  display: flex;
+  gap: 20px;
+  background-color: #FAF3EB;
+  padding: 20px;
+  border-radius: 10px;
+  color: #5C4A42;
+  font-family: "Lora", serif;
+  height: 80vh;
+  justify-content: center;
+  align-items: center;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.circle-info {
+  flex: 1;
+  background-color: #FAF3EB;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 0 5px rgba(150, 120, 115, 0.3);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  align-items: center;
+}
+
+.circle-info h2 {
+  margin-bottom: 0;
+}
+
+.genre {
+  font-size: 0.85em;
+  color: #5C4A42;
+  margin-bottom: 10px;
+  background-color: #D8D1C8;
+  padding: 5px;
+  border-radius: 25px;
+}
+
+.created-by {
+  font-size: 0.8em;
+  color: #5C4A42;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+.description {
+  flex-grow: 1;
+  background-color: #D8D1C8;
+  padding: 6px;
+  border-radius: 25px;
+  width: 100%;
+  text-align: center;
+}
+
+.stats {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 15px 0;
+}
+
+.stats li {
+  margin-bottom: 5px;
+  user-select: none;
+}
+
+.book-info {
+  margin-bottom: 20px;
+  font-style: italic;
+  color: #5C4A42;
+}
+
+/*Icones*/
+.icones {
+    width: 25px;
+    height: 25px;
+    margin-bottom: 2px;
+}
+
+/*Boutons*/
+.btn {
+  padding: 8px 15px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  width: fit-content;
+  margin-top: auto;
+}
+
+.btn-modify {
+  background-color: #D6A4A4;
+  color: #5C4A42;
+}
+
+.btn-join {
+  background-color: #A8C3BC;
+  color: #5C4A42;
+}
+
+
+/* Partie discussion*/
+.discussion {
+  flex: 2;
+  background-color: #FAF3EB;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 0 5px rgba(150, 120, 115, 0.3);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.messages-list {
+  flex-grow: 1;
+  overflow-y: auto;
+  background-color: #D8D1C8;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 0.9em;
+  color: #5C4A42;
+}
+
+.new-message {
+  display: flex;
+  gap: 10px;
+}
+
+.new-message textarea {
+  flex-grow: 1;
+  resize: vertical;
+  height: 50px;
+  border-radius: 8px;
+  border: 1px solid #c8b3b0;
+  padding: 5px;
+  font-family: Arial, sans-serif;
+  font-size: 1em;
+}
+
+.new-message button {
+  width: 50px;
+  background-color: #D6A4A4;
+  border: none;
+  border-radius: 50%;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+}

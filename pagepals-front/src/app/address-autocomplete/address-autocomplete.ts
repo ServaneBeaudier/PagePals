@@ -1,20 +1,29 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, forwardRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Subject, Observable, of } from 'rxjs';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+
+export interface NominatimAddress {
+  shop?: string;
+  house_number?: string;
+  road?: string;
+  postcode?: string;
+  city?: string;
+  town?: string;
+}
 
 export interface NominatimResult {
   display_name: string;
   lat: string;
   lon: string;
+  address: NominatimAddress;
 }
 
 @Component({
   selector: 'app-address-autocomplete',
-  imports: [FormsModule, ReactiveFormsModule, RouterModule, CommonModule],
+  imports: [CommonModule],
   template: `
     <input type="text" class="form-control" placeholder="Adresse" (input)="onInput($event)" [value]="query" />
     <ul class="autocomplete-list" *ngIf="results.length > 0">
@@ -39,14 +48,21 @@ export interface NominatimResult {
     .autocomplete-list li:hover {
       background-color: #ddd;
     }
-  `]
+  `],
+  providers: [{
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => AddressAutocomplete),
+    multi: true
+  }]
 })
-export class AddressAutocomplete {
+export class AddressAutocomplete implements ControlValueAccessor {
   @Output() addressSelected = new EventEmitter<NominatimResult>();
-  
+
   query = '';
   results: NominatimResult[] = [];
   private inputSubject = new Subject<string>();
+  private onChange = (value: string) => {};
+  private onTouched = () => {};
 
   constructor(private http: HttpClient) {
     this.inputSubject.pipe(
@@ -56,9 +72,22 @@ export class AddressAutocomplete {
     ).subscribe(results => this.results = results);
   }
 
+  writeValue(value: string): void {
+    this.query = value;
+  }
+
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
   onInput(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
     this.query = value;
+    this.onChange(value);
     this.inputSubject.next(value);
   }
 
@@ -68,8 +97,10 @@ export class AddressAutocomplete {
   }
 
   select(result: NominatimResult) {
+    console.log('Nominatim result sélectionné:', result);
     this.query = result.display_name;
     this.results = [];
+    this.onChange(this.query);
     this.addressSelected.emit(result);
   }
 }

@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -37,6 +40,10 @@ public class Circle {
     private LocalDateTime dateRencontre;
 
     private String lieuRencontre;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "json")
+    private AdresseDetails lieuRencontreDetails;
 
     private String lienVisio;
 

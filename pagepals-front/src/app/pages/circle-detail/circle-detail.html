@@ -1,1 +1,73 @@
-<p>circle-detail works!</p>
+<div class="circle-detail-container" *ngIf="circle">
+    <div class="circle-info">
+        <h2>{{ circle.nom }}</h2>
+        <small class="genre">
+            <span *ngFor="let gId of circle.genreIds; let last = last">
+                {{ getGenreNameById(gId) }}<span *ngIf="!last">, </span>
+            </span>
+        </small>
+
+        <div class="created-by">Créé par {{ createurPseudo }}</div>
+
+        <p class="description">{{ circle.description }}</p>
+
+        <ul class="stats">
+            <li>
+                <img [src]="getModeRencontreIcon(circle.modeRencontre)" alt="Mode de rencontre" class="icones" />
+                {{ getModeRencontreLabel(circle.modeRencontre) }}
+
+                <div *ngIf="circle.modeRencontre?.toUpperCase() === 'PRESENTIEL' && circle.lieuRencontreDetails"
+                    class="address-info">
+                    <strong>Adresse :</strong>
+                    <p>
+                        <span *ngIf="circle.lieuRencontreDetails.shop">{{ circle.lieuRencontreDetails.shop
+                            }} </span>-
+                        <span *ngIf="circle.lieuRencontreDetails.houseNumber">{{ circle.lieuRencontreDetails.houseNumber
+                            }} </span>
+                        <span *ngIf="circle.lieuRencontreDetails.road">{{ circle.lieuRencontreDetails.road
+                            }}</span><br />
+                        <span *ngIf="circle.lieuRencontreDetails.postcode">{{ circle.lieuRencontreDetails.postcode }}
+                        </span>
+                        <span *ngIf="circle.lieuRencontreDetails.city">{{ circle.lieuRencontreDetails.city }}</span>
+                    </p>
+                </div>
+            </li>
+
+            <li>
+                <img src="assets/images/icons8/date.png" class="icones"> {{ circle.dateRencontre | date:'dd/MM/yy à HH:mm' }}
+            </li>
+            <!-- <li class="members" (click)="openMembersList()">
+        <i class="icon-members"></i> 5 / {{ circle?.nbMaxMembres ?? 20 }}
+      </li> -->
+        </ul>
+
+        <div class="book-info">
+            <ng-container *ngIf="circle?.livrePropose; else lectureLibre">
+                <div>{{ circle.livrePropose?.titre }} / {{ circle.livrePropose?.auteurs }}</div>
+            </ng-container>
+            <ng-template #lectureLibre>
+                <small>Lecture au choix sur le thème !</small>
+            </ng-template>
+        </div>
+
+        <button *ngIf="circle.id !== undefined" (click)="onModifyCircle(circle.id!)"
+            class="btn btn-modify">Modifier</button>
+        <button class="btn btn-join" style="display:none;">Rejoindre</button>
+    </div>
+
+    <div class="discussion">
+        <div class="messages-list">
+            <!-- Messages ici -->
+            <p>Aucun message pour l'instant</p>
+        </div>
+
+        <div class="new-message">
+            <textarea placeholder="Nouveau message"></textarea>
+            <button><img src="assets/images/icons8/plus.png" alt="icone-plus" class="icone-plus"></button>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="!circle" class="loading">
+    Chargement en cours...
+</div>

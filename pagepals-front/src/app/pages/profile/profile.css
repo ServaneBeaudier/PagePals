@@ -267,6 +267,13 @@
   margin-top: 0.5rem;
 }
 
+/* Titre cercle*/
+.link-no-style {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
 /* Boutons trouver et proposer cercle en bas */
 .circles-created>button,
 .circles-joined>button {

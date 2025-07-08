@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.pagepals.auth.client.UserProfileClient;
 import com.pagepals.auth.dto.AuthResponseDTO;

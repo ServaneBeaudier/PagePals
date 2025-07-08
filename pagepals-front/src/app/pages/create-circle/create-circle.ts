@@ -40,22 +40,23 @@ export class CreateCircle implements OnInit {
       modeRencontre: ['ENLIGNE', Validators.required],
       dateRencontre: ['', Validators.required], // date + heure en iso string
       nbMaxMembres: [10, [Validators.required, Validators.min(1), Validators.max(50)]],
-      genreIds: [[]], // tableau d'ids des genres sélectionnés
+      genreIds: [[]],
       lieuRencontre: [''],
+      lieuRencontreDetails: this.fb.group({   // <-- AJOUT du sous-groupe adresse
+        houseNumber: [''],
+        road: [''],
+        postcode: [''],
+        city: ['']
+      }),
       lienVisio: [''],
       livrePropose: [null]
     });
 
     this.circleService.getGenres().subscribe({
-      next: (genres) => {
-        this.genres = genres;
-      },
-      error: (err) => {
-        console.error('Erreur lors du chargement des genres', err);
-      }
+      next: (genres) => this.genres = genres,
+      error: (err) => console.error('Erreur lors du chargement des genres', err)
     });
 
-    // Recherche livres en écoutant les changements sur un champ spécifique (à créer dans le HTML)
     this.createCircleForm.get('livrePropose')?.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged(),
@@ -71,7 +72,6 @@ export class CreateCircle implements OnInit {
       }
     });
 
-    // Gestion des champs conditionnels selon modeRencontre
     this.createCircleForm.get('modeRencontre')?.valueChanges.subscribe(mode => {
       if (mode === 'EN_LIGNE') {
         this.createCircleForm.get('lieuRencontre')?.clearValidators();
@@ -81,22 +81,14 @@ export class CreateCircle implements OnInit {
         this.createCircleForm.get('lienVisio')?.clearValidators();
         this.createCircleForm.get('lienVisio')?.setValue('');
       }
-      this.createCircleForm.get('lienVisio')?.updateValueAndValidity();
       this.createCircleForm.get('lieuRencontre')?.updateValueAndValidity();
-    });
-  }
-
-  loadGenres(): void {
-    this.circleService.getGenres().subscribe({
-      next: genres => this.genres = genres,
-      error: err => console.error('Erreur chargement genres', err)
+      this.createCircleForm.get('lienVisio')?.updateValueAndValidity();
     });
   }
 
   searchBooks(query: string): Observable<BookDTO[]> {
     this.searchingBooks = true;
-    return this.circleService.searchBooks(query).pipe(
-    );
+    return this.circleService.searchBooks(query);
   }
 
   displayBook(book?: BookDTO): string {
@@ -137,6 +129,7 @@ export class CreateCircle implements OnInit {
       nbMaxMembres: formValue.nbMaxMembres,
       genreIds: formValue.genreIds,
       lieuRencontre: formValue.lieuRencontre || undefined,
+      lieuRencontreDetails: formValue.lieuRencontreDetails || undefined, // <-- transmis
       lienVisio: formValue.lienVisio || undefined,
       createurId: createurId,
       livrePropose: this.selectedBook
@@ -189,7 +182,15 @@ export class CreateCircle implements OnInit {
 
   onAddressSelected(address: NominatimResult) {
     this.selectedAddress = address;
-    this.createCircleForm.patchValue({ lieuRencontre: address.display_name });
+    this.createCircleForm.patchValue({
+      lieuRencontre: address.display_name
+    });
+    this.createCircleForm.get('lieuRencontreDetails')?.patchValue({
+      shop: address.address.shop || '',
+      houseNumber: address.address.house_number || '',
+      road: address.address.road || '',
+      postcode: address.address.postcode || '',
+      city: address.address.city || address.address.town || ''
+    });
   }
-
 }

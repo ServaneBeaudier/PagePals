@@ -73,7 +73,7 @@
 
     <div class="mb-3" *ngIf="createCircleForm.get('modeRencontre')?.value === 'PRESENTIEL'">
         <label for="lieuRencontre" class="form-label">Lieu de rencontre</label>
-        <app-address-autocomplete (addressSelected)="onAddressSelected($event)"></app-address-autocomplete>
+         <app-address-autocomplete formControlName="lieuRencontre" (addressSelected)="onAddressSelected($event)"></app-address-autocomplete>
         <div *ngIf="createCircleForm.get('lieuRencontre')?.invalid && createCircleForm.get('lieuRencontre')?.touched"
             class="text-danger small">
             Le lieu de rencontre est obligatoire en présentiel.

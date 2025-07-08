@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.pagepals.user.client.AuthClient;
 import com.pagepals.user.client.CircleClient;
-import com.pagepals.user.client.MembershipClient;
 import com.pagepals.user.dto.UpdateUserProfileDTO;
 import com.pagepals.user.dto.UserProfileCreateRequest;
 import com.pagepals.user.model.UserProfile;
@@ -23,8 +22,6 @@ public class UserProfileServiceImpl implements UserProfileService {
     private final UserProfileRepository userProfileRepository;
 
     private final CircleClient circleClient;
-
-    private final MembershipClient membershipClient;
 
     private final AuthClient authClient;
 

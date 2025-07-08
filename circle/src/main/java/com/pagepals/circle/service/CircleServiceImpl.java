@@ -47,8 +47,11 @@ public class CircleServiceImpl implements CircleService {
 
         if (dto.getModeRencontre() == ModeRencontre.PRESENTIEL) {
             circle.setLieuRencontre(dto.getLieuRencontre());
+            circle.setLieuRencontreDetails(convertDTOToEntity(dto.getLieuRencontreDetails()));
+            System.out.println("Lieu rencontre details DTO: " + dto.getLieuRencontreDetails());
         } else {
             circle.setLienVisio(dto.getLienVisio());
+            circle.setLieuRencontreDetails(null);
         }
 
         if (dto.getDateRencontre() != null && dto.getDateRencontre().isBefore(LocalDateTime.now())) {
@@ -106,10 +109,13 @@ public class CircleServiceImpl implements CircleService {
 
         if (ModeRencontre.PRESENTIEL.equals(dto.getModeRencontre())) {
             circleExisting.setLieuRencontre(dto.getLieuRencontre());
+            circleExisting.setLieuRencontreDetails(convertDTOToEntity(dto.getLieuRencontreDetails()));
+            System.out.println("Lieu rencontre details DTO: " + dto.getLieuRencontreDetails());
             circleExisting.setLienVisio(null);
         } else {
             circleExisting.setLienVisio(dto.getLienVisio());
             circleExisting.setLieuRencontre(null);
+            circleExisting.setLieuRencontreDetails(null);
         }
 
         if (dto.getDateRencontre() != null && dto.getDateRencontre().isBefore(LocalDateTime.now())) {
@@ -171,6 +177,7 @@ public class CircleServiceImpl implements CircleService {
         dto.setDateCreation(circle.getDateCreation());
         dto.setModeRencontre(circle.getModeRencontre());
         dto.setLieuRencontre(circle.getLieuRencontre());
+        dto.setLieuRencontreDetails(convertEntityToDTO(circle.getLieuRencontreDetails()));
         dto.setLienVisio(circle.getLienVisio());
         dto.setCreateurId(circle.getCreateurId());
         dto.setNbMaxMembres(circle.getNbMaxMembres());
@@ -196,6 +203,7 @@ public class CircleServiceImpl implements CircleService {
             dto.setDateCreation(circle.getDateCreation());
             dto.setModeRencontre(circle.getModeRencontre());
             dto.setLieuRencontre(circle.getLieuRencontre());
+            dto.setLieuRencontreDetails(convertEntityToDTO(circle.getLieuRencontreDetails()));
             dto.setLienVisio(circle.getLienVisio());
             dto.setCreateurId(circle.getCreateurId());
             dto.setNbMaxMembres(circle.getNbMaxMembres());
@@ -225,6 +233,7 @@ public class CircleServiceImpl implements CircleService {
             dto.setDateCreation(circle.getDateCreation());
             dto.setModeRencontre(circle.getModeRencontre());
             dto.setLieuRencontre(circle.getLieuRencontre());
+            dto.setLieuRencontreDetails(convertEntityToDTO(circle.getLieuRencontreDetails()));
             dto.setLienVisio(circle.getLienVisio());
             dto.setCreateurId(circle.getCreateurId());
             dto.setNbMaxMembres(circle.getNbMaxMembres());
@@ -324,6 +333,7 @@ public class CircleServiceImpl implements CircleService {
             dto.setDateCreation(circle.getDateCreation());
             dto.setModeRencontre(circle.getModeRencontre());
             dto.setLieuRencontre(circle.getLieuRencontre());
+            dto.setLieuRencontreDetails(convertEntityToDTO(circle.getLieuRencontreDetails()));
             dto.setLienVisio(circle.getLienVisio());
             dto.setNbMaxMembres(circle.getNbMaxMembres());
 
@@ -345,6 +355,12 @@ public class CircleServiceImpl implements CircleService {
 
     }
 
+    @Override
+    @Transactional
+    public void deleteCircleById(Long id) {
+        circleRepository.deleteById(id);
+    }
+
     @Transactional
     public void deleteActiveCirclesByCreateur(Long userId) {
         List<Circle> activeCircles = circleRepository.findByCreateurIdAndIsArchivedFalse(userId);
@@ -358,6 +374,30 @@ public class CircleServiceImpl implements CircleService {
             circle.setCreateurId(null);
             circleRepository.save(circle);
         }
+    }
+
+    private AdresseDetails convertDTOToEntity(AdresseDetailsDTO dto) {
+        if (dto == null)
+            return null;
+        AdresseDetails entity = new AdresseDetails();
+        entity.setShop(dto.getShop());
+        entity.setHouseNumber(dto.getHouseNumber());
+        entity.setRoad(dto.getRoad());
+        entity.setPostcode(dto.getPostcode());
+        entity.setCity(dto.getCity());
+        return entity;
+    }
+
+    private AdresseDetailsDTO convertEntityToDTO(AdresseDetails entity) {
+        if (entity == null)
+            return null;
+        AdresseDetailsDTO dto = new AdresseDetailsDTO();
+        dto.setShop(entity.getShop());
+        dto.setHouseNumber(entity.getHouseNumber());
+        dto.setRoad(entity.getRoad());
+        dto.setPostcode(entity.getPostcode());
+        dto.setCity(entity.getCity());
+        return dto;
     }
 
 }

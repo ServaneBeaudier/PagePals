@@ -29,10 +29,11 @@ public class CircleDTO {
     private List<Long> genreIds;
 
     private String lieuRencontre;
+    private AdresseDetailsDTO lieuRencontreDetails;
     private String lienVisio;
 
     private Long createurId;
-    private BookDTO livrepropose;
+    private BookDTO livrePropose;
 
     private boolean isArchived;
 }

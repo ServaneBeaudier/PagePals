@@ -114,4 +114,11 @@ public class CircleController {
         circleService.anonymizeUserInArchivedCircles(userId);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCircle(@PathVariable Long id) {
+        circleService.deleteCircleById(id); // méthode à créer dans ton service
+        return ResponseEntity.noContent().build();
+    }
+
 }

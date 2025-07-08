@@ -51,7 +51,7 @@
           <p>Vous n'avez pas encore créé de cercle.</p>
         </div>
         <div *ngFor="let circle of createdCircles" class="circle-card created">
-          <h4>{{ circle.nom }}</h4>
+          <h4><a [routerLink]="['/circles', circle.id]" class="link-no-style">{{ circle.nom }}</a></h4>
           <p class="circle-members">{{ circle.membersCount }} membres / {{ circle.nbMaxMembres }}</p>
           <p class="circle-mode">{{ formatMode(circle.modeRencontre) }}</p>
           <p class="circle-date">{{ circle.dateRencontre | date:'dd/MM/yyyy' }} - {{ circle.dateRencontre | date:'HH:mm'
@@ -70,7 +70,7 @@
           <p>Vous n'avez pas encore rejoint de cercle.</p>
         </div>
         <div *ngFor="let circle of joinedCircles" class="circle-card joined">
-          <h4>{{ circle.nom }}</h4>
+          <h4><a [routerLink]="['/circles', circle.id]" class="link-no-style">{{ circle.nom }}</a></h4>
           <p class="circle-members">{{ circle.membersCount }} membres / {{ circle.nbMaxMembres }}</p>
           <p class="circle-mode">{{ formatMode(circle.modeRencontre) }}</p>
           <p class="circle-date">{{ circle.dateRencontre | date:'dd/MM/yyyy' }} - {{ circle.dateRencontre | date:'HH:mm'

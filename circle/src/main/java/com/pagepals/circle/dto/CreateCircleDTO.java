@@ -20,6 +20,7 @@ public class CreateCircleDTO {
     private List<Long> genreIds;
 
     private String lieuRencontre;
+    private AdresseDetailsDTO lieuRencontreDetails;
     private String lienVisio;
 
     private long createurId;
