@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { Footer } from "./shared/footer/footer";
 import { AuthService } from './core/auth.service';
 
+
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, Navbar, CommonModule, Footer],

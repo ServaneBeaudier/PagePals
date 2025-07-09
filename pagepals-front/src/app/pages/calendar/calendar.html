@@ -1,0 +1,75 @@
+<div class="tabs">
+    <button (click)="switchTab('general')" [class.active]="selectedTab === 'general'">Calendrier général</button>
+    <button (click)="switchTab('mine')" [class.active]="selectedTab === 'mine'">Mes cercles</button>
+</div>
+
+<div class="container">
+    <!-- Liste des cercles à gauche -->
+    <div class="circles-list">
+        <h3 class="titre">Cercles à venir</h3>
+        <h5>{{ selectedDate ? (selectedDate | date: 'dd/MM/yyyy') : '' }}</h5>
+
+        <ng-container *ngIf="getGroupedCircles().length > 0; else noCircles">
+            <div *ngFor="let group of getGroupedCircles()" class="circle-group">
+                <h4 class="date-label">{{ group.dayName | titlecase}} {{ group.dateLabel | titlecase }}</h4>
+                <ul>
+                    <li *ngFor="let circle of group.circles" class="circle-item">
+                        <div class="circle-detail">
+                            <div class="line top-line">
+                                <div class="circle-name">
+                                    <a [routerLink]="['/circles', circle.id]" class="link-no-style">{{ circle.nom }}</a>
+                                </div>
+                                <div class="mode-rencontre">
+                                    <img [src]="getModeRencontreIcon(circle.modeRencontre)" alt="Mode Rencontre" />
+                                    <span>{{ getModeRencontreLabel(circle.modeRencontre) }}</span>
+                                </div>
+                            </div>
+                            <div class="line bottom-line">
+                                <div class="circle-genre">
+                                    <ng-container *ngFor="let gId of circle.genreIds; let last = last">
+                                        {{ getGenreNameById(gId) }}<span *ngIf="!last">, </span>
+                                    </ng-container>
+                                </div>
+                                <div class="members-count">
+                                    <img src="assets/images/icons8/membre.png" alt="Membres" />
+                                    <span>{{ getParticipantsCount(circle.id!) }} membres / {{ circle.nbMaxMembres ?? 20
+                                        }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </ng-container>
+
+        <ng-template #noCircles>
+            <p>Aucun cercle ce jour-là.</p>
+        </ng-template>
+    </div>
+
+
+    <!-- Calendrier à droite -->
+    <div class="calendar">
+        <div class="month-label-container">
+            <button (click)="previousMonth()" class="nav-btn" aria-label="Mois précédent">
+                <img src="assets/images/icons8/back-to.png" alt="Précédent" class="icon" />
+            </button>
+            <div class="month-label">{{ viewDate | date: 'MMMM yyyy' | titlecase}}</div>
+            <button (click)="nextMonth()" class="nav-btn" aria-label="Mois suivant">
+                <img src="assets/images/icons8/next-page.png" alt="Suivant" class="icon" />
+            </button>
+        </div>
+        <div class="weekdays-row">
+            <div class="weekday" *ngFor="let day of weekdays">{{ day }}</div>
+        </div>
+        <div class="days-grid">
+            <div *ngFor="let date of daysInMonth" (click)="date && selectDate(date)"
+                [class.selected]="date && selectedDate?.getTime() === date.getTime()" class="day-cell"
+                [class.empty]="!date">
+                {{ date ? date.getDate() : '' }}
+                <span *ngIf="date && hasCircleOnDate(date)" class="circle-indicator"></span>
+            </div>
+        </div>
+
+    </div>
+</div>

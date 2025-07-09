@@ -1,0 +1,284 @@
+/* === Onglets en haut === */
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.tabs button {
+    background-color: #D8D1C8;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 25px;
+    font-weight: 600;
+    color: #5c4a42;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.tabs button.active,
+.tabs button:hover {
+    background-color: #D8D1C8;
+    color: white;
+}
+
+/* === Conteneur principal avec 2 colonnes === */
+.container {
+    display: flex;
+    gap: 20px;
+    max-width: 900px;
+    margin: 0 auto 40px;
+    font-family: "Lora", serif;
+    color: #5c4a42;
+}
+
+/* === Liste des cercles à gauche === */
+.circles-list {
+    flex: 1;
+    background-color: #FAF3EB;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.5);
+    padding: 20px;
+    min-height: 400px;
+    overflow-y: auto;
+}
+
+.circles-list .titre {
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-weight: 700;
+    font-size: 1.2em;
+    text-align: center;
+}
+
+.circles-list h5 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-weight: 500;
+    color: #5C4A42;
+    font-size: 1em;
+}
+
+.date-label {
+    font-size: 1em;
+    margin: 20px 0 12px 8px;
+    color: #5c4a42;
+}
+
+/* === Liste des cercles === */
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.circle-item {
+    background-color: #A8C3BC;
+    border-radius: 10px;
+    padding: 5px 10px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 5px rgb(0 0 0 / 0.05);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+/* === Nom du cercle === */
+.circle-name {
+    font-weight: 700;
+    font-size: 1em;
+    margin-bottom: 6px;
+}
+
+.link-no-style {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+/* === Détails du cercle (mode, genres, membres) === */
+.circle-detail {
+    background-color: #A8C3BC;
+    /* vert d’eau clair */
+    border-radius: 20px;
+    color: #5C4A42;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.top-line {
+    margin-bottom: 8px;
+}
+
+.mode-rencontre {
+    display: flex;
+    align-items: center;
+    color: #5c4a42;
+    font-size: 0.9em;
+}
+
+.mode-rencontre img {
+    width: 20px;
+    height: 20px;
+}
+
+.circle-genre {
+    color: #5c4a42;
+    font-size: 0.85em;
+}
+
+.members-count {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85em;
+    color: #5c4a42;
+}
+
+.members-count img {
+    width: 25px;
+    height: 25px;
+}
+
+/* Styles pour les labels */
+.mode-label,
+.genres,
+.members-count {
+    white-space: nowrap;
+}
+
+/* === Calendrier à droite === */
+.calendar {
+    width: 300px;
+    background-color: #FAF3EB;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.5);
+    user-select: none;
+    height: 320px;
+    padding: 0 10px 0 10px;
+}
+
+.icon {
+    width: 40px;
+    height: 40px;
+}
+
+.month-label {
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.2em;
+    color: #5c4a42;
+}
+
+.month-label-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.nav-btn {
+    background-color: transparent;
+    border: none;
+    font-size: 1.4em;
+    cursor: pointer;
+    color: #5c4a42;
+    padding: 4px 10px;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+}
+
+/* Grille des jours */
+.days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+}
+
+.day-cell.empty {
+  background-color: transparent;
+  cursor: default;
+  box-shadow: none;
+}
+
+.weekdays-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 6px;
+  color: #5c4a42;
+  font-weight: 600;
+  font-family: "Quicksand", sans-serif;
+  user-select: none;
+  text-align: center;
+}
+
+.weekday {
+  font-size: 0.9em;
+}
+
+.circle-indicator {
+    position: absolute;
+    top: 1px;
+    right: 4px;
+    width: 8px;
+    height: 8px;
+    background-color: #D6A4A4;
+    /* rose doux */
+    border-radius: 50%;
+    box-shadow: 0 2px 3px rgb(0 0 0 / 0.25);
+}
+
+.day-cell {
+    position: relative;
+    padding: 14px 0;
+    text-align: center;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    line-height: 0px;
+    margin: 2px;
+    font-weight: 600;
+    color: #5c4a42;
+    background-color: #d8d1c8;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 0.15);
+    user-select: none;
+}
+
+/* Jour sélectionné */
+.day-cell.selected {
+    background-color: #D8D1C8;
+    color: #5C4A42;
+    font-weight: 700;
+    border-radius: 50px;
+}
+
+.day-cell:hover:not(.selected) {
+    background-color: #e0ded8;
+}
+
+@media (max-width: 992px) {
+  .container {
+    flex-direction: column;
+    gap: 15px;
+    max-width: 100%;
+    margin: 0 auto 20px;
+  }
+
+  .circles-list,
+  .calendar {
+    width: 100% !important; /* s'étire sur toute la largeur */
+  }
+
+  .calendar {
+    margin-top: 20px;
+  }
+}
