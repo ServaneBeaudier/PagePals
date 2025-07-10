@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AdresseDetails, CircleDTO, CircleService, Genre, MessageDTO } from '../../core/circle.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { UserService } from '../../core/user.service';
 import { TokenStorage } from '../../core/token-storage';
 import { MembershipService, Participant } from '../../core/membership.service';
+import { AuthService } from '../../core/auth.service';
 
 @Component({
   selector: 'app-circle-detail',
@@ -23,17 +24,23 @@ export class CircleDetail implements OnInit {
   messages: MessageDTO[] = [];
   newMessageContent = '';
   participants: Participant[] = [];
+  isUserParticipantFlag = false;
   showParticipantsDropdown = false;
-
+  isCreator: boolean = false;
+  currentUserId: number | null = null;
+  showConfirmQuitPopup = false;
+  circleIdToQuit: number | null = null;
 
   constructor(private route: ActivatedRoute,
     private circleService: CircleService,
     private router: Router,
     private userService: UserService,
     private tokenStorage: TokenStorage,
-    private membershipService: MembershipService) { }
+    private membershipService: MembershipService,
+    private authService: AuthService) { }
 
   ngOnInit() {
+    this.currentUserId = this.authService.getUserIdFromStorage();
     this.loadGenres();
     this.circleId = +this.route.snapshot.paramMap.get('id')!;
     this.loadCircle();
@@ -45,13 +52,14 @@ export class CircleDetail implements OnInit {
     this.circleService.getCircleById(this.circleId).subscribe({
       next: (data) => {
         this.circle = data;
-        console.log('Données cercle:', this.circle);
+
+        this.isCreator = this.currentUserId === this.circle.createurId;
 
         if (this.circle && this.circle.createurId) {
           this.userService.getUserProfile(this.circle.createurId).subscribe({
             next: user => {
               this.createurPseudo = user.pseudo;
-              this.createurPhotoFilename = user.photoProfil; // <-- ici on récupère le nom de fichier photo
+              this.createurPhotoFilename = user.photoProfil;
             },
             error: err => {
               this.createurPseudo = 'Utilisateur inconnu';
@@ -110,8 +118,8 @@ export class CircleDetail implements OnInit {
   loadParticipants() {
     this.membershipService.getParticipants(this.circleId).subscribe({
       next: participants => {
-        console.log('Participants reçus:', participants);
         this.participants = participants;
+        this.isUserParticipantFlag = this.participants.some(p => (p.userId ?? p.id) === this.currentUserId);
 
         // Trouver le créateur dans la liste des participants
         const createur = this.participants.find(p => p.userId === this.circle?.createurId);
@@ -135,6 +143,66 @@ export class CircleDetail implements OnInit {
     }
     return 'assets/images/icons8/photo-profil.png';
   }
+
+  joinCircle(): void {
+    const token = this.tokenStorage.getToken();
+    if (!token || !this.circle || !this.currentUserId) {
+      alert('Vous devez être connecté pour rejoindre ce cercle.');
+      return;
+    }
+    this.membershipService.inscrire(this.currentUserId, this.circle.id!, token).subscribe({
+      next: () => {
+        this.loadParticipants();
+      },
+      error: (err) => {
+        console.error('Erreur lors de l\'inscription', err);
+        alert('Erreur lors de l\'inscription. Veuillez réessayer.');
+      }
+    });
+  }
+
+  leaveCircle(): void {
+    this.circleIdToQuit = this.circleId;
+    this.showConfirmQuitPopup = true;
+  }
+
+
+  confirmQuitCircle(): void {
+    if (!this.circleIdToQuit) return;
+
+    const token = this.tokenStorage.getToken();
+    if (!token) {
+      alert('Vous devez être connecté pour quitter ce cercle.');
+      this.showConfirmQuitPopup = false;
+      return;
+    }
+
+    this.membershipService.desinscrire(this.currentUserId!, this.circleIdToQuit, token).subscribe({
+      next: () => {
+        alert('Vous avez quitté le cercle.');
+        this.showConfirmQuitPopup = false;
+        this.circleIdToQuit = null;
+        this.router.navigate(['/profile']);
+      },
+      error: (err) => {
+        console.error('Erreur lors de la désinscription', err);
+        alert('Erreur lors de la désinscription. Veuillez réessayer.');
+        this.showConfirmQuitPopup = false;
+      }
+    });
+  }
+
+  cancelQuit(): void {
+    this.showConfirmQuitPopup = false;
+    this.circleIdToQuit = null;
+  }
+
+  isUserParticipant(): boolean {
+    const found = this.participants.some(p => p.userId === this.currentUserId);
+    console.log('isUserParticipant ?', found, 'currentUserId=', this.currentUserId, 'participants=', this.participants);
+    return found;
+  }
+
 
   loadMessages() {
     if (!this.circleId) return;

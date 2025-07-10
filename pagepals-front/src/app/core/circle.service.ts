@@ -25,6 +25,7 @@ export interface CircleDTO {
   lienVisio?: string;
   createurId: number;
   livrePropose?: BookDTO;
+  isArchived?: boolean;
 }
 
 export interface BookDTO {

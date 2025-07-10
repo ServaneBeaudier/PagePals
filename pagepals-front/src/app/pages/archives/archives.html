@@ -1,24 +1,22 @@
-<div class="archives-page">
-  <h2>Archives des cercles passés</h2>
+<div class="archives-container">
+  <h2>Mes cercles archivés</h2>
 
-  <div *ngIf="loading">Chargement...</div>
-  <div *ngIf="error" class="error">{{ error }}</div>
+  <div *ngIf="archivedCircles.length > 0; else noArchivedCircles" class="archives-list">
+    <div *ngFor="let circle of archivedCircles" class="circle-card">
+      <h3 class="circle-name"><a class="link-no-style" [routerLink]="['/circles', circle.id]">{{ circle.nom }}</a></h3>
 
-  <div *ngIf="!loading && archivedCircles.length === 0">
-    <p>Aucun cercle archivé pour le moment.</p>
-  </div>
+      <p>
+        <img src="assets/images/icons8/date.png" alt="icone calendrier" class="icon-small">
+        {{ circle.dateRencontre | date:'dd/MM/yyyy HH:mm' }}
+      </p>
 
-  <div *ngIf="!loading && archivedCircles.length > 0" class="archives-list">
-    <div *ngFor="let circle of archivedCircles" class="archive-card">
-      <h3>
-        <a [routerLink]="['/circles', circle.id]" class="link-no-style">{{ circle.nom }}</a>
-      </h3>
-      <p class="date">{{ circle.dateRencontre | date: 'dd/MM/yyyy HH:mm' }}</p>
-      <span *ngFor="let gId of circle.genreIds; let last = last">
-                {{ getGenreNameById(gId) }}<span *ngIf="!last">, </span>
-            </span>
-      <p *ngIf="circle.livrePropose">Livre choisi : {{ circle.livrePropose.titre }}</p>
+      <p>Créé par {{ getCreatorPseudo(circle.createurId) }}</p>
+
       <button class="btn-view" [routerLink]="['/circles', circle.id]">Voir</button>
     </div>
   </div>
+
+  <ng-template #noArchivedCircles>
+    <p>Vous n'avez aucun cercle archivé auquel vous participez ou que vous avez créé.</p>
+  </ng-template>
 </div>

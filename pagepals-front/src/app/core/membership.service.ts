@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 export interface Participant {
   userId: number;
+  id?: number; // optionnel pour supporter les deux cas
   pseudo: string;
   photoProfil?: string;
   // ajoute d’autres champs utiles si besoin

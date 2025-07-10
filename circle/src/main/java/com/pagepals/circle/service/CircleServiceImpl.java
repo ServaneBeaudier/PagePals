@@ -182,6 +182,7 @@ public class CircleServiceImpl implements CircleService {
         dto.setLienVisio(circle.getLienVisio());
         dto.setCreateurId(circle.getCreateurId());
         dto.setNbMaxMembres(circle.getNbMaxMembres());
+        dto.setArchived(circle.isArchived());
 
         dto.setGenreIds(circle.getGenres()
                 .stream()
@@ -330,6 +331,7 @@ public class CircleServiceImpl implements CircleService {
         CriteriaQuery<Circle> query = cb.createQuery(Circle.class);
         Root<Circle> root = query.from(Circle.class);
         List<Predicate> predicates = new ArrayList<>();
+        predicates.add(cb.isFalse(root.get("isArchived")));
 
         Join<Circle, Book> bookJoin = root.join("livrePropose", JoinType.LEFT);
 

@@ -4,6 +4,8 @@ import { AuthService } from '../../core/auth.service';
 import { CircleDTO, CircleService, Genre } from '../../core/circle.service';
 import { MembershipService } from '../../core/membership.service';
 import { RouterModule } from '@angular/router';
+import { UserService } from '../../core/user.service';
+import { forkJoin, of } from 'rxjs';
 
 
 type Tab = 'general' | 'mine';
@@ -33,7 +35,8 @@ export class Calendar {
   constructor(
     private authService: AuthService,
     private circleService: CircleService,
-    private membershipService: MembershipService
+    private membershipService: MembershipService,
+    private userService: UserService
   ) { }
 
   ngOnInit(): void {
@@ -47,27 +50,18 @@ export class Calendar {
     const year = this.viewDate.getFullYear();
     const month = this.viewDate.getMonth();
     const numDays = new Date(year, month + 1, 0).getDate();
-
-    // Jour de la semaine du 1er jour du mois (0=dimanche, 1=lundi, ..., 6=samedi)
     const firstDay = new Date(year, month, 1).getDay();
-
-    // En Angular (fr), on veut la semaine qui commence lundi,
-    // donc on ajuste pour que lundi = 0, dimanche = 6
     const paddingDays = firstDay === 0 ? 6 : firstDay - 1;
-
     this.daysInMonth = [];
 
-    // Ajout des cases vides pour décaler le début du mois
     for (let i = 0; i < paddingDays; i++) {
-      this.daysInMonth.push(null); // null = case vide
+      this.daysInMonth.push(null);
     }
 
-    // Ajout des jours réels du mois
     for (let day = 1; day <= numDays; day++) {
       this.daysInMonth.push(new Date(year, month, day));
     }
   }
-
 
   switchTab(tab: Tab): void {
     if (this.selectedTab !== tab) {
@@ -89,17 +83,77 @@ export class Calendar {
   }
 
   loadCircles(): void {
-    this.circleService.getActiveCircles().subscribe({
-      next: data => {
-        this.circles = data;
-        this.loadParticipantsCount();
-      },
-      error: err => {
-        console.error('Erreur chargement cercles', err);
-        this.circles = [];
-      }
-    });
+    if (this.selectedTab === 'mine' && this.currentUserId) {
+      forkJoin({
+        created: this.userService.getCreatedCircles(this.currentUserId),
+        joined: this.userService.getJoinedCircles(this.currentUserId)
+      }).subscribe({
+        next: ({ created, joined }) => {
+          console.log('Cercles créés reçus:', created);
+          console.log('Cercles rejoints reçus:', joined);
+
+          // Mapper Circle en CircleDTO partiel
+          const mapToDTO = (c: any): CircleDTO => ({
+            id: c.id,
+            nom: c.nom,
+            description: c.description || '',
+            modeRencontre: c.modeRencontre,
+            dateRencontre: c.dateRencontre,
+            nbMaxMembres: c.nbMaxMembres,
+            genreIds: c.genreIds || [],
+            createurId: c.createurId
+          });
+
+          const createdCircles = created.map(mapToDTO);
+          const joinedCircles = joined.map(mapToDTO);
+
+          console.log('Cercles créés transformés:', createdCircles);
+          console.log('Cercles rejoints transformés:', joinedCircles);
+
+          // Fusionner et éviter doublons
+          const map = new Map<number, CircleDTO>();
+
+          createdCircles.forEach(c => map.set(c.id!, c));
+          joinedCircles.forEach(c => {
+            if (!map.has(c.id!)) {
+              map.set(c.id!, c);
+            }
+          });
+
+          this.circles = Array.from(map.values());
+          console.log('Cercles fusionnés dans this.circles:', this.circles);
+
+          // Afficher la correspondance genreIds -> noms (d’après this.genres)
+          this.circles.forEach(circle => {
+            const genreNoms = circle.genreIds?.map(id => {
+              const g = this.genres.find(genre => genre.id === id);
+              return g ? g.nom : 'Inconnu';
+            }) || [];
+            console.log(`Cercle ${circle.nom} genres:`, genreNoms);
+          });
+
+          this.loadParticipantsCount();
+        },
+        error: err => {
+          console.error('Erreur chargement cercles créés et rejoints', err);
+          this.circles = [];
+        }
+      });
+    } else {
+      this.circleService.getActiveCircles().subscribe({
+        next: data => {
+          this.circles = data;
+          console.log('Cercles généraux reçus:', data);
+          this.loadParticipantsCount();
+        },
+        error: err => {
+          console.error('Erreur chargement cercles', err);
+          this.circles = [];
+        }
+      });
+    }
   }
+
 
   loadParticipantsCount(): void {
     this.participantsCountMap.clear();

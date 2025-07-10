@@ -14,6 +14,7 @@ export interface Circle {
 }
 
 export interface UserProfile {
+  userId: number;
   id: number;
   pseudo: string;
   photoProfil?: string;

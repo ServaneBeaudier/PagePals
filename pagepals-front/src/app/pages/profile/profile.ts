@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { Circle, UserProfile, UserService } from '../../core/user.service';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
+import { MembershipService } from '../../core/membership.service';
+import { TokenStorage } from '../../core/token-storage';
 
 @Component({
   selector: 'app-profile',
@@ -18,8 +20,13 @@ export class Profile implements OnInit {
   errorMessage: string | null = null;
   userId = 0;
   successMessage: string | null = null;
+  showConfirmQuitPopup = false;
+  circleIdToQuit: number | null = null;
 
-  constructor(private userService: UserService, private router: Router) { }
+  constructor(private userService: UserService,
+    private router: Router,
+    private membershipService: MembershipService,
+    private tokenStorage: TokenStorage) { }
 
   ngOnInit(): void {
     const navigation = this.router.getCurrentNavigation();
@@ -91,6 +98,37 @@ export class Profile implements OnInit {
   }
 
   onQuitCircle(circleId: number): void {
-    // À implémenter selon service membership
+    this.circleIdToQuit = circleId;
+    this.showConfirmQuitPopup = true;
+  }
+
+  confirmQuitCircle(): void {
+    if (!this.circleIdToQuit) return;
+
+    const token = this.tokenStorage.getToken();
+    if (!token) {
+      alert('Vous devez être connecté pour quitter un cercle.');
+      this.showConfirmQuitPopup = false;
+      return;
+    }
+
+    this.membershipService.desinscrire(this.userId, this.circleIdToQuit, token).subscribe({
+      next: () => {
+        this.joinedCircles = this.joinedCircles.filter(c => c.id !== this.circleIdToQuit);
+        alert('Vous avez quitté le cercle.');
+        this.showConfirmQuitPopup = false;
+        this.circleIdToQuit = null;
+      },
+      error: (err) => {
+        console.error('Erreur lors de la désinscription', err);
+        alert('Erreur lors de la désinscription. Veuillez réessayer.');
+        this.showConfirmQuitPopup = false;
+      }
+    });
+  }
+
+  cancelQuit(): void {
+    this.showConfirmQuitPopup = false;
+    this.circleIdToQuit = null;
   }
 }

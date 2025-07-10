@@ -78,9 +78,9 @@
             Voir le fil de discussion
         </button>
 
-        <button *ngIf="circle.id !== undefined" (click)="onModifyCircle(circle.id!)"
-            class="btn btn-modify">Modifier</button>
-        <button class="btn btn-join" style="display:none;">Rejoindre</button>
+        <button *ngIf="isCreator" (click)="onModifyCircle(circleId)" class="btn btn-modify">Modifier</button>
+        <button *ngIf="!isUserParticipantFlag" (click)="joinCircle()" class="btn btn-join">Rejoindre</button>
+        <button *ngIf="isUserParticipantFlag && !isCreator" (click)="leaveCircle()" class="btn btn-leave">Quitter</button>
     </div>
 
     <div class="discussion">
@@ -103,15 +103,28 @@
             </ng-template>
         </div>
 
-        <div class="new-message">
+        <div *ngIf="isUserParticipantFlag" class="new-message">
             <textarea [(ngModel)]="newMessageContent" placeholder="Nouveau message"></textarea>
             <button (click)="sendMessage()" class="btn-new-message">
                 <img src="assets/images/icons8/plus.png" alt="icone-plus" class="icone-plus" />
             </button>
+        </div>
+
+        <!-- Message d’info pour inviter à rejoindre -->
+        <div *ngIf="!isUserParticipantFlag" class="info-join-message">
+            <p>Vous devez rejoindre le cercle pour pouvoir envoyer des messages.</p>
         </div>
     </div>
 </div>
 
 <div *ngIf="!circle" class="loading">
     Chargement en cours...
+</div>
+
+<div *ngIf="showConfirmQuitPopup" class="popup-overlay">
+    <div class="popup-content">
+        <p>Êtes-vous sûr de vouloir quitter le cercle ?<br />Vous pourrez toujours le rejoindre à nouveau :</p>
+        <button class="btn-cancel" (click)="cancelQuit()">Annuler</button>
+        <button class="btn-confirm" (click)="confirmQuitCircle()">Oui</button>
+    </div>
 </div>

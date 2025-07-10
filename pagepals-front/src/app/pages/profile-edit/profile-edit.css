@@ -134,7 +134,7 @@ textarea {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,0.2); /* fond légèrement plus clair */
+  background-color: rgba(0,0,0,0.2);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -142,7 +142,7 @@ textarea {
 }
 
 .modal-content {
-  background: white; /* couleur très claire, proche blanc cassé */
+  background: white;
   padding: 2rem 2.5rem;
   border-radius: 20px;
   text-align: center;
@@ -176,10 +176,6 @@ textarea {
   transition: background-color 0.3s ease;
 }
 
-.btn-cancel:hover {
-  background-color: #92a59b;
-}
-
 .btn-confirm {
   background-color: #D64545;
   border: none;
@@ -189,10 +185,6 @@ textarea {
   cursor: pointer;
   flex: 1;
   transition: background-color 0.3s ease;
-}
-
-.btn-confirm:hover {
-  background-color: #9f2626;
 }
 
 

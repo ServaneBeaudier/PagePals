@@ -1,53 +1,88 @@
-.archives-page {
+.archives-container {
   max-width: 1000px;
   margin: 20px auto;
   font-family: "Lora", serif;
   color: #5c4a42;
+  padding: 0 10px;
 }
 
-h2 {
-    text-align: center;
-    font-weight: 600;
+.archives-container h2 {
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 20px;
 }
 
+/* Grille responsive 3 colonnes */
 .archives-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
 }
 
-.archive-card {
-  background-color: #a8c3bc;
-  border-radius: 10px;
-  padding: 10px;
-  box-shadow: 0 1px 6px rgb(0 0 0 / 0.1);
+.circle-card {
+  background-color: #b5cdc4;
+  border-radius: 12px;
+  padding: 20px 18px 25px 18px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
 
-.archive-card h3 {
-  margin-top: 0;
-  margin-bottom: 5px;
+.circle-name {
+  margin: 0 0 10px 0;
   font-weight: 700;
+  font-size: 1.15em;
 }
 
-.archive-card .link-no-style {
+.link-no-style {
   color: #5c4a42;
   text-decoration: none;
-  font-weight: 500;
-  font-size: 0.8em;
 }
 
-.archive-card p {
-  margin: 4px 0;
+.date, .genre, .livre-choisi, .createur {
+  margin: 5px 0;
   font-size: 0.9em;
+  line-height: 1.3em;
+  color: #4a4a4a;
 }
 
+.icon-small {
+  width: 25px;
+  height: 25px;
+  vertical-align: middle;
+  margin-right: 3px;
+}
+
+.createur {
+  font-style: italic;
+  margin-top: auto;
+  font-weight: 600;
+  color: #3e3e3e;
+}
+
+/* Bouton "Voir" */
 .btn-view {
-  background-color: #d69b9b;
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  background-color: #c89b9b;
   border: none;
-  padding: 6px 12px;
-  border-radius: 25px;
+  padding: 8px 16px;
+  border-radius: 18px;
   color: #5c4a42;
-  cursor: pointer;
   font-weight: 700;
-  margin-top: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-view:hover {
+  background-color: #a86a6a;
+}
+
+.no-archives-msg {
+  text-align: center;
+  margin-top: 40px;
+  font-style: italic;
+  color: #7a6f68;
 }

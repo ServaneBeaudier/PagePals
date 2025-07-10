@@ -1,0 +1,96 @@
+.access-denied {
+  max-width: 800px;
+  margin: 150px auto;
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  font-family: "Lora", serif;
+  color: #5c4a42;
+  padding: 20px;
+}
+
+.logo {
+  width: 300px;
+  height: auto;
+  border-radius: 15px;
+  box-shadow: 0 1px 6px rgb(0 0 0 / 0.1);
+  flex-shrink: 0;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+h2 {
+  font-weight: 700;
+  font-size: 1.3rem;
+  margin: 0;
+  text-align: center;
+}
+
+.btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.btn-connexion{
+  display: inline-block;
+  padding: 12px 40px;
+  background-color: #a8c3bc;
+  color: #5c4a42;
+  border-radius: 25px;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  user-select: none;
+  max-width: 300px;
+  width: 100%;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.primary-btn:hover {
+  background-color: #8aa99d;
+}
+
+.link {
+  color: #5c4a42;
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.link:hover {
+  color: #3a362f;
+}
+
+/* === Responsive < 992px === */
+@media (max-width: 992px) {
+  .access-denied {
+    margin: 80px auto;
+    flex-direction: column;
+    max-width: 90%;
+    text-align: center;
+    padding: 15px;
+    gap: 20px;
+  }
+
+  .logo {
+    width: 300px;
+  }
+
+  .content {
+    gap: 15px;
+  }
+
+  .btn-group {
+    gap: 8px;
+  }
+}
