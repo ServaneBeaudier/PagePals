@@ -124,7 +124,7 @@ public class MembershipServiceImpl implements MembershipService {
 
     @Override
     public int countMembersForCircle(Long circleId) {
-        return membershipRepository.countByCircleId(circleId) + 1;
+        return membershipRepository.countByCircleId(circleId)+1;
     }
 
     @Override

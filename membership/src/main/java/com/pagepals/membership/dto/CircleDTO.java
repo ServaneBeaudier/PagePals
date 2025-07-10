@@ -14,4 +14,6 @@ public class CircleDTO {
     private LocalDateTime dateRencontre;
     private ModeRencontre modeRencontre;
     private Long createurId;
+    private Integer nbMaxMembres;
+    private Integer membersCount;
 }

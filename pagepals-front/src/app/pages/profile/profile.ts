@@ -5,6 +5,7 @@ import { Circle, UserProfile, UserService } from '../../core/user.service';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { MembershipService } from '../../core/membership.service';
 import { TokenStorage } from '../../core/token-storage';
+import { catchError, map, of, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -38,35 +39,56 @@ export class Profile implements OnInit {
       return;
     }
     this.userId = Number(storedUserId);
+    this.loading = true;
 
     forkJoin({
       userProfile: this.userService.getUserProfile(this.userId),
       createdCircles: this.userService.getCreatedCircles(this.userId),
       joinedCircles: this.userService.getJoinedCircles(this.userId)
-    }).subscribe({
-      next: ({ userProfile, createdCircles, joinedCircles }) => {
-        console.log(userProfile);
-        this.userProfile = userProfile;
-        this.createdCircles = createdCircles.map(c => ({
-          id: c.id,
-          nom: c.nom,
-          nbMaxMembres: c.nbMaxMembres,
-          membersCount: c.membersCount,
-          modeRencontre: c.modeRencontre,
-          dateRencontre: c.dateRencontre,
-          lieuRencontre: c.lieuRencontre,
-          lienVisio: c.lienVisio
-        }));
+    }).pipe(
+      switchMap(({ userProfile, createdCircles, joinedCircles }) => {
+        // Fusionner created + joined sans doublons
+        const circleMap = new Map<number, any>();
+        createdCircles.forEach(circle => circleMap.set(circle.id, circle));
+        joinedCircles.forEach(circle => {
+          if (!circleMap.has(circle.id)) {
+            circleMap.set(circle.id, circle);
+          }
+        });
+        const allCircles = Array.from(circleMap.values());
 
-        this.joinedCircles = joinedCircles;
+        // Observable pour counts membres
+        const countsObservables = allCircles.map(circle =>
+          this.membershipService.countMembers(circle.id)
+            .pipe(
+              catchError(() => of(0))
+            )
+        );
+
+        return forkJoin(countsObservables).pipe(
+          map((counts: number[]) => {
+            allCircles.forEach((circle: any, idx: number) => {
+              circle.membersCount = counts[idx];
+            });
+            return { userProfile, createdCircles, joinedCircles, allCircles };
+          })
+        );
+      })
+    ).subscribe(
+      ({ userProfile, createdCircles, joinedCircles, allCircles }) => {
+        this.userProfile = userProfile;
+        // Utiliser allCircles, mais répartir created et joined pour affichage si besoin
+        this.createdCircles = allCircles.filter(c => createdCircles.some((cc: any) => cc.id === c.id));
+        this.joinedCircles = allCircles.filter(c => joinedCircles.some((jc: any) => jc.id === c.id));
         this.loading = false;
       },
-      error: (err) => {
+      error => {
         this.errorMessage = 'Erreur lors du chargement du profil';
         this.loading = false;
       }
-    });
+    );
   }
+
 
   get profilePhotoUrl(): string {
     if (this.userProfile?.photoProfil) {

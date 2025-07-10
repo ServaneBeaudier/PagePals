@@ -167,7 +167,6 @@
   display: flex;
   gap: 2rem;
   flex-wrap: wrap;
-  width: 100%;
 }
 
 /* Colonne cercles créés ou rejoints */
@@ -178,8 +177,7 @@
   padding: 1rem 1.5rem;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
   flex: 1;
-  min-width: 280px;
-  max-width: 480px;
+  width: 400px;
 }
 
 /* Titres des colonnes */
@@ -254,9 +252,6 @@
   align-self: flex-start;
 }
 
-.btn-modify:hover {
-  background-color: #b07070;
-}
 
 /* Date à droite */
 .circle-date {
