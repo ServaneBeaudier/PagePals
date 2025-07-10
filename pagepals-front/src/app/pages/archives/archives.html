@@ -1,0 +1,24 @@
+<div class="archives-page">
+  <h2>Archives des cercles passés</h2>
+
+  <div *ngIf="loading">Chargement...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="!loading && archivedCircles.length === 0">
+    <p>Aucun cercle archivé pour le moment.</p>
+  </div>
+
+  <div *ngIf="!loading && archivedCircles.length > 0" class="archives-list">
+    <div *ngFor="let circle of archivedCircles" class="archive-card">
+      <h3>
+        <a [routerLink]="['/circles', circle.id]" class="link-no-style">{{ circle.nom }}</a>
+      </h3>
+      <p class="date">{{ circle.dateRencontre | date: 'dd/MM/yyyy HH:mm' }}</p>
+      <span *ngFor="let gId of circle.genreIds; let last = last">
+                {{ getGenreNameById(gId) }}<span *ngIf="!last">, </span>
+            </span>
+      <p *ngIf="circle.livrePropose">Livre choisi : {{ circle.livrePropose.titre }}</p>
+      <button class="btn-view" [routerLink]="['/circles', circle.id]">Voir</button>
+    </div>
+  </div>
+</div>

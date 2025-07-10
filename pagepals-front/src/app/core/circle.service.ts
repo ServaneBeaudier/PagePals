@@ -87,6 +87,10 @@ export class CircleService {
     return this.http.get<CircleDTO[]>(`${this.apiUrl}/active`);
   }
 
+  getArchivedCircles(): Observable<CircleDTO[]> {
+    return this.http.get<CircleDTO[]>(`${this.apiUrl}/archived`);
+  }
+
   updateCircle(dto: CircleDTO, token: string): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${dto.id}`, dto, {
       headers: { Authorization: `Bearer ${token}` }

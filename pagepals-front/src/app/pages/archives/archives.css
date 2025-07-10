@@ -1,0 +1,53 @@
+.archives-page {
+  max-width: 1000px;
+  margin: 20px auto;
+  font-family: "Lora", serif;
+  color: #5c4a42;
+}
+
+h2 {
+    text-align: center;
+    font-weight: 600;
+}
+
+.archives-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.archive-card {
+  background-color: #a8c3bc;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 1px 6px rgb(0 0 0 / 0.1);
+}
+
+.archive-card h3 {
+  margin-top: 0;
+  margin-bottom: 5px;
+  font-weight: 700;
+}
+
+.archive-card .link-no-style {
+  color: #5c4a42;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.8em;
+}
+
+.archive-card p {
+  margin: 4px 0;
+  font-size: 0.9em;
+}
+
+.btn-view {
+  background-color: #d69b9b;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 25px;
+  color: #5c4a42;
+  cursor: pointer;
+  font-weight: 700;
+  margin-top: 10px;
+}
