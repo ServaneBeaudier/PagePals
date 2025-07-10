@@ -1,0 +1,123 @@
+<div class="search-page">
+
+    <!-- Bouton filtres pour mobile -->
+    <button class="btn-filters-mobile" (click)="openFilters()" aria-label="Afficher les filtres">
+        Filtres
+    </button>
+
+    <!-- Encadré filtres (desktop) -->
+    <aside class="filters desktop-filters">
+        <h3>Filtres</h3>
+        <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
+
+            <label>
+                Mot-clé
+                <input type="text" formControlName="motCle" placeholder="Titre, auteur..." />
+            </label>
+
+            <label>
+                Date
+                <input type="date" formControlName="date" />
+            </label>
+
+            <label>
+                Genre littéraire
+                <select formControlName="genreId">
+                    <option [value]="null">-- Choisir un genre --</option>
+                    <option *ngFor="let g of genres" [value]="g.id">{{ g.nom }}</option>
+                </select>
+            </label>
+
+            <fieldset formGroupName="modeRencontre">
+                <legend>Mode de rencontre</legend>
+                <label><input type="checkbox" formControlName="presentiel" /> Présentiel</label>
+                <label><input type="checkbox" formControlName="distanciel" /> En ligne</label>
+            </fieldset>
+
+            <label>
+                <input type="checkbox" formControlName="estOuvert" /> Cercles ouverts uniquement
+            </label>
+
+            <button type="submit" [disabled]="loading">Rechercher</button>
+        </form>
+    </aside>
+
+    <!-- Résultats -->
+    <section class="results">
+        <h3>Résultats</h3>
+
+        <div *ngIf="loading">Chargement...</div>
+        <div *ngIf="error" class="error">{{ error }}</div>
+
+        <ul *ngIf="!loading && results.length > 0">
+            <li *ngFor="let circle of results" class="circle-item">
+                <div class="circle-detail">
+                    <div class="line top-line">
+                        <div class="circle-name">
+                            <a [routerLink]="['/circles', circle.id]" class="link-no-style">{{ circle.nom }}</a>
+                        </div>
+                        <div class="mode-rencontre">
+                            <img [src]="getModeRencontreIcon(circle.modeRencontre)" alt="Mode Rencontre" />
+                            <span>{{ getModeRencontreLabel(circle.modeRencontre) }}</span>
+                        </div>
+                    </div>
+                    <div class="line bottom-line">
+                        <div class="circle-genre">
+                            <ng-container *ngFor="let g of circle.genres; let last = last">
+                                {{ g }}<span *ngIf="!last">, </span>
+                            </ng-container>
+                        </div>
+                        <div class="members-count">
+                            <img src="assets/images/icons8/membre.png" alt="Membres" />
+                            <span>{{ circle.nombreInscrits }} membres / {{ circle.nbMaxMembres }}</span>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+
+        <div *ngIf="!loading && results.length === 0">
+            <p>Aucun cercle trouvé.</p>
+        </div>
+    </section>
+
+    <!-- Modal filtres mobile -->
+    <div class="modal-overlay" *ngIf="showFiltersModal" (click)="closeFilters()"></div>
+    <div class="modal-filters" *ngIf="showFiltersModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <h3 id="modalTitle">Filtres</h3>
+        <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
+
+            <label>
+                Mot-clé
+                <input type="text" formControlName="motCle" placeholder="Titre, auteur..." />
+            </label>
+
+            <label>
+                Date
+                <input type="date" formControlName="date" />
+            </label>
+
+            <label>
+                Genre littéraire
+                <select formControlName="genreId">
+                    <option [value]="null">-- Choisir un genre --</option>
+                    <option *ngFor="let g of genres" [value]="g.id">{{ g.nom }}</option>
+                </select>
+            </label>
+
+            <fieldset formGroupName="modeRencontre">
+                <legend>Mode de rencontre</legend>
+                <label><input type="checkbox" formControlName="presentiel" /> Présentiel</label>
+                <label><input type="checkbox" formControlName="distanciel" /> En ligne</label>
+            </fieldset>
+
+            <label>
+                <input type="checkbox" formControlName="estOuvert" /> Cercles ouverts uniquement
+            </label>
+
+            <button type="submit" [disabled]="loading">Rechercher</button>
+            <button type="button" class="btn-close-modal" (click)="closeFilters()">Annuler</button>
+        </form>
+    </div>
+
+</div>

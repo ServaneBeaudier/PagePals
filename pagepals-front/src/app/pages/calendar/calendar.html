@@ -7,7 +7,6 @@
     <!-- Liste des cercles à gauche -->
     <div class="circles-list">
         <h3 class="titre">Cercles à venir</h3>
-        <h5>{{ selectedDate ? (selectedDate | date: 'dd/MM/yyyy') : '' }}</h5>
 
         <ng-container *ngIf="getGroupedCircles().length > 0; else noCircles">
             <div *ngFor="let group of getGroupedCircles()" class="circle-group">

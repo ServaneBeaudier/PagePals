@@ -83,7 +83,7 @@ export class Profile implements OnInit {
   }
 
   onFindCircle(): void {
-    this.router.navigate(['/circles/search']);
+    this.router.navigate(['/search']);
   }
 
   onModifyCircle(circleId: number): void {

@@ -99,7 +99,6 @@ ul {
 /* === Détails du cercle (mode, genres, membres) === */
 .circle-detail {
     background-color: #A8C3BC;
-    /* vert d’eau clair */
     border-radius: 20px;
     color: #5C4A42;
     width: 100%;
@@ -215,7 +214,6 @@ ul {
   margin-bottom: 6px;
   color: #5c4a42;
   font-weight: 600;
-  font-family: "Quicksand", sans-serif;
   user-select: none;
   text-align: center;
 }
@@ -231,7 +229,6 @@ ul {
     width: 8px;
     height: 8px;
     background-color: #D6A4A4;
-    /* rose doux */
     border-radius: 50%;
     box-shadow: 0 2px 3px rgb(0 0 0 / 0.25);
 }

@@ -2,6 +2,7 @@ package com.pagepals.circle.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -323,49 +324,83 @@ public class CircleServiceImpl implements CircleService {
     @Override
     @Transactional(readOnly = true)
     public List<CircleDTO> searchCircles(SearchCriteriaDTO criteria) {
-        System.out.println("Recherche reçue : " + criteria);
+        System.out.println("Début de searchCircles avec critères : " + criteria);
+
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Circle> query = cb.createQuery(Circle.class);
         Root<Circle> root = query.from(Circle.class);
         List<Predicate> predicates = new ArrayList<>();
 
+        Join<Circle, Book> bookJoin = root.join("livrePropose", JoinType.LEFT);
+
         if (criteria.getMotCle() != null && !criteria.getMotCle().isBlank()) {
-            predicates.add(cb.like(cb.lower(root.get("nom")), "%" + criteria.getMotCle().toLowerCase() + "%"));
+            String pattern = "%" + criteria.getMotCle().toLowerCase() + "%";
+
+            Predicate nameLike = cb.like(cb.lower(root.get("nom")), pattern);
+            Predicate descLike = cb.like(cb.lower(root.get("description")), pattern);
+            Predicate titleLike = cb.like(cb.lower(bookJoin.get("titre")), pattern);
+
+            // Jointure sur la collection d'auteurs (List<String>)
+            ListJoin<Book, String> authorsJoin = bookJoin.joinList("auteurs", JoinType.LEFT);
+            Predicate authorLike = cb.like(cb.lower(authorsJoin), pattern);
+
+            // Combine tous les critères mot-clé
+            Predicate combinedMotCle = cb.or(nameLike, descLike, titleLike, authorLike);
+            predicates.add(combinedMotCle);
         }
 
         if (criteria.getFormat() != null && !criteria.getFormat().isBlank()) {
+            System.out.println("Filtrage format : " + criteria.getFormat());
             predicates.add(cb.equal(cb.lower(root.get("modeRencontre")), criteria.getFormat().toLowerCase()));
         }
 
         if (criteria.getGenre() != null && !criteria.getGenre().isBlank()) {
+            System.out.println("Filtrage genre : " + criteria.getGenre());
             Join<Object, Object> genreJoin = root.join("genres", JoinType.LEFT);
             predicates.add(cb.equal(cb.lower(genreJoin.get("nomGenre")), criteria.getGenre().toLowerCase()));
         }
 
         if (criteria.getDateExacte() != null) {
-            predicates.add(cb.equal(root.get("dateRencontre"), criteria.getDateExacte()));
+            LocalDate date = criteria.getDateExacte();
+            LocalDateTime startOfDay = date.atStartOfDay();
+            LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
+            System.out.println("Filtrage date exacte entre " + startOfDay + " et " + endOfDay);
+
+            predicates.add(cb.between(root.get("dateRencontre"), startOfDay, endOfDay));
         } else if (criteria.getDate() != null) {
+            System.out.println("Filtrage date >= " + criteria.getDate());
             predicates.add(cb.greaterThanOrEqualTo(root.get("dateRencontre"), criteria.getDate()));
         }
 
-        query.select(root).where(cb.and(predicates.toArray(new Predicate[0])));
-        List<Circle> result = entityManager.createQuery(query).getResultList();
+        query.select(root).distinct(true).where(cb.and(predicates.toArray(new Predicate[0])));
 
-        return result.stream()
-                .map(c -> CircleDTO.builder()
-                        .id(c.getId())
-                        .nom(c.getNom())
-                        .description(c.getDescription())
-                        .modeRencontre(c.getModeRencontre())
-                        .lieuRencontre(c.getLieuRencontre())
-                        .lienVisio(c.getLienVisio())
-                        .dateRencontre(c.getDateRencontre())
-                        .nbMaxMembres(c.getNbMaxMembres())
-                        .genres(c.getGenres().stream()
-                                .map(LiteraryGenre::getNomGenre)
-                                .toList())
-                        .build())
+        System.out.println("Exécution de la requête...");
+        List<Circle> result = entityManager.createQuery(query).getResultList();
+        System.out.println("Nombre de cercles trouvés : " + result.size());
+
+        List<CircleDTO> dtoList = result.stream()
+                .map(c -> {
+                    System.out.println("Mapping cercle ID: " + c.getId());
+                    CircleDTO dto = CircleDTO.builder()
+                            .id(c.getId())
+                            .nom(c.getNom())
+                            .description(c.getDescription())
+                            .modeRencontre(c.getModeRencontre())
+                            .lieuRencontre(c.getLieuRencontre())
+                            .lienVisio(c.getLienVisio())
+                            .dateRencontre(c.getDateRencontre())
+                            .nbMaxMembres(c.getNbMaxMembres())
+                            .genres(c.getGenres().stream()
+                                    .map(LiteraryGenre::getNomGenre)
+                                    .toList())
+                            .build();
+                    System.out.println("DTO créé pour cercle ID: " + c.getId());
+                    return dto;
+                })
                 .toList();
+
+        System.out.println("Fin de searchCircles.");
+        return dtoList;
     }
 
     @Override
