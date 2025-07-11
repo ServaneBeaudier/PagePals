@@ -302,7 +302,7 @@ public class CircleServiceImpl implements CircleService {
     }
 
     @Scheduled(cron = "0 0 2 * * *") // Tous les jours à 2h du matin
-    public void archiverCerclesPassés() {
+    public void archiverCerclesPasses() {
         List<Circle> cerclesÀArchiver = circleRepository.findByDateRencontreBeforeAndIsArchivedFalse(LocalDate.now());
 
         for (Circle c : cerclesÀArchiver) {
@@ -312,7 +312,7 @@ public class CircleServiceImpl implements CircleService {
         circleRepository.saveAll(cerclesÀArchiver);
     }
 
-    private Book convertToEntity(BookDTO dto) {
+    public Book convertToEntity(BookDTO dto) {
         Book book = new Book();
         book.setTitre(dto.getTitre());
         book.setAuteurs(dto.getAuteurs());
