@@ -222,6 +222,7 @@ public class CircleServiceImpl implements CircleService {
             dto.setLienVisio(circle.getLienVisio());
             dto.setCreateurId(circle.getCreateurId());
             dto.setNbMaxMembres(circle.getNbMaxMembres());
+            dto.setArchived(circle.isArchived());
 
             int membresInscrits = 0;
             try {
@@ -422,6 +423,7 @@ public class CircleServiceImpl implements CircleService {
             dto.setLieuRencontreDetails(convertEntityToDTO(circle.getLieuRencontreDetails()));
             dto.setLienVisio(circle.getLienVisio());
             dto.setNbMaxMembres(circle.getNbMaxMembres());
+            dto.setArchived(circle.isArchived());
 
             int membresInscrits = 0;
             try {

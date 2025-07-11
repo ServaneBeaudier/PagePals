@@ -57,8 +57,11 @@ export class Profile implements OnInit {
         });
         const allCircles = Array.from(circleMap.values());
 
-        // Observable pour counts membres
-        const countsObservables = allCircles.map(circle =>
+        // Filtrer ici pour exclure les cercles archivés (archived = true)
+        const nonArchivedCircles = allCircles.filter(c => !c.archived);
+
+        // Observable pour compter les membres pour chaque cercle non archivé
+        const countsObservables = nonArchivedCircles.map(circle =>
           this.membershipService.countMembers(circle.id)
             .pipe(
               catchError(() => of(0))
@@ -67,19 +70,19 @@ export class Profile implements OnInit {
 
         return forkJoin(countsObservables).pipe(
           map((counts: number[]) => {
-            allCircles.forEach((circle: any, idx: number) => {
+            nonArchivedCircles.forEach((circle: any, idx: number) => {
               circle.membersCount = counts[idx];
             });
-            return { userProfile, createdCircles, joinedCircles, allCircles };
+            return { userProfile, createdCircles, joinedCircles, nonArchivedCircles };
           })
         );
       })
     ).subscribe(
-      ({ userProfile, createdCircles, joinedCircles, allCircles }) => {
+      ({ userProfile, createdCircles, joinedCircles, nonArchivedCircles }) => {
         this.userProfile = userProfile;
-        // Utiliser allCircles, mais répartir created et joined pour affichage si besoin
-        this.createdCircles = allCircles.filter(c => createdCircles.some((cc: any) => cc.id === c.id));
-        this.joinedCircles = allCircles.filter(c => joinedCircles.some((jc: any) => jc.id === c.id));
+        // Utiliser nonArchivedCircles pour afficher uniquement les cercles non archivés
+        this.createdCircles = nonArchivedCircles.filter(c => createdCircles.some((cc: any) => cc.id === c.id));
+        this.joinedCircles = nonArchivedCircles.filter(c => joinedCircles.some((jc: any) => jc.id === c.id));
         this.loading = false;
       },
       error => {
@@ -88,6 +91,7 @@ export class Profile implements OnInit {
       }
     );
   }
+
 
 
   get profilePhotoUrl(): string {
