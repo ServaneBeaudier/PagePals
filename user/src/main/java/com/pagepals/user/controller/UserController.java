@@ -14,12 +14,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.MediaType;
 
 import com.pagepals.user.dto.*;
+import com.pagepals.user.exception.UserNotFoundException;
 import com.pagepals.user.model.UserProfile;
 import com.pagepals.user.repository.UserProfileRepository;
 import com.pagepals.user.service.FileStorageService;
 import com.pagepals.user.service.UserProfileService;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -74,7 +74,7 @@ public class UserController {
     public ResponseEntity<String> deletePhoto(@RequestParam("userId") Long userId) {
         // Récupérer l'utilisateur
         UserProfile user = userProfileRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
+                .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé"));
 
         // Vérifier si une photo est associée
         if (user.getPhotoProfil() != null) {
@@ -123,7 +123,7 @@ public class UserController {
     @GetMapping("/infos")
     public UserInfoDTO getUserInfo(@RequestParam("id") long userId) {
         UserProfile user = userProfileRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
+                .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé"));
 
         return new UserInfoDTO(user.getId(), user.getPseudo(), user.getPhotoProfil(), user.getDateInscription(), user.getBio());
     }
@@ -144,7 +144,7 @@ public class UserController {
         try {
             userProfileService.cleanupUser(userId);
             return ResponseEntity.noContent().build(); // 204 No Content
-        } catch (EntityNotFoundException e) {
+        } catch (UserNotFoundException e) {
             return ResponseEntity.notFound().build(); // 404 Not Found
         } catch (Exception e) {
             e.printStackTrace();

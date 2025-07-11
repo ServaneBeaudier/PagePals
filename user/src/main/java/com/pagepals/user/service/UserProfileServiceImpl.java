@@ -9,10 +9,10 @@ import com.pagepals.user.client.AuthClient;
 import com.pagepals.user.client.CircleClient;
 import com.pagepals.user.dto.UpdateUserProfileDTO;
 import com.pagepals.user.dto.UserProfileCreateRequest;
+import com.pagepals.user.exception.UserNotFoundException;
 import com.pagepals.user.model.UserProfile;
 import com.pagepals.user.repository.UserProfileRepository;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -38,7 +38,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public void updateProfile(UpdateUserProfileDTO dto) {
         UserProfile userExisting = userProfileRepository.findById(dto.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
+                .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé"));
         System.out.println("ID reçu pour mise à jour : " + dto.getId());
 
         userExisting.setPseudo(dto.getPseudo());
@@ -53,7 +53,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public void updatePhoto(long userId, String fileName) {
         UserProfile userExisting = userProfileRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
+                .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé"));
 
         userExisting.setPhotoProfil(fileName);
         userProfileRepository.save(userExisting);
@@ -63,7 +63,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Transactional
     public void cleanupUser(Long userId) {
         UserProfile user = userProfileRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
+                .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé"));
 
         // Appels microservices circle
         circleClient.deleteActiveCirclesByCreateur(userId);

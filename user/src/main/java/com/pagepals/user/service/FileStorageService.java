@@ -14,7 +14,7 @@ import java.util.UUID;
 public class FileStorageService {
 
     @Value("${file.upload-dir}")
-    private String uploadDir;
+    public String uploadDir;
 
     public String storeFile(MultipartFile file) {
         if (file.isEmpty()) {
