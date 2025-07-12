@@ -13,7 +13,7 @@ FROM openjdk:21-slim
 
 WORKDIR /circle
 
-COPY --from=builder /circle/target/circle.jar app.jar
+COPY --from=builder /circle/target/*.jar app.jar
 
 EXPOSE 8083
 

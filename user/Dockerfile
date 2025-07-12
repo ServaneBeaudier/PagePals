@@ -11,7 +11,7 @@ FROM openjdk:21-slim
 
 WORKDIR /user
 
-COPY --from=builder /user/target/user.jar app.jar
+COPY --from=builder /user/target/*.jar app.jar
 
 EXPOSE 8082
 

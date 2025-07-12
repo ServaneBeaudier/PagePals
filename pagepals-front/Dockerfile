@@ -7,5 +7,5 @@ RUN npm run build -- --output-path=dist
 
 # Étape 2 : Serve l'app via nginx
 FROM nginx:alpine
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY --from=builder /app/dist/browser /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf

@@ -11,7 +11,7 @@ FROM openjdk:21-slim
 
 WORKDIR /search
 
-COPY --from=builder /search/target/search.jar app.jar
+COPY --from=builder /search/target/*.jar app.jar
 
 EXPOSE 8085
 

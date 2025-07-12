@@ -92,11 +92,8 @@ export class Profile implements OnInit {
     );
   }
 
-
-
   get profilePhotoUrl(): string {
     if (this.userProfile?.photoProfil) {
-      console.log(this.userProfile.photoProfil);
       return `/api/user/photo/${encodeURIComponent(this.userProfile.photoProfil)}`;
     }
     return 'assets/images/icons8/photo-profil.png';

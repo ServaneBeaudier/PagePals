@@ -13,7 +13,7 @@ FROM openjdk:21-slim
 
 WORKDIR /auth
 
-COPY --from=builder /auth/target/auth.jar app.jar
+COPY --from=builder /auth/target/*.jar app.jar
 
 EXPOSE 8081
 

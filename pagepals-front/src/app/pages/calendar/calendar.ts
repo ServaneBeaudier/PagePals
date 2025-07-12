@@ -107,9 +107,6 @@ export class Calendar {
           const createdCircles = created.map(mapToDTO);
           const joinedCircles = joined.map(mapToDTO);
 
-          console.log('Cercles créés transformés:', createdCircles);
-          console.log('Cercles rejoints transformés:', joinedCircles);
-
           // Fusionner et éviter doublons
           const map = new Map<number, CircleDTO>();
 
@@ -120,8 +117,9 @@ export class Calendar {
             }
           });
 
-          this.circles = Array.from(map.values());
-          console.log('Cercles fusionnés dans this.circles:', this.circles);
+          let allCircles = Array.from(map.values());
+          allCircles = allCircles.filter(c => !c.isArchived);
+          this.circles = allCircles;
 
           // Afficher la correspondance genreIds -> noms (d’après this.genres)
           this.circles.forEach(circle => {

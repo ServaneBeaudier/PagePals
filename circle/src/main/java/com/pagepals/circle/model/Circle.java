@@ -42,7 +42,7 @@ public class Circle {
     private String lieuRencontre;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
+    @Column(columnDefinition = "json")
     private AdresseDetails lieuRencontreDetails;
 
     private String lienVisio;

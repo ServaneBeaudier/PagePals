@@ -179,7 +179,6 @@ export class CircleDetail implements OnInit {
 
     this.membershipService.desinscrire(this.currentUserId!, this.circleIdToQuit, token).subscribe({
       next: () => {
-        alert('Vous avez quitté le cercle.');
         this.showConfirmQuitPopup = false;
         this.circleIdToQuit = null;
         this.router.navigate(['/profile']);

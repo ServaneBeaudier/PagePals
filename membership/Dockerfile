@@ -11,7 +11,7 @@ FROM openjdk:21-slim
 
 WORKDIR /membership
 
-COPY --from=builder /membership/target/membership.jar app.jar
+COPY --from=builder /membership/target/*.jar app.jar
 
 EXPOSE 8084
 
