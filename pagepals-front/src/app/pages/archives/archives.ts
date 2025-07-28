@@ -53,16 +53,11 @@ export class Archives implements OnInit {
       return;
     }
 
+    const userIdNum = Number(this.currentUserId);
+
     this.circleService.getArchivedCircles().subscribe({
       next: circles => {
-        console.log('Cercles archivés reçus:', circles);
-        // Filtrer pour garder seulement cercles où utilisateur est créateur ou participant
-        const filteredCircles$ = circles.filter(c =>
-          c.createurId === this.currentUserId
-        );
-
-        // Maintenant récupérer tous les participants pour chaque cercle filtré
-        const participantChecks$ = filteredCircles$.map(circle =>
+        const participantChecks$ = circles.map(circle =>
           this.membershipService.getParticipants(circle.id!).pipe(
             catchError(err => {
               console.error(`Erreur chargement participants cercle ${circle.id}`, err);
@@ -73,10 +68,18 @@ export class Archives implements OnInit {
 
         forkJoin(participantChecks$).subscribe({
           next: participantsArrays => {
-            // Filtrer encore selon si user est participant
-            this.archivedCircles = filteredCircles$.filter((circle, i) => {
+            circles.forEach((circle, i) => {
               const participants = participantsArrays[i];
-              return participants.some(p => p.userId === this.currentUserId) || circle.createurId === this.currentUserId;
+              const isCreator = circle.createurId === userIdNum;
+              const isParticipant = participants.some(p => Number(p.id) === userIdNum);
+              console.log(`Circle ${circle.id} - isCreator: ${isCreator}, isParticipant: ${isParticipant}`);
+            });
+
+            this.archivedCircles = circles.filter((circle, i) => {
+              const participants = participantsArrays[i];
+              const isCreator = circle.createurId === userIdNum;
+              const isParticipant = participants.some(p => Number(p.id) === userIdNum);
+              return isCreator || isParticipant;
             });
 
             this.loadCreatorsPseudo();
@@ -91,6 +94,7 @@ export class Archives implements OnInit {
       }
     });
   }
+
 
   loadCreatorsPseudo(): void {
     const creatorIds = Array.from(new Set(this.archivedCircles.map(c => c.createurId))).filter(id => id != null);

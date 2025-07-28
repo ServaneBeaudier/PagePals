@@ -60,6 +60,8 @@ services:
       - "8082:8082"
     networks:
       - pagepals-net
+    volumes:
+    - upload_data:/user/upload
 
   circle-service:
     build:
@@ -105,3 +107,4 @@ networks:
 
 volumes:
   mysql_data:
+  upload_data:

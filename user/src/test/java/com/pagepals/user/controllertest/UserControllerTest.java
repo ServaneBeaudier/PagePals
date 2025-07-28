@@ -5,20 +5,16 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.*;
 
 import com.pagepals.user.controller.UserController;
 import com.pagepals.user.dto.*;
 import com.pagepals.user.exception.GlobalExceptionHandler;
-import com.pagepals.user.exception.UserNotFoundException;
 import com.pagepals.user.model.UserProfile;
 import com.pagepals.user.repository.UserProfileRepository;
 import com.pagepals.user.service.*;
 
-import jakarta.persistence.EntityNotFoundException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

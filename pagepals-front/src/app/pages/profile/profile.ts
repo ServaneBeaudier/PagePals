@@ -47,7 +47,7 @@ export class Profile implements OnInit {
       joinedCircles: this.userService.getJoinedCircles(this.userId)
     }).pipe(
       switchMap(({ userProfile, createdCircles, joinedCircles }) => {
-        // Fusionner created + joined sans doublons
+        // Fusion created + joined
         const circleMap = new Map<number, any>();
         createdCircles.forEach(circle => circleMap.set(circle.id, circle));
         joinedCircles.forEach(circle => {
@@ -57,16 +57,15 @@ export class Profile implements OnInit {
         });
         const allCircles = Array.from(circleMap.values());
 
-        // Filtrer ici pour exclure les cercles archivés (archived = true)
         const nonArchivedCircles = allCircles.filter(c => !c.archived);
 
-        // Observable pour compter les membres pour chaque cercle non archivé
         const countsObservables = nonArchivedCircles.map(circle =>
-          this.membershipService.countMembers(circle.id)
-            .pipe(
-              catchError(() => of(0))
-            )
+          this.membershipService.countMembers(circle.id).pipe(catchError(() => of(0)))
         );
+
+        if (countsObservables.length === 0) {
+          return of({ userProfile, createdCircles, joinedCircles, nonArchivedCircles });
+        }
 
         return forkJoin(countsObservables).pipe(
           map((counts: number[]) => {
@@ -79,6 +78,7 @@ export class Profile implements OnInit {
       })
     ).subscribe(
       ({ userProfile, createdCircles, joinedCircles, nonArchivedCircles }) => {
+         console.log('Profil utilisateur récupéré:', userProfile); 
         this.userProfile = userProfile;
         // Utiliser nonArchivedCircles pour afficher uniquement les cercles non archivés
         this.createdCircles = nonArchivedCircles.filter(c => createdCircles.some((cc: any) => cc.id === c.id));
@@ -138,7 +138,6 @@ export class Profile implements OnInit {
     this.membershipService.desinscrire(this.userId, this.circleIdToQuit, token).subscribe({
       next: () => {
         this.joinedCircles = this.joinedCircles.filter(c => c.id !== this.circleIdToQuit);
-        alert('Vous avez quitté le cercle.');
         this.showConfirmQuitPopup = false;
         this.circleIdToQuit = null;
       },

@@ -96,13 +96,22 @@ public class UserController {
         try {
             Resource file = fileStorageService.loadFile(fileName);
 
-            // Detecter le type mime via Files.probeContentType
-            String contentType = "application/octet-stream";
+            String contentType = null;
             try {
                 Path path = file.getFile().toPath();
                 contentType = Files.probeContentType(path);
             } catch (IOException ex) {
-                // fallback
+                // log warning ou fallback silencieux
+            }
+
+            if (contentType == null) {
+                if (fileName.toLowerCase().endsWith(".png")) {
+                    contentType = "image/png";
+                } else if (fileName.toLowerCase().endsWith(".jpg") || fileName.toLowerCase().endsWith(".jpeg")) {
+                    contentType = "image/jpeg";
+                } else {
+                    contentType = "application/octet-stream";
+                }
             }
 
             return ResponseEntity.ok()
@@ -125,7 +134,8 @@ public class UserController {
         UserProfile user = userProfileRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé"));
 
-        return new UserInfoDTO(user.getId(), user.getPseudo(), user.getPhotoProfil(), user.getDateInscription(), user.getBio());
+        return new UserInfoDTO(user.getId(), user.getPseudo(), user.getPhotoProfil(), user.getDateInscription(),
+                user.getBio());
     }
 
     @GetMapping("/message")

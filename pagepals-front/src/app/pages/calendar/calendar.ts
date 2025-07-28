@@ -101,7 +101,8 @@ export class Calendar {
             dateRencontre: c.dateRencontre,
             nbMaxMembres: c.nbMaxMembres,
             genreIds: c.genreIds || [],
-            createurId: c.createurId
+            createurId: c.createurId,
+            isArchived: c.archived,
           });
 
           const createdCircles = created.map(mapToDTO);
@@ -117,9 +118,12 @@ export class Calendar {
             }
           });
 
-          let allCircles = Array.from(map.values());
-          allCircles = allCircles.filter(c => !c.isArchived);
-          this.circles = allCircles;
+          this.circles = Array.from(map.values())
+            .filter(c => {
+              console.log('Filtre archived:', c.nom, c.isArchived, typeof c.isArchived);
+              return !c.isArchived;
+            });
+          ;
 
           // Afficher la correspondance genreIds -> noms (d’après this.genres)
           this.circles.forEach(circle => {
@@ -127,7 +131,6 @@ export class Calendar {
               const g = this.genres.find(genre => genre.id === id);
               return g ? g.nom : 'Inconnu';
             }) || [];
-            console.log(`Cercle ${circle.nom} genres:`, genreNoms);
           });
 
           this.loadParticipantsCount();
