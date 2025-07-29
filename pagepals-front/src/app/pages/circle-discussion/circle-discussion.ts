@@ -4,6 +4,7 @@ import { CircleService, MessageDTO } from '../../core/circle.service';
 import { TokenStorage } from '../../core/token-storage';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Participant } from '../../core/membership.service';
 
 @Component({
   selector: 'app-circle-discussion',
@@ -15,6 +16,9 @@ export class CircleDiscussion implements OnInit {
   circleId!: number;
   messages: MessageDTO[] = [];
   newMessageContent = '';
+  participants: Participant[] = [];
+  isUserParticipantFlag = false;
+  currentUserId: number | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -66,5 +70,11 @@ export class CircleDiscussion implements OnInit {
 
   goToCercle(id: number): void {
     this.router.navigate(['/circles', id]);
+  }
+
+  isUserParticipant(): boolean {
+    const found = this.participants.some(p => p.userId === this.currentUserId);
+    console.log('isUserParticipant ?', found, 'currentUserId=', this.currentUserId, 'participants=', this.participants);
+    return found;
   }
 }

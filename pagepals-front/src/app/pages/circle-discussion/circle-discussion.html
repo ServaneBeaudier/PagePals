@@ -19,11 +19,15 @@
             </ng-template>
         </div>
 
-        <div class="new-message">
+        <div *ngIf="isUserParticipantFlag" class="new-message">
             <textarea [(ngModel)]="newMessageContent" placeholder="Nouveau message"></textarea>
             <button (click)="sendMessage()" class="btn-new-message">
                 <img src="assets/images/icons8/plus.png" alt="icone-plus" class="icone-plus" />
             </button>
+        </div>
+        <!-- Message d’info pour inviter à rejoindre -->
+        <div *ngIf="!isUserParticipantFlag" class="info-join-message">
+            <p>Vous devez rejoindre le cercle pour pouvoir envoyer des messages.</p>
         </div>
     </div>
     <div class="btn-retour-container">
