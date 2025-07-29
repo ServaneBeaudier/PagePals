@@ -101,11 +101,15 @@
 }
 
 /*Liste de participants*/
-.members-dropdown {
+.members {
+  position: relative;
+}
+
+.dropdown-members {
   position: absolute;
   top: 25px;
   left: 0;
-  background: white;
+  background: #FAF3EB;
   border: 1px solid #ccc;
   width: 200px;
   max-height: 200px;
@@ -116,7 +120,7 @@
   list-style: none;
 }
 
-.members-dropdown li {
+.dropdown-members li {
   display: flex;
   align-items: center;
   padding: 5px 10px;

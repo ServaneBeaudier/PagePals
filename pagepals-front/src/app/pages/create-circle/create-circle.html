@@ -23,9 +23,13 @@
         <div class="col-md-6">
             <label for="dateRencontre" class="form-label">Date et heure de la rencontre</label>
             <input id="dateRencontre" type="datetime-local" class="form-control" formControlName="dateRencontre" />
-            <div *ngIf="createCircleForm.get('dateRencontre')?.invalid && createCircleForm.get('dateRencontre')?.touched"
+            <div *ngIf="createCircleForm.get('dateRencontre')?.touched && createCircleForm.get('dateRencontre')?.errors"
                 class="text-danger small">
-                La date de la rencontre est obligatoire.
+                <div *ngIf="createCircleForm.get('dateRencontre')?.errors?.['required']">La date de la rencontre est
+                    obligatoire.</div>
+                <div *ngIf="createCircleForm.get('dateRencontre')?.errors?.['dateInPast']">La date ne peut pas être dans
+                    le
+                    passé.</div>
             </div>
         </div>
         <div class="col-md-6">
@@ -55,6 +59,10 @@
                 </label>
             </div>
         </div>
+        <div *ngIf="createCircleForm.get('genreIds')?.touched && createCircleForm.get('genreIds')?.invalid"
+            class="text-danger small mt-1">
+            Au moins un genre doit être sélectionné.
+        </div>
     </div>
 
 
@@ -73,7 +81,8 @@
 
     <div class="mb-3" *ngIf="createCircleForm.get('modeRencontre')?.value === 'PRESENTIEL'">
         <label for="lieuRencontre" class="form-label">Lieu de rencontre</label>
-         <app-address-autocomplete formControlName="lieuRencontre" (addressSelected)="onAddressSelected($event)"></app-address-autocomplete>
+        <app-address-autocomplete formControlName="lieuRencontre"
+            (addressSelected)="onAddressSelected($event)"></app-address-autocomplete>
         <div *ngIf="createCircleForm.get('lieuRencontre')?.invalid && createCircleForm.get('lieuRencontre')?.touched"
             class="text-danger small">
             Le lieu de rencontre est obligatoire en présentiel.

@@ -22,9 +22,13 @@
         <div class="col-md-6">
             <label for="dateRencontre" class="form-label">Date et heure de la rencontre</label>
             <input id="dateRencontre" type="datetime-local" class="form-control" formControlName="dateRencontre" />
-            <div *ngIf="editCircleForm.get('dateRencontre')?.invalid && editCircleForm.get('dateRencontre')?.touched"
+            <div *ngIf="editCircleForm.get('dateRencontre')?.touched && editCircleForm.get('dateRencontre')?.errors"
                 class="text-danger small">
-                La date de la rencontre est obligatoire.
+                <div *ngIf="editCircleForm.get('dateRencontre')?.errors?.['required']">La date de la rencontre est
+                    obligatoire.</div>
+                <div *ngIf="editCircleForm.get('dateRencontre')?.errors?.['dateInPast']">La date ne peut pas être dans
+                    le
+                    passé.</div>
             </div>
         </div>
         <div class="col-md-6">
@@ -54,6 +58,10 @@
                 </label>
             </div>
         </div>
+        <div *ngIf="editCircleForm.get('genreIds')?.touched && editCircleForm.get('genreIds')?.invalid"
+            class="text-danger small mt-1">
+            Au moins un genre doit être sélectionné.
+        </div>
     </div>
 
     <fieldset class="mb-3">
@@ -71,7 +79,8 @@
 
     <div class="mb-3" *ngIf="editCircleForm.get('modeRencontre')?.value === 'PRESENTIEL'">
         <label for="lieuRencontre" class="form-label">Lieu de rencontre</label>
-        <app-address-autocomplete formControlName="lieuRencontre" (addressSelected)="onAddressSelected($event)"></app-address-autocomplete>
+        <app-address-autocomplete formControlName="lieuRencontre"
+            (addressSelected)="onAddressSelected($event)"></app-address-autocomplete>
         <div *ngIf="editCircleForm.get('lieuRencontre')?.invalid && editCircleForm.get('lieuRencontre')?.touched"
             class="text-danger small">
             Le lieu de rencontre est obligatoire en présentiel.
