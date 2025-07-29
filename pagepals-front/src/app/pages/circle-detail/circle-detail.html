@@ -43,7 +43,7 @@
 
             <li class="members" (click)="toggleParticipantsDropdown()" style="cursor:pointer;">
                 <img src="assets/images/icons8/membre.png" alt="Membres" class="icones" />
-                {{ participants.length }} / {{ circle?.nbMaxMembres ?? 20 }}
+                {{ participants.length }} / {{ circle.nbMaxMembres ?? 20 }}
                 <ul *ngIf="showParticipantsDropdown" class="dropdown-members">
                     <li *ngFor="let participant of participants" class="participant-item">
                         <img [src]="getPhotoUrl(participant.photoProfil)" alt="Photo participant"

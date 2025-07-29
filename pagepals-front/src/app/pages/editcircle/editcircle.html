@@ -100,9 +100,16 @@
             placeholder="Recherche un livre..." autocomplete="off" (focus)="filteredBooks = []" />
         <ul class="list-group position-absolute w-100 zindex-tooltip" *ngIf="filteredBooks.length > 0"
             style="max-height: 200px; overflow-y: auto;">
-            <li class="list-group-item list-group-item-action" *ngFor="let book of filteredBooks"
+            <li class="list-group-item list-group-item-action d-flex align-items-center" *ngFor="let book of filteredBooks"
                 (click)="onBookSelected(book)" style="cursor: pointer;">
-                {{ displayBook(book) }}
+                <img *ngIf="book.couvertureUrl" [src]="book.couvertureUrl" alt="Couverture" width="40" height="60"
+                    class="me-2" style="object-fit: cover; border-radius: 4px;" />
+                <div>
+                    <div><strong>{{ book.titre }}</strong></div>
+                    <div class="text-muted" style="font-size: 0.9em;">
+                        {{ book.auteurs.join(', ') || 'Auteur inconnu' }}
+                    </div>
+                </div>
             </li>
         </ul>
     </div>

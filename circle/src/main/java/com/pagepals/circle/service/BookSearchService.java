@@ -38,7 +38,7 @@ public class BookSearchService {
 
     public List<BookDTO> searchBooks(String critereRecherche) {
         String url = "https://www.googleapis.com/books/v1/volumes?q=" + critereRecherche
-                + "&langRestrict=fr&maxResults=10&key=" + apiKey;
+                + "&langRestrict=fr&maxResults=20&key=" + apiKey + "&printType=books";
 
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 

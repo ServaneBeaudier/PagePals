@@ -69,7 +69,7 @@ export class Editcircle implements OnInit {
         city: ['']
       }),
       lienVisio: [''],
-      livrePropose: [null]
+      livrePropose: ['']
     });
 
     this.circleService.getGenres().subscribe({
@@ -92,7 +92,11 @@ export class Editcircle implements OnInit {
     this.editCircleForm.get('livrePropose')?.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      switchMap(value => value && typeof value === 'string' ? this.searchBooks(value) : of([]))
+      switchMap(value => {
+        const query = typeof value === 'string' ? value.trim() : '';
+        if (!query || query.length < 2) return of([]); // évite les requêtes trop courtes
+        return this.searchBooks(query);
+      })
     ).subscribe({
       next: books => {
         this.filteredBooks = books;
@@ -202,7 +206,12 @@ export class Editcircle implements OnInit {
   }
 
   displayBook(book?: BookDTO): string {
-    return book ? `${book.titre} (${book.auteurs.join(', ')})` : '';
+    if (!book) return '';
+    const titre = book.titre ?? 'Titre inconnu';
+    const auteurs = Array.isArray(book.auteurs) && book.auteurs.length
+      ? book.auteurs.join(', ')
+      : 'Auteur inconnu';
+    return `${titre} (${auteurs})`;
   }
 
   onBookSelected(book: BookDTO): void {
