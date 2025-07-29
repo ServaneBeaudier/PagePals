@@ -446,6 +446,11 @@ public class CircleServiceImpl implements CircleService {
                 dto.setLivrePropose(null);
             }
 
+            dto.setGenreIds(circle.getGenres()
+                    .stream()
+                    .map(LiteraryGenre::getId)
+                    .collect(Collectors.toList()));
+                    
             dto.setGenres(circle.getGenres() == null ? List.of()
                     : circle.getGenres().stream()
                             .map(LiteraryGenre::getNomGenre)

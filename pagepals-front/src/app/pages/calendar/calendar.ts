@@ -120,7 +120,6 @@ export class Calendar {
 
           this.circles = Array.from(map.values())
             .filter(c => {
-              console.log('Filtre archived:', c.nom, c.isArchived, typeof c.isArchived);
               return !c.isArchived;
             });
           ;

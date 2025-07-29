@@ -1,6 +1,7 @@
 package com.pagepals.membership.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.pagepals.membership.model.ModeRencontre;
 
@@ -22,4 +23,6 @@ public class CircleDTO {
     private Long createurId;
     private Integer nbMaxMembres;
     private Integer membersCount;
+    private List<String> genres;
+    private List<Long> genreIds;
 }

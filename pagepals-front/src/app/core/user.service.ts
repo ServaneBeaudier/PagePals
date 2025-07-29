@@ -11,6 +11,7 @@ export interface Circle {
   dateRencontre: string;  // ISO string
   lieuRencontre?: string;
   lienVisio?: string;
+  genreIds: number[];
 }
 
 export interface UserProfile {
