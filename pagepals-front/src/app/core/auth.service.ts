@@ -16,6 +16,7 @@ export interface LoginDTO {
 
 export interface AuthResponseDTO {
   token: string;
+  refreshToken: string;
   type: string;
   id: number;
   username: string;
@@ -41,25 +42,32 @@ export class AuthService {
   private baseUrl = '/api/auth';
 
   private loggedIn: BehaviorSubject<boolean>;
-
   isLoggedIn$: Observable<boolean>;
 
   constructor(private http: HttpClient, private tokenStorage: TokenStorage) {
-    // Initialise ici, après injection
-    this.loggedIn = new BehaviorSubject<boolean>(!!this.tokenStorage.getToken());
+    // ✅ On initialise ici, après injection du tokenStorage
+    const isLogged = !!this.tokenStorage.getToken();
+    this.loggedIn = new BehaviorSubject<boolean>(isLogged);
     this.isLoggedIn$ = this.loggedIn.asObservable();
   }
 
   register(data: RegisterDTO): Observable<AuthResponseDTO> {
-    return this.http.post<AuthResponseDTO>(`${this.baseUrl}/register`, data);
+    return this.http.post<AuthResponseDTO>(`${this.baseUrl}/register`, data).pipe(
+      tap((response) => {
+        this.tokenStorage.saveToken(response.token);
+        this.tokenStorage.saveRefreshToken(response.refreshToken);
+        this.tokenStorage.saveUserId(response.id);
+        this.loggedIn.next(true);
+      })
+    );
   }
 
   login(credentials: LoginDTO): Observable<AuthResponseDTO> {
     return this.http.post<AuthResponseDTO>(`${this.baseUrl}/login`, credentials).pipe(
-      tap(response => {
+      tap((response) => {
         this.tokenStorage.saveToken(response.token);
-        localStorage.setItem('userId', response.id.toString());
-        localStorage.setItem('auth-user', JSON.stringify(response));
+        this.tokenStorage.saveRefreshToken(response.refreshToken);
+        this.tokenStorage.saveUserId(response.id);
         this.loggedIn.next(true);
       })
     );
@@ -68,7 +76,6 @@ export class AuthService {
   getEmail(userId: number): Observable<{ email: string }> {
     return this.http.get<{ email: string }>(`${this.baseUrl}/email?id=${userId}`);
   }
-
 
   updateEmail(data: UpdateMailDTO): Observable<void> {
     return this.http.put<void>(`${this.baseUrl}/update-email`, data);
@@ -85,12 +92,10 @@ export class AuthService {
 
   logout(): void {
     this.tokenStorage.signOut();
-    localStorage.removeItem('auth-user');
     this.loggedIn.next(false);
   }
 
   getUserIdFromStorage(): number | null {
-    const stored = localStorage.getItem('userId');
-    return stored ? +stored : null;
+    return this.tokenStorage.getUserId();
   }
 }

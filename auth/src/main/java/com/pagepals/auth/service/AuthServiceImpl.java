@@ -130,4 +130,25 @@ public class AuthServiceImpl implements AuthService {
         userRepository.deleteById(userId);
     }
 
+    // 🔹 Retourne un utilisateur par ID (utilisé par /refresh)
+    @Override
+    public UserEntity findUserById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+    // 🔹 Expose la logique de parsing du token pour le controller
+    public io.jsonwebtoken.Claims parseToken(String token) {
+        return jwtGenerator.parseToken(token);
+    }
+
+    // 🔹 Permet de régénérer un nouveau token d'accès et refresh
+    public String generateAccessToken(UserEntity user) {
+        return jwtGenerator.generateToken(user.getId(), user.getRole().name(), user.getEmail(), 15 * 60 * 1000);
+    }
+
+    public String generateRefreshToken(UserEntity user) {
+        return jwtGenerator.generateToken(user.getId(), user.getRole().name(), user.getEmail(),
+                7 * 24 * 60 * 60 * 1000);
+    }
+
 }
