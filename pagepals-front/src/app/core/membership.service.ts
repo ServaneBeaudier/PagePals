@@ -15,7 +15,7 @@ export interface Participant {
 })
 export class MembershipService {
 
-  private apiUrl = 'http://gateway:8080/api/memberships';
+  private apiUrl = '/api/memberships';
 
   constructor(private http: HttpClient) {}
 
