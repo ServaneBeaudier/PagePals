@@ -61,7 +61,8 @@ public class AuthControllerTest {
         dto.setMotDePasse("password123");
 
         AuthResponseDTO responseDTO = new AuthResponseDTO(
-                "mocked-jwt-token",
+                "mocked-access-token",
+                "mocked-refresh-token",
                 dto.getEmail(),
                 Role.MEMBRE.name(),
                 1L);
@@ -78,7 +79,8 @@ public class AuthControllerTest {
                             }
                         """))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token").value("mocked-jwt-token"))
+                .andExpect(jsonPath("$.token").value("mocked-access-token"))
+                .andExpect(jsonPath("$.refreshToken").value("mocked-refresh-token"))
                 .andExpect(jsonPath("$.email").value(dto.getEmail()))
                 .andExpect(jsonPath("$.role").value(Role.MEMBRE.name()))
                 .andExpect(jsonPath("$.id").value(1));
@@ -91,7 +93,8 @@ public class AuthControllerTest {
         dto.setMotDePasse("password123");
 
         AuthResponseDTO responseDTO = new AuthResponseDTO(
-                "mocked-jwt-token",
+                "mocked-access-token",
+                "mocked-refresh-token",
                 dto.getEmail(),
                 Role.MEMBRE.name(),
                 1L);

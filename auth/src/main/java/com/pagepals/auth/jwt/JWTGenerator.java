@@ -30,18 +30,29 @@ public class JWTGenerator {
         key = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
+    /**
+     * 🔹 Génère un token avec la durée par défaut (définie dans
+     * application.properties)
+     */
     public String generateToken(Long userId, String role, String email) {
-    Date now = new Date();
-    Date expiryDate = new Date(now.getTime() + expirationMs);
+        return generateToken(userId, role, email, expirationMs);
+    }
 
-    return Jwts.builder()
-            .claim("userId", userId)
-            .claim("role", role)
-            .setSubject(email)
-            .setIssuedAt(now)
-            .setExpiration(expiryDate)
-            .signWith(key, SignatureAlgorithm.HS256)
-            .compact();
-}
+    /**
+     * 🔹 Génère un token avec une durée personnalisée (utile pour refresh token)
+     */
+    public String generateToken(Long userId, String role, String email, long expirationMillis) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + expirationMillis);
+
+        return Jwts.builder()
+                .claim("userId", userId)
+                .claim("role", role)
+                .setSubject(email)
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
 
 }

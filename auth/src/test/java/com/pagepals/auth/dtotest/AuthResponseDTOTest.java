@@ -7,17 +7,21 @@ import com.pagepals.auth.dto.AuthResponseDTO;
 
 class AuthResponseDTOTest {
 
-     @Test
+    @Test
     void testConstructorAndGettersSetters() {
-        AuthResponseDTO dto = new AuthResponseDTO("token123", "user@example.com", "MEMBRE", 1L);
+        AuthResponseDTO dto = new AuthResponseDTO("token123", "refresh123", "user@example.com", "MEMBRE", 1L);
 
         assertEquals("token123", dto.getToken());
+        assertEquals("refresh123", dto.getRefreshToken());
         assertEquals("user@example.com", dto.getEmail());
         assertEquals("MEMBRE", dto.getRole());
         assertEquals(1L, dto.getId());
 
         dto.setToken("newToken");
         assertEquals("newToken", dto.getToken());
+
+        dto.setRefreshToken("newRefresh");
+        assertEquals("newRefresh", dto.getRefreshToken());
 
         dto.setEmail("newuser@example.com");
         assertEquals("newuser@example.com", dto.getEmail());
@@ -31,9 +35,9 @@ class AuthResponseDTOTest {
 
     @Test
     void testEqualsAndHashCode() {
-        AuthResponseDTO dto1 = new AuthResponseDTO("token", "email", "role", 1L);
-        AuthResponseDTO dto2 = new AuthResponseDTO("token", "email", "role", 1L);
-        AuthResponseDTO dto3 = new AuthResponseDTO("tokenDiff", "email", "role", 1L);
+        AuthResponseDTO dto1 = new AuthResponseDTO("token", "refresh", "email", "role", 1L);
+        AuthResponseDTO dto2 = new AuthResponseDTO("token", "refresh", "email", "role", 1L);
+        AuthResponseDTO dto3 = new AuthResponseDTO("tokenDiff", "refresh", "email", "role", 1L);
 
         assertEquals(dto1, dto2);
         assertEquals(dto1.hashCode(), dto2.hashCode());
@@ -44,10 +48,11 @@ class AuthResponseDTOTest {
 
     @Test
     void testToString() {
-        AuthResponseDTO dto = new AuthResponseDTO("token", "email", "role", 1L);
+        AuthResponseDTO dto = new AuthResponseDTO("token", "refresh", "email", "role", 1L);
         String toString = dto.toString();
 
         assertTrue(toString.contains("token"));
+        assertTrue(toString.contains("refresh"));
         assertTrue(toString.contains("email"));
         assertTrue(toString.contains("role"));
         assertTrue(toString.contains("1"));

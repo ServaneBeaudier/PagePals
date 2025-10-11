@@ -21,7 +21,6 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public List<CircleDTO> searchCircles(SearchCriteriaDTO criteria) {
-        System.out.println("🔎 Appel à searchCircles avec critères : " + criteria);
         List<CircleDTO> cerclesBruts = circleClient.searchCircles(criteria);
 
         List<CircleDTO> cerclesEnrichis = cerclesBruts.stream()

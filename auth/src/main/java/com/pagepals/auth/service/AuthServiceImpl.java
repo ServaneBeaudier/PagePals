@@ -58,13 +58,25 @@ public class AuthServiceImpl implements AuthService {
         profileRequest.setId(user.getId());
         profileRequest.setPseudo(dto.getPseudo());
         profileRequest.setDateInscription(LocalDate.now());
-
         userProfileClient.createUserProfile(profileRequest);
 
-        // Génération du token JWT
-        String token = jwtGenerator.generateToken(user.getId(), user.getRole().name(), user.getEmail());
+        // 🔹 Génération des tokens
+        String accessToken = jwtGenerator.generateToken(
+                user.getId(),
+                user.getRole().name(),
+                user.getEmail(),
+                15 * 60 * 1000 // 15 minutes
+        );
 
-        return new AuthResponseDTO(token, user.getEmail(), user.getRole().name(), user.getId());
+        String refreshToken = jwtGenerator.generateToken(
+                user.getId(),
+                user.getRole().name(),
+                user.getEmail(),
+                7 * 24 * 60 * 60 * 1000 // 7 jours
+        );
+
+        // 🔹 Retourne les 5 champs attendus par le DTO
+        return new AuthResponseDTO(accessToken, refreshToken, user.getEmail(), user.getRole().name(), user.getId());
     }
 
     @Override
@@ -76,9 +88,13 @@ public class AuthServiceImpl implements AuthService {
             throw new InvalidCredentialException("Identifiants incorrects");
         }
 
-        String token = jwtGenerator.generateToken(user.getId(), user.getRole().name(), user.getEmail());
+        String accessToken = jwtGenerator.generateToken(user.getId(), user.getRole().name(), user.getEmail(),
+                15 * 60 * 1000);
 
-        return new AuthResponseDTO(token, user.getEmail(), user.getRole().name(), user.getId());
+        String refreshToken = jwtGenerator.generateToken(user.getId(), user.getRole().name(), user.getEmail(),
+                7 * 24 * 60 * 60 * 1000);
+
+        return new AuthResponseDTO(accessToken, refreshToken, user.getEmail(), user.getRole().name(), user.getId());
     }
 
     @Override

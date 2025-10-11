@@ -59,7 +59,7 @@ export interface MessageDTO {
   providedIn: 'root'
 })
 export class CircleService {
-  private apiUrl = '/api/circles';
+  private apiUrl = 'http://gateway:8080/api/circles';
 
   constructor(private http: HttpClient) { }
 
