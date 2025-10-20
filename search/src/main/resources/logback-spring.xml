@@ -1,0 +1,16 @@
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml" />
+
+    <appender name="HTTP_LOGS" class="com.pagepals.search.logging.HttpLogAppender">
+        <logsServiceUrl>http://logs-service:8095/logs</logsServiceUrl>
+        <serviceName>${spring.application.name:search-service}</serviceName>
+        <enabled>true</enabled>
+        <connectTimeoutMs>800</connectTimeoutMs>
+        <readTimeoutMs>1200</readTimeoutMs>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="HTTP_LOGS" />
+    </root>
+</configuration>

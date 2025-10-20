@@ -27,6 +27,34 @@ services:
     networks:
       - pagepals-net
 
+  mongo-logs:
+    image: mongo:6.0
+    container_name: mongo-logs
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_logs_data:/data/db
+    networks:
+      - pagepals-net
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: unless-stopped
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo-logs
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: true
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin
+    ports:
+      - "8089:8081"
+    depends_on:
+      - mongo-logs
+    networks:
+      - pagepals-net
+
   discovery:
       build:
         context: ./discovery
@@ -91,6 +119,18 @@ services:
       - "8085:8085"
     networks:
       - pagepals-net
+  
+  logs-service:
+    build:
+      context: ./logs
+    container_name: logs-service
+    restart: unless-stopped
+    ports:
+      - "8095:8095"
+    depends_on:
+      - mongo-logs
+    networks:
+      - pagepals-net
 
   front:
     build:
@@ -108,3 +148,4 @@ networks:
 volumes:
   mysql_data:
   upload_data:
+  mongo_logs_data:

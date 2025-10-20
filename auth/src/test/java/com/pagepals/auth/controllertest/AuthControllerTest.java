@@ -110,7 +110,7 @@ public class AuthControllerTest {
                             }
                         """))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token").value("mocked-jwt-token"))
+                .andExpect(jsonPath("$.token").value("mocked-access-token"))
                 .andExpect(jsonPath("$.email").value(dto.getEmail()))
                 .andExpect(jsonPath("$.role").value(Role.MEMBRE.name()))
                 .andExpect(jsonPath("$.id").value(1));
