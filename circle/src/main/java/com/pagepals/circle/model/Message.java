@@ -5,6 +5,12 @@ import java.time.LocalDateTime;
 import jakarta.persistence.*;
 import lombok.*;
 
+/**
+ * Entité représentant un message échangé au sein d'un cercle littéraire.
+ * 
+ * Chaque message est associé à un auteur et à un cercle, et contient
+ * le texte du message ainsi que la date d'envoi.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

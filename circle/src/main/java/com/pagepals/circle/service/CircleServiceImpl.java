@@ -20,21 +20,40 @@ import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Implémentation de la logique métier liée aux cercles littéraires.
+ *
+ * Gère la création, la mise à jour, la suppression, l'archivage automatique,
+ * la recherche multi-critères ainsi que la conversion entité/DTO pour l'exposition.
+ * Interagit avec membership-service pour compter les membres inscrits.
+ *
+ * Conventions et contraintes métier prises en compte :
+ * - Date de rencontre non passée
+ * - Un créateur ne peut pas avoir deux cercles à la même date et heure
+ * - Nombre de membres autorisés compris entre 1 et 20
+ */
 @RequiredArgsConstructor
 @Service
 public class CircleServiceImpl implements CircleService {
 
     private final CircleRepository circleRepository;
-
     private final BookRepository bookRepository;
-
     private final LiteraryGenreRepository literaryGenreRepository;
-
     private final MembershipClient membershipClient;
 
     @PersistenceContext
     private EntityManager entityManager;
 
+    /**
+     * Crée un nouveau cercle littéraire pour un créateur donné.
+     * Valide les contraintes métier et inscrit les genres et le livre proposé.
+     *
+     * @param dto données de création du cercle
+     * @param createurId identifiant du créateur
+     * @throws InvalidCircleDataException si la date est passée ou si nb max hors [1..20]
+     * @throws CircleAlreadyExistsException si un cercle existe déjà à cette date pour ce créateur
+     * @throws IllegalArgumentException si certains genres sont invalides
+     */
     @Override
     @Transactional
     public void createCircle(CreateCircleDTO dto, long createurId) {
@@ -93,6 +112,18 @@ public class CircleServiceImpl implements CircleService {
         circle = circleRepository.save(circle);
     }
 
+    /**
+     * Met à jour un cercle existant après contrôle du créateur et des contraintes métier.
+     * Met à jour le livre proposé en supprimant l'ancien si nécessaire.
+     *
+     * @param dto données mises à jour du cercle
+     * @param createurId identifiant du créateur qui réalise l'opération
+     * @throws CircleNotFoundException si le cercle n'existe pas
+     * @throws AccessDeniedException si l'utilisateur n'est pas le créateur du cercle
+     * @throws InvalidCircleDataException si la date est passée ou nb max hors [1..20]
+     * @throws CircleAlreadyExistsException si conflit de date avec un autre cercle du même créateur
+     * @throws IllegalArgumentException si certains genres sont invalides
+     */
     @Override
     @Transactional
     public void updateCircle(UpdateCircleDTO dto, long createurId) {
@@ -165,6 +196,13 @@ public class CircleServiceImpl implements CircleService {
         circleRepository.save(circleExisting);
     }
 
+    /**
+     * Récupère un cercle par identifiant et le mappe vers son DTO pour exposition.
+     *
+     * @param id identifiant du cercle
+     * @return le DTO correspondant
+     * @throws CircleNotFoundException si le cercle n'existe pas
+     */
     @Override
     public CircleDTO getCircleById(long id) {
         Circle circle = circleRepository.findById(id)
@@ -205,6 +243,11 @@ public class CircleServiceImpl implements CircleService {
         return dto;
     }
 
+    /**
+     * Retourne la liste des cercles actifs avec agrégation du nombre de membres via membership-service.
+     *
+     * @return liste des cercles non archivés
+     */
     @Override
     public List<CircleDTO> getCirclesActive() {
         List<Circle> circles = circleRepository.findByIsArchivedFalse();
@@ -254,6 +297,11 @@ public class CircleServiceImpl implements CircleService {
         }).toList();
     }
 
+    /**
+     * Retourne la liste des cercles archivés avec comptage des membres.
+     *
+     * @return liste des cercles archivés
+     */
     @Override
     public List<CircleDTO> getCirclesArchived() {
         List<Circle> circles = circleRepository.findByIsArchivedTrue();
@@ -302,7 +350,11 @@ public class CircleServiceImpl implements CircleService {
         }).toList();
     }
 
-    @Scheduled(cron = "0 0 2 * * *") // Tous les jours à 2h du matin
+    /**
+     * Archive quotidiennement les cercles dont la date de rencontre est passée.
+     * Tâche planifiée exécutée à 02:00.
+     */
+    @Scheduled(cron = "0 0 2 * * *")
     public void archiverCerclesPasses() {
         List<Circle> cerclesÀArchiver = circleRepository.findByDateRencontreBeforeAndIsArchivedFalse(LocalDate.now());
 
@@ -313,6 +365,12 @@ public class CircleServiceImpl implements CircleService {
         circleRepository.saveAll(cerclesÀArchiver);
     }
 
+    /**
+     * Convertit un DTO de livre en entité persistable.
+     *
+     * @param dto données du livre
+     * @return entité Book
+     */
     public Book convertToEntity(BookDTO dto) {
         Book book = new Book();
         book.setTitre(dto.getTitre());
@@ -323,6 +381,13 @@ public class CircleServiceImpl implements CircleService {
         return book;
     }
 
+    /**
+     * Recherche des cercles selon plusieurs critères à l'aide de l'API Criteria.
+     * Filtre par mot-clé, format, genre et date.
+     *
+     * @param criteria critères de recherche
+     * @return liste des cercles correspondants
+     */
     @Override
     @Transactional(readOnly = true)
     public List<CircleDTO> searchCircles(SearchCriteriaDTO criteria) {
@@ -343,11 +408,9 @@ public class CircleServiceImpl implements CircleService {
             Predicate descLike = cb.like(cb.lower(root.get("description")), pattern);
             Predicate titleLike = cb.like(cb.lower(bookJoin.get("titre")), pattern);
 
-            // Jointure sur la collection d'auteurs (List<String>)
             ListJoin<Book, String> authorsJoin = bookJoin.joinList("auteurs", JoinType.LEFT);
             Predicate authorLike = cb.like(cb.lower(authorsJoin), pattern);
 
-            // Combine tous les critères mot-clé
             Predicate combinedMotCle = cb.or(nameLike, descLike, titleLike, authorLike);
             predicates.add(combinedMotCle);
         }
@@ -406,6 +469,13 @@ public class CircleServiceImpl implements CircleService {
         return dtoList;
     }
 
+    /**
+     * Récupère les cercles créés par un utilisateur donné.
+     * Agrège les informations d'affichage et le nombre de membres.
+     *
+     * @param createurId identifiant du créateur
+     * @return liste des cercles du créateur
+     */
     @Override
     public List<CircleDTO> findCirclesByCreateur(Long createurId) {
         List<Circle> circles = circleRepository.findByCreateurId(createurId);
@@ -450,7 +520,7 @@ public class CircleServiceImpl implements CircleService {
                     .stream()
                     .map(LiteraryGenre::getId)
                     .collect(Collectors.toList()));
-                    
+
             dto.setGenres(circle.getGenres() == null ? List.of()
                     : circle.getGenres().stream()
                             .map(LiteraryGenre::getNomGenre)
@@ -461,18 +531,33 @@ public class CircleServiceImpl implements CircleService {
 
     }
 
+    /**
+     * Supprime un cercle de manière définitive par son identifiant.
+     *
+     * @param id identifiant du cercle
+     */
     @Override
     @Transactional
     public void deleteCircleById(Long id) {
         circleRepository.deleteById(id);
     }
 
+    /**
+     * Supprime tous les cercles actifs d'un créateur donné.
+     *
+     * @param userId identifiant du créateur
+     */
     @Transactional
     public void deleteActiveCirclesByCreateur(Long userId) {
         List<Circle> activeCircles = circleRepository.findByCreateurIdAndIsArchivedFalse(userId);
         circleRepository.deleteAll(activeCircles);
     }
 
+    /**
+     * Anonymise le créateur dans tous les cercles archivés correspondant à l'utilisateur.
+     *
+     * @param userId identifiant de l'utilisateur à anonymiser
+     */
     @Transactional
     public void anonymizeUserInArchivedCircles(Long userId) {
         List<Circle> archivedCircles = circleRepository.findByCreateurIdAndIsArchivedTrue(userId);
@@ -482,6 +567,12 @@ public class CircleServiceImpl implements CircleService {
         }
     }
 
+    /**
+     * Convertit un DTO d'adresse en entité d'adresse.
+     *
+     * @param dto DTO d'adresse
+     * @return entité adresse, ou null si dto null
+     */
     private AdresseDetails convertDTOToEntity(AdresseDetailsDTO dto) {
         if (dto == null)
             return null;
@@ -494,6 +585,12 @@ public class CircleServiceImpl implements CircleService {
         return entity;
     }
 
+    /**
+     * Convertit une entité d'adresse en DTO.
+     *
+     * @param entity entité adresse
+     * @return DTO d'adresse, ou null si entité null
+     */
     private AdresseDetailsDTO convertEntityToDTO(AdresseDetails entity) {
         if (entity == null)
             return null;

@@ -16,13 +16,26 @@ import com.pagepals.circle.exception.ExternalApiException;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
+/**
+ * Service responsable de la recherche de livres via l'API Google Books.
+ * 
+ * Permet de récupérer des informations bibliographiques (titre, auteurs, genre, couverture, etc.)
+ * à partir d’un critère de recherche fourni par l’utilisateur.
+ */
 @Service
 public class BookSearchService {
 
+    /** Client HTTP utilisé pour les appels à l’API Google Books. */
     private final RestTemplate restTemplate = new RestTemplate();
 
+    /** Clé d’authentification de l’API Google Books, chargée depuis le fichier .env. */
     private final String apiKey;
 
+    /**
+     * Initialise le service et charge la clé API depuis le fichier .env.
+     * 
+     * @throws IllegalStateException si la clé API n'est pas trouvée
+     */
     public BookSearchService() {
         Dotenv dotenv = Dotenv.configure()
                 .directory(System.getProperty("user.dir") + "/circle")
@@ -36,12 +49,19 @@ public class BookSearchService {
         }
     }
 
+    /**
+     * Recherche des livres correspondant au critère donné via l'API Google Books.
+     *
+     * @param critereRecherche texte de recherche (titre, auteur, mot-clé)
+     * @return liste de livres trouvés correspondant au critère
+     * @throws BookNotFoundException si aucun livre n'est trouvé
+     * @throws ExternalApiException si une erreur survient lors de l'appel à l'API externe
+     */
     public List<BookDTO> searchBooks(String critereRecherche) {
         String url = "https://www.googleapis.com/books/v1/volumes?q=" + critereRecherche
                 + "&langRestrict=fr&maxResults=20&key=" + apiKey + "&printType=books";
 
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-
         List<BookDTO> results = new ArrayList<>();
 
         if (response.getStatusCode().is2xxSuccessful()) {
@@ -92,11 +112,10 @@ public class BookSearchService {
                 return results;
 
             } catch (JSONException e) {
-                throw new ExternalApiException("Erreur lors de l'appel à l'API externe");
+                throw new ExternalApiException("Erreur lors du traitement de la réponse de l'API externe");
             }
         } else {
             throw new ExternalApiException("Erreur lors de l'appel à l'API externe");
         }
     }
-
 }

@@ -8,6 +8,12 @@ import com.pagepals.circle.model.ModeRencontre;
 
 import lombok.*;
 
+/**
+ * Représente un cercle littéraire tel qu'il est exposé aux autres microservices ou au front-end.
+ * 
+ * Contient les informations principales du cercle : identité, organisation,
+ * modes de rencontre, livre choisi, créateur et état d'archivage.
+ */
 @Data
 @Builder
 @AllArgsConstructor

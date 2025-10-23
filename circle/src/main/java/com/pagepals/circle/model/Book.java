@@ -4,6 +4,12 @@ import java.util.List;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+/**
+ * Entité représentant un livre associé à un cercle littéraire.
+ * 
+ * Un livre peut être proposé lors de la création d'un cercle pour servir de support de discussion.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

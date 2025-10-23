@@ -3,6 +3,13 @@ package com.pagepals.circle.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+
+/**
+ * Entité représentant un genre littéraire.
+ * 
+ * Un genre permet de classifier les cercles littéraires selon
+ * leurs thématiques principales (exemples : Fantasy, Policier, Romance...).
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

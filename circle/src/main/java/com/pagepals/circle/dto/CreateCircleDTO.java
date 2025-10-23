@@ -7,6 +7,12 @@ import com.pagepals.circle.model.ModeRencontre;
 
 import lombok.Data;
 
+/**
+ * Données reçues lors de la création d'un nouveau cercle littéraire.
+ * 
+ * Ce DTO regroupe toutes les informations nécessaires à l'enregistrement
+ * d'un cercle : description, date, mode de rencontre, genres et lieu associé.
+ */
 @Data
 public class CreateCircleDTO {
 

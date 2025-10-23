@@ -7,10 +7,23 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Configuration de la sécurité Spring Security pour le microservice circle-service.
+ * 
+ * Ce service étant utilisé principalement par d'autres microservices via l'API Gateway,
+ * toutes les requêtes sont autorisées et la gestion de session est désactivée (stateless).
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    /**
+     * Définit la configuration de la chaîne de filtres de sécurité.
+     *
+     * @param http objet HttpSecurity à configurer
+     * @return la chaîne de filtres de sécurité configurée
+     * @throws Exception en cas d'erreur de configuration
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http

@@ -10,13 +10,33 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Optional;
 
+/**
+ * Appender personnalisé pour Logback qui envoie les logs du microservice
+ * vers un service distant (logs-service) via HTTP.
+ *
+ * Cet appender permet de centraliser les journaux d'exécution de chaque microservice
+ * en les transmettant sous format JSON au service de logs.
+ * 
+ * Caractéristiques :
+ * - Ne perturbe jamais le fonctionnement de l’application même en cas d’échec réseau
+ * - Supporte la transmission d’informations de traçage (traceId, spanId)
+ * - Formate les messages et exceptions en JSON
+ */
 public class HttpLogAppender extends AppenderBase<ILoggingEvent> {
 
-    private String logsServiceUrl; // ex: http://logs-service:8095/logs (docker) / http://localhost:8095/logs
-                                   // (local)
-    private String serviceName; // ex: auth-service
+    /** URL du service de logs (ex. http://logs-service:8095/logs en Docker) */
+    private String logsServiceUrl;
+
+    /** Nom du service émetteur (ex. circle-service, auth-service) */
+    private String serviceName;
+
+    /** Indique si l’envoi des logs au service distant est activé */
     private boolean enabled = true;
+
+    /** Délai maximum de connexion en millisecondes */
     private int connectTimeoutMs = 800;
+
+    /** Délai maximum de lecture en millisecondes */
     private int readTimeoutMs = 1200;
 
     public void setLogsServiceUrl(String logsServiceUrl) {
@@ -39,6 +59,12 @@ public class HttpLogAppender extends AppenderBase<ILoggingEvent> {
         this.readTimeoutMs = ms;
     }
 
+    /**
+     * Envoie un événement de log au service distant sous forme de requête HTTP POST.
+     * Cette méthode ne doit jamais interrompre l’application, même en cas d’erreur.
+     *
+     * @param event événement de log à traiter
+     */
     @Override
     protected void append(ILoggingEvent event) {
         if (!enabled || logsServiceUrl == null || logsServiceUrl.isBlank())
@@ -55,7 +81,6 @@ public class HttpLogAppender extends AppenderBase<ILoggingEvent> {
                     })
                     .orElse(null);
 
-            // Récupère éventuellement traceId/spanId depuis MDC
             String traceId = event.getMDCPropertyMap().get("traceId");
             String spanId = event.getMDCPropertyMap().get("spanId");
             String path = event.getMDCPropertyMap().get("http.path");
@@ -103,17 +128,18 @@ public class HttpLogAppender extends AppenderBase<ILoggingEvent> {
                 os.write(payload.getBytes(StandardCharsets.UTF_8));
             }
 
-            // On lit juste le code, on n’échoue jamais le log appelant
+            // Ne bloque jamais le processus en cas d’erreur HTTP
             int code = conn.getResponseCode();
             if (code >= 400) {
-                // On ne remonte pas d’exception pour ne pas boucler le logging
+                // On ne fait rien pour éviter une boucle infinie de logs
             }
             conn.disconnect();
         } catch (Exception ignored) {
-            // Surtout ne jamais casser l'app à cause du logging
+            // Surtout ne jamais casser l'application à cause du logging
         }
     }
 
+    /** Échappe les caractères spéciaux pour formater une chaîne JSON valide. */
     private static String json(String s) {
         if (s == null)
             return "null";
@@ -127,5 +153,4 @@ public class HttpLogAppender extends AppenderBase<ILoggingEvent> {
                 .replace("\f", "\\f")
                 + "\"";
     }
-
 }

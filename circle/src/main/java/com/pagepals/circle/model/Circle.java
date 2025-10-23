@@ -11,6 +11,13 @@ import org.hibernate.type.SqlTypes;
 import jakarta.persistence.*;
 import lombok.*;
 
+/**
+ * Entité représentant un cercle littéraire.
+ * 
+ * Un cercle regroupe plusieurs membres autour d’un thème, d’un genre ou d’un livre.
+ * Il peut se dérouler en présentiel ou en ligne, et dispose d’un créateur, d’une date de rencontre,
+ * et éventuellement d’un livre proposé pour la discussion.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
