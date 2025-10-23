@@ -5,6 +5,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+/**
+ * Données reçues lors de l'inscription d'un nouvel utilisateur.
+ * Contient les informations de base nécessaires à la création du compte.
+ * 
+ * Les contraintes de validation garantissent la cohérence et la sécurité des données saisies.
+ */
 @Data
 public class RegisterDTO {
 

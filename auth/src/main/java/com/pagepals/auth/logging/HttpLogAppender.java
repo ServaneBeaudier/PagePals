@@ -10,39 +10,74 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Optional;
 
+/**
+ * Appender Logback personnalisé envoyant les événements de log au microservice de logs via HTTP.
+ * 
+ * Permet de centraliser les journaux applicatifs des différents microservices (ici auth-service)
+ * dans un service distant dédié (logs-service). Chaque événement de log est sérialisé en JSON
+ * et transmis par une requête POST.
+ *
+ * Cette approche offre une meilleure traçabilité inter-services, notamment via les identifiants
+ * de corrélation (traceId, spanId) stockés dans le MDC.
+ *
+ */
 public class HttpLogAppender extends AppenderBase<ILoggingEvent> {
 
-    private String logsServiceUrl; // ex: http://logs-service:8095/logs (docker) / http://localhost:8095/logs
-                                   // (local)
-    private String serviceName; // ex: auth-service
+    /** URL du microservice de logs recevant les événements (ex : http://logs-service:8095/logs). */
+    private String logsServiceUrl;
+
+    /** Nom du service émetteur (ex : auth-service). */
+    private String serviceName;
+
+    /** Active ou désactive l’envoi distant des logs. */
     private boolean enabled = true;
+
+    /** Délai maximal de connexion HTTP en millisecondes. */
     private int connectTimeoutMs = 800;
+
+    /** Délai maximal de lecture HTTP en millisecondes. */
     private int readTimeoutMs = 1200;
 
+    /** Définit l’URL du service de logs distant. */
     public void setLogsServiceUrl(String logsServiceUrl) {
         this.logsServiceUrl = logsServiceUrl;
     }
 
+    /** Définit le nom du service émettant les logs. */
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
     }
 
+    /** Active ou désactive l’appender. */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
+    /** Configure le délai maximal de connexion HTTP. */
     public void setConnectTimeoutMs(int ms) {
         this.connectTimeoutMs = ms;
     }
 
+    /** Configure le délai maximal de lecture HTTP. */
     public void setReadTimeoutMs(int ms) {
         this.readTimeoutMs = ms;
     }
 
+    /**
+     * Envoie un événement de log au service distant.
+     * Sérialise les métadonnées (niveau, logger, message, exception, contexte MDC)
+     * au format JSON et les transmet par POST.
+     *
+     * En cas d’erreur réseau ou serveur, aucune exception n’est propagée afin de
+     * ne jamais interrompre le processus de logging local.
+     *
+     * @param event l’événement Logback à transmettre
+     */
     @Override
     protected void append(ILoggingEvent event) {
         if (!enabled || logsServiceUrl == null || logsServiceUrl.isBlank())
             return;
+
         try {
             String stack = Optional.ofNullable(event.getThrowableProxy())
                     .map(p -> {
@@ -55,7 +90,6 @@ public class HttpLogAppender extends AppenderBase<ILoggingEvent> {
                     })
                     .orElse(null);
 
-            // Récupère éventuellement traceId/spanId depuis MDC
             String traceId = event.getMDCPropertyMap().get("traceId");
             String spanId = event.getMDCPropertyMap().get("spanId");
             String path = event.getMDCPropertyMap().get("http.path");
@@ -103,17 +137,24 @@ public class HttpLogAppender extends AppenderBase<ILoggingEvent> {
                 os.write(payload.getBytes(StandardCharsets.UTF_8));
             }
 
-            // On lit juste le code, on n’échoue jamais le log appelant
+            // On ignore les erreurs HTTP pour ne pas boucler sur le logger
             int code = conn.getResponseCode();
             if (code >= 400) {
-                // On ne remonte pas d’exception pour ne pas boucler le logging
+                // Pas d'action : on ne propage jamais l'erreur
             }
             conn.disconnect();
         } catch (Exception ignored) {
-            // Surtout ne jamais casser l'app à cause du logging
+            // Ne jamais interrompre le logging applicatif
         }
     }
 
+    /**
+     * Transforme une chaîne en version JSON échappée.
+     * Remplace les caractères spéciaux pour éviter les erreurs de format.
+     *
+     * @param s chaîne d'entrée
+     * @return version échappée de la chaîne pour JSON, ou "null" si la valeur est nulle
+     */
     private static String json(String s) {
         if (s == null)
             return "null";
@@ -127,5 +168,4 @@ public class HttpLogAppender extends AppenderBase<ILoggingEvent> {
                 .replace("\f", "\\f")
                 + "\"";
     }
-
 }

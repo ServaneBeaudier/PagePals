@@ -13,6 +13,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Entité représentant un utilisateur du système d'authentification.
+ * Contient les informations nécessaires à la connexion et à la gestion des rôles.
+ */
 @Data
 @Entity
 @Table(name="users")

@@ -4,6 +4,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+/**
+ * Données nécessaires à la mise à jour du mot de passe d'un utilisateur.
+ * Utilisé par le service d'authentification pour appliquer une nouvelle valeur
+ * sécurisée après validation.
+ */
 @Data
 public class UpdatePasswordDTO {
 
